@@ -1,12 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import Login from './Screens/Login.tsx'
 import {
   SafeAreaView,
   ScrollView,
@@ -15,26 +11,29 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// import {
+//   Colors,
+//   DebugInstructions,
+//   Header,
+//   LearnMoreLinks,
+//   ReloadInstructions,
+// } from 'react-native/Libraries/NewAppScreen';
 
+const Stack = createNativeStackNavigator();
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+function App(){
 
   return (
-    <View><Text>App.tsx</Text></View>
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+    //     <Stack.Screen name="Login" component={Login} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    // <View><Text>This is text</Text></View>
+    <Login /> 
   );
 }
 
