@@ -14,7 +14,7 @@ import {
   Button,
 } from 'react-native';
 
-// import {
+// import { Not sure if there is needed 
 //   Colors,
 //   DebugInstructions,
 //   Header,
@@ -27,13 +27,12 @@ const Stack = createNativeStackNavigator();
 function App(){
 
   return (
-    // <NavigationContainer>
-    //   <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
-    //     <Stack.Screen name="Login" component={Login} />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
-    // <View><Text>This is text</Text></View>
-    <Login /> 
+    // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
+    <NavigationContainer>
+      <Stack.Navigator> 
+        <Stack.Screen name="Login" component={Login} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
