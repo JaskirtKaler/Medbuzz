@@ -13,6 +13,7 @@ import {
   View,
   Button,
 } from 'react-native';
+import Specialty from './Screens/Specialty.tsx';
 
 // import { Not sure if there is needed 
 //   Colors,
@@ -29,8 +30,9 @@ function App(){
   return (
     // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
     <NavigationContainer>
-      <Stack.Navigator> 
-        <Stack.Screen name="Login" component={Login} />
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        {/* <Stack.Screen name="Login" component={Login} /> */ }
+        <Stack.Screen name="Specialty" component={Specialty} />
       </Stack.Navigator>
     </NavigationContainer>
   );
