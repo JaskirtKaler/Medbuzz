@@ -3,6 +3,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Login from './Screens/Login.tsx'
+import EditBasicDetails from './Screens/EditBasicDetails.tsx'
 import {
   SafeAreaView,
   ScrollView,
@@ -30,7 +31,8 @@ function App(){
     // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
     <NavigationContainer>
       <Stack.Navigator> 
-        <Stack.Screen name="Login" component={Login} />
+        {/*<Stack.Screen name="Login" component={Login} />*/}
+        <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );
