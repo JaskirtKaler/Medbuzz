@@ -11,9 +11,11 @@ const TextBox = (props: textBoxProps) => {
   if(props.required === true) {
     return (
       <View>
-        <Text style={styles.fieldTextStyle}>{props.field}</Text>
-         <Text style={{color: 'red'}}>*</Text>
-        <TextInput style={styles.textBoxStyle}></TextInput>
+        <Text>
+          <Text style={styles.fieldTextStyle}>{props.field}</Text>
+          <Text style={{color: 'red'}}>*</Text>
+        </Text>
+        <TextInput style={styles.textBoxStyle}></TextInput> 
       </View>
     );
 
