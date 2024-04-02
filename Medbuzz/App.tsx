@@ -3,6 +3,8 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Login from './Screens/Login.tsx'
+import Register from './Screens/Register.js';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   SafeAreaView,
   ScrollView,
@@ -24,6 +26,17 @@ import {
 
 const Stack = createNativeStackNavigator();
 
+export type RootStackParamList = {
+  Login: undefined;
+  Register: undefined; // And other screens if needed
+};
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
 function App(){
 
   return (
@@ -31,6 +44,7 @@ function App(){
     <NavigationContainer>
       <Stack.Navigator> 
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );

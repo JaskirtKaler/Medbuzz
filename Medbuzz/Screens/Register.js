@@ -1,45 +1,41 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
-import { RootStackParamList } from '../App';
-
-
-const Login = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-
+const CreateAccount = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>{"<"}</Text>
+        </TouchableOpacity>
         <View style={styles.logoBox}>
           <Text style={styles.logoText}>M</Text>
         </View>
-        <Text style={styles.headerText}>Login</Text>
-        <Text style={styles.subHeaderText}>Sign in to Continue</Text>
+        <Text style={styles.headerText}>Create new Account</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginLink}>Already registered? Log in here</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
         <TextInput 
           style={styles.input} 
-          placeholder="Name" 
+          placeholder="First Name" 
+          placeholderTextColor="#ddd"
+        />
+        <TextInput 
+          style={styles.input} 
+          placeholder="Last Name" 
           placeholderTextColor="#ddd" 
         />
         <TextInput 
           style={styles.input} 
-          placeholder="Password" 
+          placeholder="Email Address" 
           placeholderTextColor="#ddd" 
-          secureTextEntry 
+          keyboardType="email-address" 
         />
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-       <Text style={styles.signupText}>Don’t have an account? Sign up</Text>
+      <TouchableOpacity style={styles.continueButton}>
+        <Text style={styles.continueButtonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
@@ -52,16 +48,25 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: '#0EA68D',
-    paddingBottom: 60,
+    paddingBottom: 70,
+    paddingTop: 40,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
+  backButton: {
+    color: 'white',
+    fontSize: 24,
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
   logoBox: {
-    marginTop: 40,
     backgroundColor: 'white',
     height: 80,
     width: 80,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   logoText: {
     fontSize: 36,
@@ -69,19 +74,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 36,
+    fontSize: 30,
     color: 'black',
-    marginTop: 20,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  subHeaderText: {
-    fontSize: 18,
-    color: 'black',
     fontWeight: 'bold',
   },
+  loginLink: {
+    fontSize: 15,
+    color: 'white',
+    textDecorationLine: 'underline',
+  },
   inputContainer: {
-    marginTop: -30,
+    marginTop: -20,
     paddingHorizontal: 30,
   },
   input: {
@@ -91,38 +96,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     fontSize: 18,
-    borderWidth: 1,
     borderColor: 'grey',
-    shadowColor: '#010', // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset x, y
-    shadowOpacity: 0.1, // Shadow opacity
-    shadowRadius: 4, // Shadow blur radius
-    elevation: 3, // Elevation for Android
+    borderWidth: 1, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  forgotPassword: {
-    color: '#0EA68D',
-    alignSelf: 'flex-end',
-    marginTop: 10,
-  },
-  loginButton: {
+  
+  continueButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 10,
     marginHorizontal: 30,
-    marginTop: 10,
+    marginTop: 20,
     paddingVertical: 15,
     alignItems: 'center',
   },
-  loginButtonText: {
+  continueButtonText: {
     color: 'white',
     fontSize: 22,
     fontWeight: 'bold',
   },
-  signupText: {
-    color: '#0EA68D',
-    alignSelf: 'center',
-    marginTop: 20,
-    fontSize: 15,
-  },
 });
 
-export default Login;
+export default CreateAccount;
