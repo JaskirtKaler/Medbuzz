@@ -1,4 +1,4 @@
-import { Button, StyleSheet, View, Text, ScrollView, TextInput } from 'react-native'
+import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity } from 'react-native'
 import React, {useState} from 'react'
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
@@ -55,6 +55,12 @@ const EditBasicDetails = () => {
         <TextBox field="Country" required={true}/>
         <TextBox field="City" required={false}/>
         <TextBox field="State"  required={true}/>
+        <TouchableOpacity style={styles.saveButton}>
+          <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cancelButton}>
+          <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
+        </TouchableOpacity>
       </ScrollView>
     )
   }
@@ -85,6 +91,25 @@ const EditBasicDetails = () => {
       color: 'black',
       fontSize: 20, 
       fontWeight: 'bold'
+    }, 
+
+    saveButton: {
+      marginTop: 20, 
+      margin: 10, 
+      height: 40, 
+      borderRadius: 10, 
+      backgroundColor: "#0EA68D", 
+      alignItems: "center", 
+      padding: 10
+    }, 
+
+    cancelButton: {
+      margin: 10, 
+      height: 40, 
+      borderRadius: 10, 
+      backgroundColor: "#E6E6E6", 
+      alignItems: "center", 
+      padding: 10
     }
   });
   
