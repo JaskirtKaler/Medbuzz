@@ -1,35 +1,44 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from '../App';
 
-import { RootStackParamList } from '../App';
-
-
+const { width, height } = Dimensions.get('window');
 const Login = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
+       <View style={styles.curveOverlay} />
         <View style={styles.logoBox}>
           <Text style={styles.logoText}>M</Text>
         </View>
-        <Text style={styles.headerText}>Login</Text>
-        <Text style={styles.subHeaderText}>Sign in to Continue</Text>
       </View>
       <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.input} 
-          placeholder="Name" 
-          placeholderTextColor="#ddd" 
+        <Text style={styles.headerText}>Login</Text>
+        <Text style={styles.subHeaderText}>Sign in to Continue</Text>
+        <Text style={styles.inputLabel}>Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your name"
+          placeholderTextColor="#ddd"
         />
-        <TextInput 
-          style={styles.input} 
-          placeholder="Password" 
-          placeholderTextColor="#ddd" 
-          secureTextEntry 
+        <Text style={styles.inputLabel}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          placeholderTextColor="#ddd"
+          secureTextEntry
         />
         <TouchableOpacity>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
@@ -38,12 +47,17 @@ const Login = () => {
       <TouchableOpacity style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-       <Text style={styles.signupText}>Don’t have an account? Sign up</Text>
-      </TouchableOpacity>
+      <View style={styles.signupTextContainer}>
+        <Text style={styles.signupPromptText}>Don’t have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.signupText}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
+
+// const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -52,64 +66,86 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: '#0EA68D',
-    paddingBottom: 60,
-    alignItems: 'center',
+    height: height * 0.3,
+    alignItems: 'center', // Center horizontally
+    justifyContent: 'center', // Center vertically
   },
   logoBox: {
-    marginTop: 40,
     backgroundColor: 'white',
-    height: 80,
-    width: 80,
+    height: 100,
+    width: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logoText: {
-    fontSize: 36,
+    fontSize: 58,
     color: '#0EA68D',
     fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 36,
-    color: 'black',
-    marginTop: 20,
+    fontSize: 45,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: 'black',
+    alignSelf: 'center', 
+    marginBottom: 10, 
   },
   subHeaderText: {
     fontSize: 18,
     color: 'black',
-    fontWeight: 'bold',
+    alignSelf: 'center', 
+    marginBottom: 20, 
   },
+
   inputContainer: {
-    marginTop: -30,
-    paddingHorizontal: 30,
+    flex: 0.8, // This will allow the container to fill the rest of the screen
+    justifyContent: 'center', // This centers the children vertically
+    paddingHorizontal: 40,
+    marginTop: 20,
+  },
+  curveOverlay: {
+    position: 'absolute',
+    top: height * 0.239, // top position to where the curve should start
+    left: -80,
+    right: -119.5,
+    //bottom: 0,
+    height: 280,
+    backgroundColor: 'white',
+    borderTopRightRadius: width, 
+  },
+  inputLabel: {
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 5,
+    marginTop:5,
   },
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
+    paddingVertical: 12,
+    borderRadius: 30, 
     marginTop: 10,
     fontSize: 18,
-    borderWidth: 1,
+    borderWidth: 0.3,
     borderColor: 'grey',
-    shadowColor: '#010', // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset x, y
-    shadowOpacity: 0.1, // Shadow opacity
-    shadowRadius: 4, // Shadow blur radius
-    elevation: 3, // Elevation for Android
+    shadowColor: '#010',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   forgotPassword: {
     color: '#0EA68D',
+    fontSize: 18,
     alignSelf: 'flex-end',
-    marginTop: 10,
+    marginTop: 15,
+    marginBottom:5,
   },
   loginButton: {
     backgroundColor: '#0EA68D',
-    borderRadius: 10,
-    marginHorizontal: 30,
-    marginTop: 10,
-    paddingVertical: 15,
+    borderRadius: 3,
+    marginHorizontal: 40,
+    marginTop:25,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   loginButtonText: {
@@ -117,12 +153,22 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-  signupText: {
-    color: '#0EA68D',
-    alignSelf: 'center',
+  signupTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 20,
+    paddingHorizontal: 40,
+  },
+  signupPromptText: {
     fontSize: 15,
+    color: 'black',
+  },
+  signupText: {
+    fontSize: 15,
+    color: '#0EA68D',
+    textDecorationLine: 'underline',
   },
 });
+
 
 export default Login;
