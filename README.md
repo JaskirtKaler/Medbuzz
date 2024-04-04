@@ -7,6 +7,7 @@ Maddie Ananda
 Fadi Zubeideh
 Richard E. Varela
 Adiba Akter
+Avneet Brar
 
 # Introduction
 
