@@ -1,9 +1,13 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Login from './Screens/Login.tsx'
-import Register from './Screens/Register.js';
+import Login from './Screens/Login.tsx';
+import Register from './Screens/Register';
+import RegContinue from './Screens/RegContinue.tsx';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
   SafeAreaView,
@@ -16,7 +20,7 @@ import {
   Button,
 } from 'react-native';
 
-// import { Not sure if there is needed 
+// import { Not sure if there is needed
 //   Colors,
 //   DebugInstructions,
 //   Header,
@@ -27,8 +31,11 @@ import {
 const Stack = createNativeStackNavigator();
 
 export type RootStackParamList = {
+  //goBack(): void;
+  //navigate(arg0: string): void;
   Login: undefined;
-  Register: undefined; // And other screens if needed
+  Register: undefined;
+  RegContinue: undefined; // And other screens if needed
 };
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -37,21 +44,21 @@ type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
-function App(){
 
+function App() {
   return (
-    // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
     <NavigationContainer>
-      <Stack.Navigator> 
+      <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="RegContinue" component={RegContinue} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
- 
+
 });
 
 export default App;
