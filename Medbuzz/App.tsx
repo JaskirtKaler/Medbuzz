@@ -33,8 +33,8 @@ function App(){
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {/* <Stack.Screen name="Login" component={Login} /> */ }
-        {<Stack.Screen name="Specialty" component={Specialty}/>}
-        {/* {<Stack.Screen name="Certificates" component={Certificates}/>} */}
+        {/*<Stack.Screen name="Specialty" component={Specialty}/>*/}
+        {<Stack.Screen name="Certificates" component={Certificates}/>}
       </Stack.Navigator>
     </NavigationContainer>
   );
