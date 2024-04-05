@@ -3,6 +3,8 @@ import React from 'react';
 import {useState} from 'react';
 import {Dropdown} from 'react-native-element-dropdown';
 import {Bar} from 'react-native-progress';
+import { Svg, Path} from 'react-native-svg';
+import BackArrow from '../Components/Svg/Backarrow';
 
 const Certificates = () => {
     const progress = 50;
@@ -32,6 +34,11 @@ const Certificates = () => {
 
     return (
         <View style={cert_style.background_style}>
+            
+            <TouchableOpacity onPress={handleBack}>
+                <BackArrow style={cert_style.back_arrow} width={40} height={40} color={"white"}/>
+            </TouchableOpacity>
+
             <View style={logo.rectangle}>
                 <Text style={logo.m_logo}>M</Text>
             </View>
@@ -83,7 +90,7 @@ const cert_style = StyleSheet.create({
         backgroundColor: '#0EA68D',
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     text: {
         color: 'black',
@@ -108,6 +115,11 @@ const cert_style = StyleSheet.create({
     },
     padding: {
         paddingBottom: '10%'
+    },
+    back_arrow: {
+        alignSelf: 'flex-start',
+        marginRight: '85%',
+        marginBottom: '10%'
     }
 });
 

@@ -1,11 +1,26 @@
 import { View, Text, TextInput, StyleSheet, Button, Pressable, LogBox, TouchableOpacity } from 'react-native';
 import React from 'react';
 import {Bar} from 'react-native-progress';
+import { Svg, Path} from 'react-native-svg';
+import BackArrow from '../Components/Svg/Backarrow';
 
 const Specialty = () => {
     const progress = 35;
+
+    const handleBack = () => {
+        console.log("tapped");
+    }
+
     return (
         <View style={styles.background_style}>
+
+            <View style={styles.back_arrow}>
+                <TouchableOpacity onPress={handleBack}>
+                    <BackArrow width={40} height={40} color={"white"}/>
+                </TouchableOpacity>
+            </View>
+
+
             <View style={logo.rectangle}>
                 <Text style={logo.m_logo}>M</Text>
             </View>
@@ -86,16 +101,6 @@ const styles = StyleSheet.create({
         fontSize: 25,
         marginBottom: '8%'
     },
-    /*background_style: {
-        backgroundColor: '#0EA68D',
-        flex: 1,
-        justifyContent: 'center'
-    },*/
-    m_logo: {
-        fontSize: 80,
-        color: '#0EA68D',
-        backgroundColor: 'white'
-    },
     progress: {
         color: 'black',
         fontSize: 30,
@@ -107,6 +112,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         width: 350,
         height: 20
+    },
+    back_arrow: {
+        alignSelf: 'flex-start',
+        // marginRight: '85%',
+        // marginBottom: '10%'
+        
     }
 });
 
