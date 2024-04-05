@@ -18,6 +18,7 @@ import {
   Button,
 } from 'react-native';
 import ForgotPassword from './Screens/ForgotPassword..tsx';
+import ResetPassword from './Screens/ResetPassword.tsx';
 
 // import { Not sure if there is needed
 //   Colors,
@@ -48,7 +49,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Forgot Password" component={ForgotPassword} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );
