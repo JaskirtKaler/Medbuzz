@@ -1,50 +1,50 @@
-import { View, Text, TextInput, StyleSheet, Button, Pressable, LogBox } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, Pressable, LogBox, TouchableOpacity } from 'react-native'
 import React from 'react'
 
 const Specialty = () => {
     return (
         <View style={styles.background_style}>
             <View style={logo.rectangle}>
-                <Text style={styles.m_logo}>M</Text>
-            </View>
-            <View>
-                <Text style={styles.text}>Progress %</Text>
+                <Text style={logo.m_logo}>M</Text>
             </View>
 
-            <View>
-                <Text style={styles.text}>What's your specialty?</Text>
-                <Text style={styles.text_sub}>Specailty</Text>
-                <View style={input_style.input_field}>
-                    <TextInput style={styles.input}/>
-                </View>
-                <Text style={styles.text_sub}>Years in specailty</Text>
-                <View style={input_style.input_field}>
-                    <TextInput style={styles.input}/>
-                </View>
-                <Text style={styles.add_specailty_text}>+ Add additional specailty</Text>
-            </View>
+            <Text style={styles.progress}>Progress %</Text>
+            <Text style={styles.progress_bar}></Text>
 
-            <View>
-                <View style={button_style.button_item}>
-                    <Pressable style={button_style.button_content}>
-                        <Text style={button_style.button_text}>Continue</Text>
-                    </Pressable>
-                </View>
-            </View>
+            <Text style={styles.text}>What's your specialty?</Text>
+            <Text style={styles.text_sub}>Specailty</Text>
+            <TextInput style={input_style.input}/>
+            <Text style={styles.text_sub}>Years in specailty</Text>
+            <TextInput style={input_style.input}/>
+
+            <TouchableOpacity>
+                    <Text style={styles.add_specailty_text}>+ Add additional specailty</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={button_style.button_content}>
+                <Text style={button_style.button_text}>Continue</Text>
+            </TouchableOpacity>
         </View>
-    )
-}
+    ) // End return statement
+} // End Specialty
 
-export default Specialty
+export default Specialty;
 
+// Style Sheets
 const styles = StyleSheet.create({
+    background_style: {
+        backgroundColor: '#0EA68D',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     input: {
         borderWidth: 1,
         borderColor: 'white',
         backgroundColor: 'white',
         padding: 8,
         margin: 10,
-        width: '85%',
+        width: '110%',
         borderRadius: 25
     },
     button: {
@@ -57,38 +57,45 @@ const styles = StyleSheet.create({
         height: 50
     },
     text: {
+        color: 'black',
         fontSize: 30,
-        paddingLeft: 50
+        alignSelf: 'flex-start',
+        marginLeft: '8%',
+        marginTop: '5%'
     },
     text_sub: {
+        color: 'black',
         fontSize: 25,
-        paddingLeft: 50
+        alignSelf: 'flex-start',
+        marginLeft: '8%',
+        marginTop: 10
     },
     add_specailty_text: {
-        fontSize: 25,
         color: 'white',
-        paddingLeft: 50
+        fontSize: 25,
+        marginBottom: '8%'
     },
     /*background_style: {
         backgroundColor: '#0EA68D',
         flex: 1,
         justifyContent: 'center'
     },*/
-    background_style: {
-        backgroundColor: '#0EA68D',
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'stretch',
-        columnGap: 30,
-        paddingTop: '20%',
-        paddingBottom: '20%',
-        justifyContent: 'space-around'
-    },
     m_logo: {
         fontSize: 80,
         color: '#0EA68D',
         backgroundColor: 'white'
+    },
+    progress: {
+        color: 'black',
+        fontSize: 30,
+        marginTop: 30,
+        marginLeft: '8%',
+        alignSelf: 'flex-start'
+    },
+    progress_bar: {
+        backgroundColor: 'black',
+        width: 350,
+        height: 20
     }
 });
 
@@ -96,6 +103,16 @@ const input_style = StyleSheet.create({
     input_field: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: 'white',
+        backgroundColor: 'white',
+        padding: 8,
+        margin: 10,
+        width: '85%',
+        height: '6%',
+        borderRadius: 25
     }
 });
 
@@ -109,8 +126,9 @@ const button_style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        padding: 8,
-        margin: 20,
+        paddingHorizontal: 100,
+        paddingVertical: 10,
+        marginTop: 20,
         width: 350,
         height: 50
     },
@@ -135,7 +153,6 @@ const logo = StyleSheet.create({
     rectangle: {
         width: 120,
         height: 120,
-        left: '35%',
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center'

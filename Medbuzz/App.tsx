@@ -14,6 +14,7 @@ import {
   Button,
 } from 'react-native';
 import Specialty from './Screens/Specialty.tsx';
+import Certificates from './Screens/Certificates.tsx';
 
 // import { Not sure if there is needed 
 //   Colors,
@@ -32,7 +33,8 @@ function App(){
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {/* <Stack.Screen name="Login" component={Login} /> */ }
-        <Stack.Screen name="Specialty" component={Specialty} />
+        {/*<Stack.Screen name="Specialty" component={Specialty}/>*/}
+        {<Stack.Screen name="Certificates" component={Certificates}/>}
       </Stack.Navigator>
     </NavigationContainer>
   );
