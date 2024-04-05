@@ -1,7 +1,9 @@
-import { View, Text, TextInput, StyleSheet, Button, Pressable, LogBox, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, TextInput, StyleSheet, Button, Pressable, LogBox, TouchableOpacity } from 'react-native';
+import React from 'react';
+import {Bar} from 'react-native-progress';
 
 const Specialty = () => {
+    const progress = 35;
     return (
         <View style={styles.background_style}>
             <View style={logo.rectangle}>
@@ -9,7 +11,16 @@ const Specialty = () => {
             </View>
 
             <Text style={styles.progress}>Progress %</Text>
-            <Text style={styles.progress_bar}></Text>
+
+            {/* Progress Bar */}
+            <Bar
+                progress={progress / 100}
+                width={350}
+                color={'black'}
+                borderRadius={0} // remove the default amount of border radius that comes with the progress bar
+                unfilledColor={'#D9D9D9'} // Color of the unfilled portion of the progress bar, color gotten from figma
+                height={20}
+            />
 
             <Text style={styles.text}>What's your specialty?</Text>
             <Text style={styles.text_sub}>Specailty</Text>

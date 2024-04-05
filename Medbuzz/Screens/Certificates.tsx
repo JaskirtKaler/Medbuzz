@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet, Button, Pressable, LogBox, FlatList, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Button, Pressable, LogBox, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import {useState} from 'react';
+import {Dropdown} from 'react-native-element-dropdown';
+import {Bar} from 'react-native-progress';
 
 const Certificates = () => {
     const progress = 50;
@@ -8,13 +10,14 @@ const Certificates = () => {
     const [selectedOption, setSelectedOption] = useState('');
 
     const cert_options = [
-        'ACLS',
-        'BLS',
-        'Cert3',
-        'Cert4',
-        'Cert5',
-        'Bla',
-        'Duende'
+        {label:'ACLS', value:'ACLS'},
+        {label:'BLS', value:'BLS'},
+        {label:'Cert3', value:'Cert3'},
+        {label:'Cert4', value:'Cert4'},
+        {label:'Cert5', value:'Cert5'},
+        {label:'Bla', value:'Bla'},
+        {label:'Duende', value:'Duende'},
+        {label:'None', value:'Select Certificates ▼'}
     ];
 
     const handleCertSelect = (option: string) => {
@@ -34,29 +37,31 @@ const Certificates = () => {
             </View>
 
             <Text style={cert_style.progress}>Progress %</Text>
-            <Text style={cert_style.progress_bar}></Text>
-            <Text style={cert_style.padding}></Text>
+            {/* Progress Bar */}
+            <Bar
+                progress={progress / 100}
+                width={350}
+                color={'black'}
+                borderRadius={0} // remove the default amount of border radius that comes with the progress bar
+                unfilledColor={'#D9D9D9'} // Color of the unfilled portion of the progress bar, color gotten from figma
+                height={20}
+            />
 
             {/* Dropdown menu */}
-
-            {/* Dropdown trigger */}
-            <TouchableOpacity onPress={() => setDropDownVisible(!dropDownVisible)}>
-                <Text style={cert_style.text}>Select Certificates ▼</Text>
-            </TouchableOpacity>
-
-            {/* Dropdown list */}
-            {dropDownVisible && (
-                <FlatList
+            <Dropdown
+                style={dropdown_style2.dropdown}
+                selectedTextStyle={dropdown_style2.selectedTextStyle}
+                inputSearchStyle={dropdown_style2.inputSearchStyle}
                 data={cert_options}
-                renderItem={({item}) => (
-                    <TouchableOpacity onPress={() => handleCertSelect(item)} style={{alignItems: 'center'}}>
-                        <Text style={dropdown_style.text}>{item}</Text>
-                    </TouchableOpacity>
-                )}
-                keyExtractor={(item) => item}
-                style={dropdown_style.selection}
+                search
+                maxHeight={300}
+                labelField='label'
+                valueField='value'
+                placeholder='Select Certificates ▼'
+                searchPlaceholder='Search...'
+                value={selectedOption}
+                onChange={item => setSelectedOption(item.value)}
             />
-            )}
 
             {/* Add additional certificates */}
             <TouchableOpacity onPress={() => console.log('Add feature')}>
@@ -171,4 +176,28 @@ const button_style = StyleSheet.create({
         color: '#0EA68D',
         fontSize: 24,
     }
+});
+
+const dropdown_style2 = StyleSheet.create({
+    dropdown: {
+        width: 300,
+        margin: 16,
+        height: 50,
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+        marginBottom: 300,
+      },
+      placeholderStyle: {
+        fontSize: 16,
+        color: 'black',
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+        color: 'black',
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+        color: 'black',
+      }
 });
