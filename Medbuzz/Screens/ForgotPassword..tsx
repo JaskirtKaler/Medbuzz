@@ -8,31 +8,23 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList }from '../App';
 import { Alert } from 'react-native'; // Import Alert
 import Warning from '../SVG/Warning-Logo';
+import validate from 'react-native-email-validator';
 
 const { width, height } = Dimensions.get('window');
 
-const Register = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
+  const [emailError, setEmailError] = React.useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const emailValid = true;
 
 
   const handleContinue = () => {
-    if (emailValid) {
+    if (validate(email)) {
       navigation.navigate('RegContinue');
     } else {
-      // Show an alert if not all inputs are filled
-      Alert.alert(
-        "Incomplete Form",
-        "Please fill all the inputs to continue.",
-        [
-          {
-            text: "OK",
-            style: "cancel"
-          }
-        ]
-      );
+      setEmailError("We can't find your email!");
     }
   };
 
@@ -49,7 +41,9 @@ const Register = () => {
         </View>
       </View>
       <View style={styles.inputContainer}>
-        <Warning></Warning>
+      <View style={styles.warningContainer}>
+          <Warning width={70} height={70}></Warning>
+        </View>
         <Text style={styles.headerText}>Forgot Password?</Text>
         <View style={styles.signupTextContainer}>
           <Text style={styles.signupPromptText}>Enter your email and we'll send you a link to reset your password</Text>
@@ -59,8 +53,15 @@ const Register = () => {
         <TextInput
           style={styles.input}
           placeholderTextColor="#ddd"
-          onChangeText={setEmail} // Set the state for email
+          onChangeText={(text) => {
+            setEmail(text);
+            setEmailError('');
+          }}
+          value = {email}
         />
+        {emailError ? (
+          <Text style={styles.errorText}>{emailError}</Text>
+        ) : null}
 
         <TouchableOpacity
           style={[styles.loginButton, !emailValid ? styles.disabledButton : {}]}
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0EA68D',
     borderRadius: 3,
     marginHorizontal: 12,
-    marginTop: 25,
+    marginTop: 75,
     paddingVertical: 12,
     alignItems: 'center',
   },
@@ -183,15 +184,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-  // signupTextContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'center',
-  //   marginTop: 20,
-  //   paddingHorizontal: 40,
-  // },
   signupPromptText: {
     fontSize: 18,
     color: 'black',
+    textAlign: 'center'
   },
   signupText: {
     fontSize: 15,
@@ -210,9 +206,19 @@ const styles = StyleSheet.create({
   returnToLogin: {
     fontSize: 14,
     color: 'black',
-    marginTop: 50,
+    marginTop: 30,
     textAlign: "center"
-  }
+  },
+  warningContainer: {
+    alignItems: 'center', // Center horizontally
+    marginBottom: 10,
+    marginTop: -50,
+  },
+  errorText: {
+    fontSize: 14,
+    color: 'red',
+    marginTop: 5,
+  },
 });
 
-export default Register;
+export default ForgotPassword;
