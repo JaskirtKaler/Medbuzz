@@ -1,8 +1,12 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Login from './Screens/Login.tsx'
+import Login from './Screens/Login.tsx';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   SafeAreaView,
   ScrollView,
@@ -13,8 +17,9 @@ import {
   View,
   Button,
 } from 'react-native';
+import ForgotPassword from './Screens/ForgotPassword..tsx';
 
-// import { Not sure if there is needed 
+// import { Not sure if there is needed
 //   Colors,
 //   DebugInstructions,
 //   Header,
@@ -24,20 +29,33 @@ import {
 
 const Stack = createNativeStackNavigator();
 
-function App(){
+export type RootStackParamList = {
+  //goBack(): void;
+  //navigate(arg0: string): void;
+  Login: undefined;
+  Register: undefined;
+  RegContinue: undefined; // And other screens if needed
+};
 
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
+
+function App() {
   return (
-    // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
     <NavigationContainer>
-      <Stack.Navigator> 
-        <Stack.Screen name="Login" component={Login} />
+      <Stack.Navigator>
+        <Stack.Screen name="Forgot Password" component={ForgotPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
- 
+
 });
 
 export default App;
