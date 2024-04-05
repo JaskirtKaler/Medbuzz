@@ -1,23 +1,17 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import {Bar} from 'react-native-progress';
-import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
 
-const Discipline = () => {
-  const progress = 20; // Example progress percentage
-  const [selectedOption, setSelectedOption] = useState(''); //To hold the selected Discipline
-
-  const options = [
-    {label: 'Registered Nurse', value: 'Registered Nurse'},
-    {label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse'},
-    {label: 'CMA', value: 'CMA'},
-    {label: 'Faculty Staff', value: 'Faculty Staff'},
-    {label: 'blah', value: 'blah'}, // Add other options
-    {label: 'blahblah', value: 'blahblah'},
-    {label: 'blahblahblah', value: 'blahblahblah'},
-    {label: '---', value: '---'},
-  ];
+const UserLocation = () => {
+  const progress = 45; // Example progress percentage
+  const [ zipCode, setZipCode ] = useState('');
 
   const handleBack = () => {
     console.log('Back button clicked');
@@ -62,23 +56,10 @@ const Discipline = () => {
         height={20}
       />
 
-      <Text style={styles.question}>What's your discipline?</Text>
+      <Text style={styles.question}>Where do you Live?</Text>
 
-      {/* Dropdown */}
-      <Dropdown
-        style={styles.dropdown}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        data={options}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder="Select Discipline"
-        searchPlaceholder="Search..."
-        value={selectedOption}
-        onChange={item => setSelectedOption(item.value)}
-      />
+      <TextInput style={styles.input} placeholder="Home Zip Code" onChangeText={text => setZipCode(text)}></TextInput>
+
       {/* Continue Button */}
       <TouchableOpacity onPress={handleContinue} style={styles.continueTouch}>
         <Text style={styles.continueText}>Continue</Text>
@@ -87,31 +68,16 @@ const Discipline = () => {
   );
 };
 
-export default Discipline;
+export default UserLocation;
 
 const styles = StyleSheet.create({
-  dropdown: {
-    width: 300,
-    margin: 16,
-    height: 50,
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
+  input: {
+    width: '72%',
+    borderRadius: 30,
+    marginTop: 20,
     marginBottom: 200,
     backgroundColor: 'white',
-    padding: 10,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    color: 'black',
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    color: 'black',
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-    color: 'black',
+    paddingHorizontal: 20,
   },
   continueText: {
     color: '#0EA68D',
