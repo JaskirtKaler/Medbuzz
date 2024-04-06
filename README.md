@@ -1,6 +1,7 @@
 # Medbuzz
 
 # Team Members: 
+Jaskirt Kaler
 Ashar Javid
 Alex Muir
 Maddie Ananda
