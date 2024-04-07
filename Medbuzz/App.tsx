@@ -14,6 +14,8 @@ import {
   View,
   Button,
 } from 'react-native';
+import Specialty from './Screens/Specialty.tsx';
+import Certificates from './Screens/Certificates.tsx';
 
 // import { Not sure if there is needed 
 //   Colors,
