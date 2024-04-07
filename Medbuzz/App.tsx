@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Login from './Screens/Login.tsx'
 
-import UploadDoc from './Screens/UploadDoc.tsx
+import UploadDoc from './Screens/UploadDoc.tsx'
 import {
   SafeAreaView,
   ScrollView,
