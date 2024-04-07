@@ -4,6 +4,15 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
 
+/*
+  functionality to be added: convert to flex, generate years dynamically for graduation date,
+  add test to ensure that all required fields were actually entered and if they weren't reprompt
+  the user, possibly add US territories: US virgin islands, Guam, Puerto Rico, etc to State options, 
+  add cancel button functionality, add upload photo button functionality
+*/
+
+
+// States for use with school state selector and home state selector
 const states = [
   { label: 'AL', value: 'al' }, { label: 'AK', value: 'ak' },
   { label: 'AZ', value: 'az' }, { label: 'AR', value: 'ar' },
@@ -32,6 +41,7 @@ const states = [
   { label: 'WI', value: 'wi' }, { label: 'WY', value: 'wy' }
 ];
 
+// Degrees for use with degree Dropdown selector
 const degrees = [
   {label: 'AA', value: 'aa'}, {label: 'AS', value: 'as'},
   {label: 'BA', value: 'ba'}, {label: 'BS', value: 'bs'},
@@ -39,6 +49,7 @@ const degrees = [
   {label: 'PHD', value: 'phd'}
 ];
 
+// months and years, respectively, for use with graduation date Dropdown selector
 const months = [
   {label: 'January', value: 'january'}, {label: 'February', value: 'february'},
   {label: 'March', value: 'march'}, {label: 'April', value: 'april'},
@@ -78,6 +89,7 @@ const years = [
   {label: '2027', value: '2027'}, {label: '2028', value: '2028'},
 ];
 
+// Disciplines for use with discipline Dropdown selector
 const disciplines = [
   {label: 'Registered Nurse', value: 'Registered Nurse'},
   {label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse'},
@@ -96,7 +108,7 @@ const EditBasicDetails = () => {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumber, setphoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [profesionalSummary, setProfessionalSummary] = useState("");
   const [dob, setDob] = useState("");
@@ -109,6 +121,7 @@ const EditBasicDetails = () => {
   const [homeState, setHomeState] = useState("");
   const [yearsOfSpecialty, setYearsOfSpecialty] = useState("");
 
+  // prints all inputs when 'Save' button is pressed
   function printInputs() {
     console.log("First name: " + firstName);
     console.log("Middle name: " + middleName);
@@ -135,55 +148,83 @@ const EditBasicDetails = () => {
   return(
     
     <ScrollView style={{backgroundColor:'white'}}>
+      
+      {/* About you header */}
       <Text style={styles.headerTextStyle}>About You</Text>
+
+      {/* Profile image and 'Upload Photo' button */}
       <View style={{flexDirection: 'row', justifyContent: "space-between", width: '60%', alignItems: 'center'}}>
         <Profile style= {{marginLeft: 15}} width={50} height={50} color={"#000"}/>
         <TouchableOpacity style={styles.uplaodPhotoButton}>
           <Text style={{color: '#0EA68D', fontWeight: 'bold'}}>Upload Photo</Text>
         </TouchableOpacity>
       </View>
+
+      {/* First name field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>First name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setFirstName} style={styles.textBoxStyle}></TextInput> 
+
+      {/* Middle name field and TextBox */}
       <Text style={styles.fieldTextStyle}>Middle name</Text>
       <TextInput onChangeText={setMiddleName}style={styles.textBoxStyle}></TextInput>
+
+      {/* Last name field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Last name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setLastName} style={styles.textBoxStyle}></TextInput>
+
+      {/* Phone number field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Phone number</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setphoneNumber} style={styles.textBoxStyle}></TextInput>
+      <TextInput onChangeText={setPhoneNumber} style={styles.textBoxStyle}></TextInput>
+
+      {/* Email field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Email</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setEmail} style={styles.textBoxStyle}></TextInput> 
+
+      {/* Professional summary field and TextBox */}
       <Text style={styles.fieldTextStyle}>Professional summary</Text>
       <TextInput onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
+
+      {/* Date of birth field and TextBox */}
       <Text style = {styles.fieldTextStyle}>
         <Text>Date of birth</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
+
+      {/* Education header */}
       <Text style={styles.headerTextStyle}>Education</Text>
+
+      {/* School name field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>School name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setSchoolName} style={styles.textBoxStyle}></TextInput> 
+
+      {/* School country field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Country</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setSchoolCountry} style={styles.textBoxStyle}></TextInput>
+
+      {/* School city field and TextBox */}
       <Text style={styles.fieldTextStyle}>City</Text>
       <TextInput onChangeText={setSchoolCity} style={styles.textBoxStyle}></TextInput>
+
+      {/* School state field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>State</Text>
         <Text style={{color: 'red'}}> *</Text>
@@ -206,6 +247,8 @@ const EditBasicDetails = () => {
           setSchoolState(item.value);
         }}
       />
+
+      {/* Graduation date field and Dropdown selectors for month and year, respectively */}
       <Text style={styles.fieldTextStyle}>
         <Text>Graduation date, or expected</Text>
         <Text style={{color: 'red'}}> *</Text>
@@ -248,6 +291,8 @@ const EditBasicDetails = () => {
           }}
         />
       </View>
+
+      {/* Degree type field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>Degree type</Text>
         <Text style={{color: 'red'}}> *</Text>
@@ -270,26 +315,40 @@ const EditBasicDetails = () => {
           setDegreeType(item.value);
         }}
       />
+
+      {/* Field of study field and TextBox, along with example*/}
       <Text style={styles.fieldTextStyle}>Field of study</Text>
       <TextInput onChangeText={setFieldOfStudy} style={styles.textBoxStyle}></TextInput>
       <Text style={{color: 'grey', marginLeft: 15}}>Ex. Health Science, Biology, Public Health, etc.</Text>
+
+      {/* Home address header */}
       <Text style={styles.headerTextStyle}>Permanent home address</Text>
+
+      {/* Home street address field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Home street address</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setHomeAddress} style={styles.textBoxStyle}></TextInput>
+
+      {/* Home city field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>City</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setHomeCity} style={styles.textBoxStyle}></TextInput>
+
+      {/* Home state field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>State</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
+
+      {/* Your Expertise header */}
       <Text style={styles.headerTextStyle}>Your expertise</Text>
+
+      {/* Discipline field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>Discipline</Text>
         <Text style={{color:'red'}}> *</Text>
@@ -312,14 +371,20 @@ const EditBasicDetails = () => {
           setDiscipline(item.value);
         }}
       />
+
+      {/* Years of specialty experience field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Years of specialty experience</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
+
+      {/* Save button */}
       <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
       </TouchableOpacity>
+
+      {/* Cancel button */}
       <TouchableOpacity style={styles.cancelButton}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
       </TouchableOpacity>  
@@ -331,7 +396,8 @@ const EditBasicDetails = () => {
 
   // Styles
 const styles = StyleSheet.create({
-    
+
+  // custom styles. Subject to change  
   textBoxStyle: {
     borderColor: 'black',
     borderWidth: 1, 
@@ -402,6 +468,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 150,
   },
+
+  // Styles below this pint were included in the Dropdown library
 
   dropdown: {
     marginLeft: 15,
