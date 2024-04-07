@@ -2,6 +2,7 @@ import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, Touch
 import React, {useState} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Profile from "../Components/Svg/Profile.tsx"
 
 const states = [
   { label: 'AL', value: 'al' }, { label: 'AK', value: 'ak' },
@@ -77,76 +78,112 @@ const years = [
   {label: '2027', value: '2027'}, {label: '2028', value: '2028'},
 ];
 
-const discipline = [
+const disciplines = [
   {label: 'Registered Nurse', value: 'Registered Nurse'},
   {label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse'},
   {label: 'CMA', value: 'CMA'},
   {label: 'Faculty Staff', value: 'Faculty Staff'},
-  {label: 'blah', value: 'blah'}, // Add other options
-  {label: 'blahblah', value: 'blahblah'},
-  {label: 'blahblahblah', value: 'blahblahblah'},
-  {label: '---', value: '---'},
+  {label: '---', value: '---'}
 ];
-
-// properties for TextBox and BigTextBox
-type textBoxProps = {
-  field: string;
-  required: boolean;
-};
-
-// Custom component: TextBox
-const TextBox = (props: textBoxProps) => {
-  if(props.required === true) {
-    return (
-      <View>
-        <Text style={styles.fieldTextStyle}>
-          <Text>{props.field}</Text>
-          <Text style={{color: 'red'}}> *</Text>
-        </Text>
-        <TextInput style={styles.textBoxStyle}></TextInput> 
-      </View>
-    );
-
-  } else {
-    return (
-      <View>
-        <Text style={styles.fieldTextStyle}>{props.field}</Text>
-        <TextInput style={styles.textBoxStyle}></TextInput>
-      </View>
-    );
-  }
-};
-
-// Custom component: BigTextBox
-const BigTextBox = (props: textBoxProps) => {
-  return (
-    <View>
-      <Text style={styles.fieldTextStyle}>{props.field}</Text>
-      <TextInput style={styles.bigTextBoxStyle}></TextInput>
-    </View>
-  );
-};
 
 // Screen - Edit Basic Details
 const EditBasicDetails = () => {
-  const [value, setValue] = useState("");
-  return (
+  const [discipline, setDiscipline] = useState("");
+  const [schoolState, setSchoolState] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const [degreeType, setDegreeType] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [profesionalSummary, setProfessionalSummary] = useState("");
+  const [dob, setDob] = useState("");
+  const [schoolName, setSchoolName] = useState("");
+  const [schoolCountry, setSchoolCountry] = useState("");
+  const [schoolCity, setSchoolCity] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [homeAddress, setHomeAddress] = useState("");
+  const [homeCity, setHomeCity] = useState("");
+  const [homeState, setHomeState] = useState("");
+  const [yearsOfSpecialty, setYearsOfSpecialty] = useState("");
+
+  function printInputs() {
+    console.log("First name: " + firstName);
+    console.log("Middle name: " + middleName);
+    console.log("Last name: " + lastName);
+    console.log("Phone number: " + phoneNumber);
+    console.log("Email: " + email);
+    console.log("Professional summary: " + profesionalSummary);
+    console.log("Date of birth: " + dob);
+    console.log("School name: " + schoolName);
+    console.log("School country: " + schoolCountry);
+    console.log("School City: " + schoolCity);
+    console.log("SChool state: " + schoolState);
+    console.log("Graduation date: " + month + " " + year);
+    console.log("Degree type: " + degreeType);
+    console.log("Field of study: " + fieldOfStudy);
+    console.log("Home address: " + homeAddress);
+    console.log("Home city: " + homeCity);
+    console.log("Home state: " + homeState);
+    console.log("Discipline: " + discipline);
+    console.log("Years of specialty: " + yearsOfSpecialty);
+  }
+  
+  
+  return(
+    
     <ScrollView style={{backgroundColor:'white'}}>
       <Text style={styles.headerTextStyle}>About You</Text>
-      <TouchableOpacity style={styles.uplaodPhotoButton}>
-        <Text style={{color: '#0EA68D', fontWeight: 'bold'}}>Upload Photo</Text>
-      </TouchableOpacity>
-      <TextBox field="First name" required={true}/>
-      <TextBox field="Middle name" required={false}/>
-      <TextBox field="Last name" required={true}/>
-      <TextBox field="Phone number" required={true}/>
-      <TextBox field="Email" required={true}/>
-      <BigTextBox field="Professional summary" required={false}/>
-      <TextBox field="Date of birth" required={true}/>
+      <View style={{flexDirection: 'row', justifyContent: "space-between", width: '60%', alignItems: 'center'}}>
+        <Profile style= {{marginLeft: 15}} width={50} height={50} color={"#000"}/>
+        <TouchableOpacity style={styles.uplaodPhotoButton}>
+          <Text style={{color: '#0EA68D', fontWeight: 'bold'}}>Upload Photo</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.fieldTextStyle}>
+        <Text>First name</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setFirstName} style={styles.textBoxStyle}></TextInput> 
+      <Text style={styles.fieldTextStyle}>Middle name</Text>
+      <TextInput onChangeText={setMiddleName}style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>
+        <Text>Last name</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setLastName} style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>
+        <Text>Phone number</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setphoneNumber} style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>
+        <Text>Email</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setEmail} style={styles.textBoxStyle}></TextInput> 
+      <Text style={styles.fieldTextStyle}>Professional summary</Text>
+      <TextInput onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
+      <Text style = {styles.fieldTextStyle}>
+        <Text>Date of birth</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
       <Text style={styles.headerTextStyle}>Education</Text>
-      <TextBox field="School name" required={true} />
-      <TextBox field="Country" required={true}/>
-      <TextBox field="City" required={false}/>
+      <Text style={styles.fieldTextStyle}>
+        <Text>School name</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setSchoolName} style={styles.textBoxStyle}></TextInput> 
+      <Text style={styles.fieldTextStyle}>
+        <Text>Country</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setSchoolCountry} style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>City</Text>
+      <TextInput onChangeText={setSchoolCity} style={styles.textBoxStyle}></TextInput>
       <Text style={styles.fieldTextStyle}>
         <Text>State</Text>
         <Text style={{color: 'red'}}> *</Text>
@@ -164,16 +201,16 @@ const EditBasicDetails = () => {
         valueField="value"
         placeholder="State"
         searchPlaceholder="Search..."
-        value={value}
+        value={schoolState}
         onChange={item => {
-          setValue(item.value);
+          setSchoolState(item.value);
         }}
       />
       <Text style={styles.fieldTextStyle}>
         <Text>Graduation date, or expected</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <Text style={{marginLeft: 10, marginRight: 10}}>
+      <View style={{flexDirection: 'row', justifyContent: "space-between", width:'60%' }}>
         <Dropdown
           style={styles.dropdownMonthYear}
           placeholderStyle={styles.placeholderStyle}
@@ -187,9 +224,9 @@ const EditBasicDetails = () => {
           valueField="value"
           placeholder="Month"
           searchPlaceholder="Search..."
-          value={value}
+          value={month}
           onChange={item => {
-            setValue(item.value);
+            setMonth(item.value);
          }}
         />
         <Dropdown
@@ -205,15 +242,15 @@ const EditBasicDetails = () => {
           valueField="value"
           placeholder="Year"
           searchPlaceholder="Search..."
-          value={value}
+          value={year}
           onChange={item => {
-            setValue(item.value);
+            setYear(item.value);
           }}
         />
-      </Text>
+      </View>
       <Text style={styles.fieldTextStyle}>
         <Text>Degree type</Text>
-        <Text style={{color: 'red'}}></Text>
+        <Text style={{color: 'red'}}> *</Text>
       </Text>
       <Dropdown
         style={styles.dropdown}
@@ -228,17 +265,30 @@ const EditBasicDetails = () => {
         valueField="value"
         placeholder="Select item"
         searchPlaceholder="Search..."
-        value={value}
+        value={degreeType}
         onChange={item => {
-          setValue(item.value);
+          setDegreeType(item.value);
         }}
       />
-      <TextBox field="Field of study" required={false}/>
-      <Text style={{color: 'grey', marginLeft: 10}}>Ex. Health Science, Biology, Public Health, etc.</Text>
+      <Text style={styles.fieldTextStyle}>Field of study</Text>
+      <TextInput onChangeText={setFieldOfStudy} style={styles.textBoxStyle}></TextInput>
+      <Text style={{color: 'grey', marginLeft: 15}}>Ex. Health Science, Biology, Public Health, etc.</Text>
       <Text style={styles.headerTextStyle}>Permanent home address</Text>
-      <TextBox field="Home street address" required={true}></TextBox>
-      <TextBox field="City" required={true}></TextBox>
-      <TextBox field="State" required={true}></TextBox>
+      <Text style={styles.fieldTextStyle}>
+        <Text>Home street address</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setHomeAddress} style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>
+        <Text>City</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setHomeCity} style={styles.textBoxStyle}></TextInput>
+      <Text style={styles.fieldTextStyle}>
+        <Text>State</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
       <Text style={styles.headerTextStyle}>Your expertise</Text>
       <Text style={styles.fieldTextStyle}>
         <Text>Discipline</Text>
@@ -250,20 +300,24 @@ const EditBasicDetails = () => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={discipline}
+        data={disciplines}
         search
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder="Select item"
         searchPlaceholder="Search..."
-        value={value}
+        value={discipline}
         onChange={item => {
-          setValue(item.value);
+          setDiscipline(item.value);
         }}
       />
-      <TextBox field="Years of specialty experience" required={true}></TextBox>
-      <TouchableOpacity style={styles.saveButton}>
+      <Text style={styles.fieldTextStyle}>
+        <Text>Years of specialty experience</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
+      <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.cancelButton}>
@@ -271,6 +325,7 @@ const EditBasicDetails = () => {
       </TouchableOpacity>  
     </ScrollView>
 
+    
   )
 }
 
@@ -281,8 +336,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1, 
     borderRadius: 10,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 15,
+    marginRight: 15,
     height: 40
   },
 
@@ -290,22 +345,22 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1, 
     borderRadius: 10,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 15,
+    marginRight: 15,
     height: 100
   }, 
 
   fieldTextStyle: {
     marginTop: 10,
-    marginLeft: 10, 
-    marginRight: 10, 
+    marginLeft: 15, 
+    marginRight: 15, 
     marginBottom:5, 
     color:'black'
   }, 
 
   headerTextStyle: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 15,
+    marginRight: 15,
     marginTop: 30, 
     marginBottom: 10, 
     color: 'black',
@@ -315,7 +370,9 @@ const styles = StyleSheet.create({
 
   saveButton: {
     marginTop: 20, 
-    margin: 10, 
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10, 
     height: 40, 
     borderRadius: 10, 
     backgroundColor: "#0EA68D", 
@@ -324,7 +381,10 @@ const styles = StyleSheet.create({
   }, 
 
   cancelButton: {
-    margin: 10, 
+    marginTop: 10, 
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10, 
     height: 40, 
     borderRadius: 10, 
     backgroundColor: "#E6E6E6", 
@@ -333,18 +393,19 @@ const styles = StyleSheet.create({
   }, 
 
   uplaodPhotoButton: {
-    padding:10,
+    padding:5,
     borderWidth: 1,
     borderRadius: 10,
-    height: 40,
+    height: 35,
     borderColor: "#0EA68D", 
     backgroundColor: 'white',
     alignItems: "center",
+    width: 150,
   },
 
   dropdown: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 15,
+    marginRight: 15,
     height: 40,
     borderBottomColor: 'gray',
     borderBottomWidth: 0.5,
@@ -355,9 +416,9 @@ const styles = StyleSheet.create({
 
   dropdownMonthYear: {
     width: 120,
-    marginLeft: 10,
-    marginRight: 10,
-    height: 50,
+    marginLeft: 15,
+    marginRight: 15,
+    height: 40,
     borderBottomColor: 'gray',
     borderBottomWidth: 0.5,
     borderWidth: 1,
@@ -371,6 +432,7 @@ const styles = StyleSheet.create({
   },
 
   selectedTextStyle: {
+    color: 'black',
     fontSize: 16,
     paddingLeft: 5
   },
