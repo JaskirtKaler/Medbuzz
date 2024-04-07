@@ -1,12 +1,14 @@
 # Medbuzz
 
 # Team Members: 
+Jaskirt Kaler
 Ashar Javid
 Alex Muir
 Maddie Ananda
 Fadi Zubeideh
 Richard E. Varela
 Adiba Akter
+Avneet Brar
 
 # Introduction
 

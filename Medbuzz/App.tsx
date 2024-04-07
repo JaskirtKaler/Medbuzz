@@ -3,7 +3,8 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Login from './Screens/Login.tsx'
-import EditBasicDetails from './Screens/EditBasicDetails.tsx'
+
+import UploadDoc from './Screens/UploadDoc.tsx
 import {
   SafeAreaView,
   ScrollView,
@@ -14,6 +15,8 @@ import {
   View,
   Button,
 } from 'react-native';
+import Specialty from './Screens/Specialty.tsx';
+import Certificates from './Screens/Certificates.tsx';
 
 // import { Not sure if there is needed 
 //   Colors,
@@ -30,9 +33,9 @@ function App(){
   return (
     // in Stack.Navigator => initialRouteName="Login" screenOptions={{headerShown: false}}
     <NavigationContainer>
-      <Stack.Navigator> 
-        {/*<Stack.Screen name="Login" component={Login} />*/}
-        <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
+
+      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}> 
+        <Stack.Screen name="Login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>
   );
