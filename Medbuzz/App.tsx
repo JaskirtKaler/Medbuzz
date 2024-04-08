@@ -12,20 +12,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // import { StackNavigationProp } from '@react-navigation/stack';
 import UploadDoc from './Screens/UploadDoc.tsx';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    useColorScheme,
+    View,
+    Button,
 } from 'react-native';
 import ForgotPassword from './Screens/ForgotPassword..tsx';
 import ResetPassword from './Screens/ResetPassword.tsx';
 import Specialty from './Screens/Specialty.tsx';
 import Certificates from './Screens/Certificates.tsx';
-
 
 // import { Not sure if there is needed
 //   Colors,
@@ -65,8 +64,5 @@ function App() {
 }
 
 const styles = StyleSheet.create({
-
-
-});
 
 export default App;
