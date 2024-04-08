@@ -10,7 +10,7 @@ import Register from './Screens/Register';
 import RegContinue from './Screens/RegContinue.tsx';
 import { StackNavigationProp } from '@react-navigation/stack';
 // import { StackNavigationProp } from '@react-navigation/stack';
-import UploadDoc from './Screens/UploadDoc.tsx'
+import UploadDoc from './Screens/UploadDoc.tsx';
 import {
   SafeAreaView,
   ScrollView,

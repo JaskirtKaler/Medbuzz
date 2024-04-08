@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable quotes */
 // RegContinue.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
