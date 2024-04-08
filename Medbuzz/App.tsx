@@ -63,6 +63,6 @@ function App() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ });
 
 export default App;
