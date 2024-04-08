@@ -9,6 +9,8 @@ import Login from './Screens/Login.tsx';
 import Register from './Screens/Register';
 import RegContinue from './Screens/RegContinue.tsx';
 import { StackNavigationProp } from '@react-navigation/stack';
+// import { StackNavigationProp } from '@react-navigation/stack';
+import UploadDoc from './Screens/UploadDoc.tsx'
 import {
   SafeAreaView,
   ScrollView,
@@ -19,6 +21,11 @@ import {
   View,
   Button,
 } from 'react-native';
+import ForgotPassword from './Screens/ForgotPassword..tsx';
+import ResetPassword from './Screens/ResetPassword.tsx';
+import Specialty from './Screens/Specialty.tsx';
+import Certificates from './Screens/Certificates.tsx';
+
 
 // import { Not sure if there is needed
 //   Colors,
@@ -48,7 +55,7 @@ type Props = {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="RegContinue" component={RegContinue} />
@@ -58,6 +65,7 @@ function App() {
 }
 
 const styles = StyleSheet.create({
+
 
 });
 
