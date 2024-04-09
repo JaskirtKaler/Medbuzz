@@ -32,7 +32,7 @@ const UserLocation = () => {
       {/* Back Button */}
       <View style={{position: 'absolute', top: 10, left: 0}}>
         <TouchableOpacity onPress={handleBack}>
-          <Backarrow width={40} height={40} color={'#000'} />
+          <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>
       </View>
 

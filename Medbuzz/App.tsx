@@ -8,9 +8,18 @@ import React from 'react';
 import Login from './Screens/Login.tsx';
 import Register from './Screens/Register';
 import RegContinue from './Screens/RegContinue.tsx';
-import { StackNavigationProp } from '@react-navigation/stack';
-// import { StackNavigationProp } from '@react-navigation/stack';
+import ForgotPassword from './Screens/ForgotPassword.tsx';
+import ResetPassword from './Screens/ResetPassword.tsx';
+import Specialty from './Screens/Specialty.tsx';
+import Certificates from './Screens/Certificates.tsx';
 import UploadDoc from './Screens/UploadDoc.tsx';
+import Discipline from './Screens/Discipline.tsx';
+import EditBasicDetails from './Screens/EditBasicDetails.tsx';
+import Licenses from './Screens/Licenses.tsx';
+import UserLocation from './Screens/UserLocation.tsx';
+import LicensesLocation from './Screens/LicenseLocation.tsx';
+import Profile from './Screens/Profile.tsx';
+
 import {
     SafeAreaView,
     ScrollView,
@@ -21,10 +30,7 @@ import {
     View,
     Button,
 } from 'react-native';
-import ForgotPassword from './Screens/ForgotPassword..tsx';
-import ResetPassword from './Screens/ResetPassword.tsx';
-import Specialty from './Screens/Specialty.tsx';
-import Certificates from './Screens/Certificates.tsx';
+
 
 // import { Not sure if there is needed
 //   Colors,
@@ -44,11 +50,6 @@ export type RootStackParamList = {
   RegContinue: undefined; // And other screens if needed
 };
 
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-
-type Props = {
-  navigation: LoginScreenNavigationProp;
-};
 
 
 function App() {
@@ -56,8 +57,8 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="RegContinue" component={RegContinue} />
+        {/* <Stack.Screen name="Register" component={Register} /> */}
+        {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
