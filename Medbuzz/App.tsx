@@ -19,7 +19,8 @@ import Licenses from './Screens/Licenses.tsx';
 import UserLocation from './Screens/UserLocation.tsx';
 import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
-
+import TempHome from './Screens/TempHome.tsx';
+import 'react-native-gesture-handler';
 import {
     SafeAreaView,
     ScrollView,
@@ -57,6 +58,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="TempHome" component={TempHome} />
         {/* <Stack.Screen name="Register" component={Register} /> */}
         {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
