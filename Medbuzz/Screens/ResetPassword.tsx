@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   inputContainer: {
-    flex: 0.8, // This will allow the container to fill the rest of the screen
+    // flex: 0.8, // This will allow the container to fill the rest of the screen
     justifyContent: 'center', // This centers the children vertically
     paddingHorizontal: 40,
     marginTop: 0,
