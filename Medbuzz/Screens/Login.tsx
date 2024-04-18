@@ -9,13 +9,14 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {useNavigation, NavigationProp} from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import {RootStackParamList} from '../App';
+
 
 const { width, height } = Dimensions.get('window');
 const Login = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+  // const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -49,7 +50,7 @@ const Login = () => {
       </TouchableOpacity>
       <View style={styles.signupTextContainer}>
         <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity onPress={() => navigation.navigate('TempHome')}>
           <Text style={styles.signupText}>Sign up</Text>
         </TouchableOpacity>
       </View>
