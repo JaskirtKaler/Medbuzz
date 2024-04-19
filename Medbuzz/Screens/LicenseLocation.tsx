@@ -1,15 +1,12 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {Bar} from 'react-native-progress';
-import {Dropdown} from 'react-native-element-dropdown';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Bar } from 'react-native-progress';
+import { Dropdown } from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
-{
-    /* Dropdown */
-}
 
 const LicensesLocation = () => {
     const progress = 50; // Example progress percentage
-    const [selectedOption, setSelectedOption] = useState(''); //To hold the selected Discipline
+    const [selectedOption, setSelectedOption] = useState('');
 
     const options = [
         { "label": "Alabama", "value": "Alabama" },
@@ -71,75 +68,47 @@ const LicensesLocation = () => {
         console.log('Back button clicked');
     };
 
+    const handleContinue = () => {
+        console.log('Continue button clicked');
+        // navigation.navigate('LicensesLocation'); // Navigate to LicensesLocation screen
+    };
+
     return (
-        <View
-            style={{
-                flex: 1,
-                backgroundColor: '#0EA68D',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}>
-            {/* Back Button */}
-            <View style={{position: 'absolute', top: 10, left: 0}}>
+        <View style={styles.container}>
+            <View style={styles.backButtonContainer}>
                 <TouchableOpacity onPress={handleBack}>
                     <Backarrow width={40} height={40} color={'#FFF'} />
                 </TouchableOpacity>
             </View>
 
-            {/* Logo Placement */}
-            <View
-                style={{
-                    width: 100,
-                    height: 100,
-                    backgroundColor: 'white',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                <Text style={{color: '#0EA68D', fontSize: 65, fontWeight: 'bold'}}>
-                    M
-                </Text>
+            <View style={styles.logoContainer}>
+                <Text style={styles.logoText}>M</Text>
             </View>
 
-            {/* Progress Text */}
-            <Text
-                style={{
-                    color: 'black',
-                    marginTop: 30,
-                    marginLeft: 45,
-                    fontSize: 25,
-                    alignSelf: 'flex-start',
-                }}>
+            <Text style={styles.progressText}>
                 Progress: {progress}%
             </Text>
 
-            {/* Progress Bar */}
             <Bar
                 progress={progress / 100}
                 width={300}
                 color={'black'}
-                borderRadius={0} // remove the default amount of border radius that comes with the progress bar
-                unfilledColor={'#D9D9D9'} // Color of the unfilled portion of the progress bar, color gotten from figma
+                borderRadius={0}
+                unfilledColor={'#D9D9D9'}
                 height={20}
             />
 
-            <Text
-                style={{
-                    color: 'black',
-                    marginTop: 20,
-                    marginRight: 20,
-                    fontSize: 25,
-                }}>
+            <Text style={styles.headerText}>
                 State of Which License Was Obtained
             </Text>
 
-            {/* Dropdown */}
             <Dropdown
                 style={styles.dropdown}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
                 data={options}
                 search
-                maxHeight={300}
+                maxHeight={150}
                 labelField="label"
                 valueField="value"
                 placeholder="Select State"
@@ -147,17 +116,11 @@ const LicensesLocation = () => {
                 value={selectedOption}
                 onChange={item => setSelectedOption(item.value)}
             />
-            {/* Continue Button */}
+
             <TouchableOpacity
-                onPress={() => console.log('Continue button clicked')}
-                style={{
-                    backgroundColor: 'white',
-                    paddingHorizontal: 100,
-                    paddingVertical: 8,
-                    elevation: 5,
-                    marginBottom: 80,
-                }}>
-                <Text style={{color: '#0EA68D', fontSize: 25, fontWeight: 'bold'}}>
+                onPress={handleContinue}
+                style={styles.continueButton}>
+                <Text style={styles.continueButtonText}>
                     Continue
                 </Text>
             </TouchableOpacity>
@@ -168,6 +131,44 @@ const LicensesLocation = () => {
 export default LicensesLocation;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#0EA68D',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backButtonContainer: {
+        position: 'absolute',
+        top: 10,
+        left: 0,
+    },
+    logoContainer: {
+        width: 100,
+        height: 100,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logoText: {
+        color: '#0EA68D',
+        fontSize: 65,
+        fontWeight: 'bold',
+    },
+    progressText: {
+        color: 'black',
+        marginTop: 30,
+        marginLeft: 10,
+        fontSize: 25,
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
+    headerText: {
+        color: 'black',
+        marginTop: 20,
+        marginRight: 20,
+        fontSize: 25,
+        justifyContent: 'center',
+    },
     dropdown: {
         width: 300,
         margin: 16,
@@ -175,10 +176,6 @@ const styles = StyleSheet.create({
         borderBottomColor: 'black',
         borderBottomWidth: 1,
         marginBottom: 200,
-    },
-    placeholderStyle: {
-        fontSize: 16,
-        color: 'black',
     },
     selectedTextStyle: {
         fontSize: 16,
@@ -188,5 +185,17 @@ const styles = StyleSheet.create({
         height: 40,
         fontSize: 16,
         color: 'black',
+    },
+    continueButton: {
+        backgroundColor: 'white',
+        paddingHorizontal: 100,
+        paddingVertical: 8,
+        elevation: 5,
+        marginBottom: 80,
+    },
+    continueButtonText: {
+        color: '#0EA68D',
+        fontSize: 25,
+        fontWeight: 'bold',
     },
 });
