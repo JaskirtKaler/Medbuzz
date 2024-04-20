@@ -6,7 +6,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
-import { Alert } from 'react-native'; // Import Alert
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform, Alert
+} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,61 +42,66 @@ const Register = () => {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
-          <Text style={styles.backButtonText}>{`<`}</Text>
-        </TouchableOpacity>
-        <View style={styles.curveOverlay} />
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>M</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
+    >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Text style={styles.backButtonText}>{`<`}</Text>
+          </TouchableOpacity>
+          <View style={styles.curveOverlay} />
+          <View style={styles.logoBox}>
+            <Text style={styles.logoText}>M</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.headerText}>Create new Account</Text>
-        <View style={styles.signupTextContainer}>
-          <Text style={styles.signupPromptText}>Already registered? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.signupText}>Log in here</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.headerText}>Create new Account</Text>
+          <View style={styles.signupTextContainer}>
+            <Text style={styles.signupPromptText}>Already registered? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.signupText}>Log in here</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.inputLabel}>First Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#ddd"
+            onChangeText={setFirstName}
+          />
+          <Text style={styles.inputLabel}>Last Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#ddd"
+            onChangeText={setLastName}
+          />
+          <Text style={styles.inputLabel}>Email Address</Text>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#ddd"
+            onChangeText={setEmail}
+          />
+          <TouchableOpacity
+            style={[styles.loginButton, !allInputsFilled ? styles.disabledButton : {}]}
+            onPress={handleContinue}
+            disabled={!allInputsFilled}
+          >
+            <Text style={styles.loginButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.inputLabel}>First Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#ddd"
-          onChangeText={setFirstName} // Set the state for first name
-        />
-
-        <Text style={styles.inputLabel}>Last Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#ddd"
-          onChangeText={setLastName} // Set the state for last name
-        />
-
-        <Text style={styles.inputLabel}>Email Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#ddd"
-          onChangeText={setEmail} // Set the state for email
-        />
-
-        <TouchableOpacity
-          style={[styles.loginButton, !allInputsFilled ? styles.disabledButton : {}]}
-          onPress={handleContinue} // Use the handleContinue function here
-          disabled={!allInputsFilled}
-        >
-          <Text style={styles.loginButtonText}>Continue</Text>
-        </TouchableOpacity>
-
-
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 
+
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
