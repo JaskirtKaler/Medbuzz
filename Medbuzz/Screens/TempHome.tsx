@@ -1,14 +1,15 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
 const { width, height } = Dimensions.get('window'); // screen max width and height
-import Navigation from '../Components/Navigation';
+
+
+
 const TempHome = () => {
   return (
     <View style={styles.main}>
         <View style={styles.header}>
-            <Navigation />
+            <Text>Temp home screen</Text>
         </View>
-    {/* <Text>TempHome</Text> */}
     </View>
   )
 }

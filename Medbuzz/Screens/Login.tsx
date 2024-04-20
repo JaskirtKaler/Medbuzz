@@ -45,12 +45,12 @@ const Login = () => {
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
       <View style={styles.signupTextContainer}>
         <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('TempHome')}>
+        <TouchableOpacity>
           <Text style={styles.signupText}>Sign up</Text>
         </TouchableOpacity>
       </View>

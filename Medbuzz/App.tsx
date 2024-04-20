@@ -20,6 +20,7 @@ import UserLocation from './Screens/UserLocation.tsx';
 import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
 import TempHome from './Screens/TempHome.tsx';
+import Navigation from './Components/Navigation.tsx';
 import 'react-native-gesture-handler';
 import {
     SafeAreaView,
@@ -32,14 +33,6 @@ import {
     Button,
 } from 'react-native';
 
-
-// import { Not sure if there is needed
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,7 +51,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="TempHome" component={TempHome} />
+        <Stack.Screen name="Main" component={Navigation} />
         {/* <Stack.Screen name="Register" component={Register} /> */}
         {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
