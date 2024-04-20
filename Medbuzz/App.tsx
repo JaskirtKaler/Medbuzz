@@ -59,7 +59,7 @@ function App() {
         {/* <Stack.Screen name="Login" component={Login} /> */}
         {/* <Stack.Screen name="Register" component={Register} /> */}
         {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
-        <Stack.Screen name="Certificates" component={Certificates} />
+        <Stack.Screen name="Specialty" component={Specialty} />
       </Stack.Navigator>
     </NavigationContainer>
   );
