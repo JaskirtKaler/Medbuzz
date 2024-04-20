@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Image, View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput} from 'react-native'
+import { Image, View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert, ToastAndroid } from 'react-native'
 import {Dropdown} from 'react-native-element-dropdown'
 import Backarrow from '../Components/Svg/Backarrow'
 import Statelocation from '../Components/Svg/Statelocation'
@@ -77,7 +77,14 @@ const Location = ({ header = "Locations" }) => {
     // State for the selected zipcode in the text input
     const [zipcode, setZipCode] = useState("");
 
-
+    // Handles save button
+    var userLocation:string[] = ["", "", ""];
+    const saveInfoEventHandler = (userLocInfo:string[]) => {
+        ToastAndroid.show("Your location parameters have been saved!", ToastAndroid.SHORT);
+        userLocInfo[0] = selectedState;
+        userLocInfo[1] = city;
+        userLocInfo[2] = zipcode;
+    }
     
 return (
     <View style={styles.container}>
@@ -165,7 +172,7 @@ return (
 
         {/* Save button */}
         <View style={styles.saveButtonContainer}>
-            <TouchableOpacity style={styles.saveButton}>
+            <TouchableOpacity style={styles.saveButton} onPress={() => saveInfoEventHandler(userLocation)}>
                 <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
         </View>
