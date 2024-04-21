@@ -19,6 +19,7 @@ import Licenses from './Screens/Licenses.tsx';
 import UserLocation from './Screens/UserLocation.tsx';
 import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
+import Homepage from './Screens/Homepage.tsx';
 
 import {
     SafeAreaView,
@@ -55,8 +56,9 @@ export type RootStackParamList = {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
+      <Stack.Navigator initialRouteName="Homepage" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Homepage" component={Homepage} />
+        {/* <Stack.Screen name="Login" component={Login} /> */}
         {/* <Stack.Screen name="Register" component={Register} /> */}
         {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
