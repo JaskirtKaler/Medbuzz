@@ -4,7 +4,8 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from 'react-native';
 import React, { useState } from 'react';
 import {Bar} from 'react-native-progress';
@@ -29,7 +30,7 @@ const Specialty = () => {
     }
 
     return (
-        <View style={styles.background_style}>
+        <ScrollView contentContainerStyle={styles.background_style}>
             <View style={styles.back_arrow}>
                 <TouchableOpacity onPress={handleBack}>
                     <BackArrow width={40} height={40} color={"white"}/>
@@ -88,7 +89,7 @@ const Specialty = () => {
                 </TouchableOpacity>
             </View>
 
-        </View> // End main container
+        </ScrollView> // End main container
     ); // End return statement
 } // End Specialty
 
@@ -98,12 +99,12 @@ export default Specialty;
 const styles = StyleSheet.create({
     background_style: {
         backgroundColor: '#0EA68D',
-        flex: 1,
-        justifyContent: 'flex-start',
+        flexGrow: 1,
         alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'column',
         display: 'flex',
-        height: height
+        height: height*0.95
     },
     text: {
         color: 'black',
