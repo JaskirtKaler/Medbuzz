@@ -2,6 +2,7 @@ import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch} fr
 import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import Editbutton from '../Components/Svg/Editbutton'
+import { useNavigation } from '@react-navigation/native'
 
 const Profile = () => {
     const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
@@ -10,7 +11,7 @@ const Profile = () => {
     const [showStaffDetails, setShowStaffDetails] = useState(false); // State for staff roles details
     const [showTravelDetails, setShowTravelDetails] = useState(false); // State for travel contracts details
     const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
-
+    const navigation = useNavigation<any>(); // Stack Navigation
 
     const firstName = "First";
     const lastName = "Last";
@@ -40,9 +41,6 @@ const Profile = () => {
         console.log("local contracts see more details clicked");
     };
 
-    const handleBack = () => {
-        console.log("backarrow clicked")
-    }
 
     const handleEdit = () => {
         console.log("edit clicked")
@@ -76,7 +74,7 @@ const Profile = () => {
         <View style={styles.topThird}>
         {/* Back Arrow */}
         <View style={styles.svgContainer}>
-                <TouchableOpacity onPress={handleBack}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <View style={styles.backArrowTopLeft}>
                         <Backarrow width={40} height={40} color={"#000"}/>
                     </View>
