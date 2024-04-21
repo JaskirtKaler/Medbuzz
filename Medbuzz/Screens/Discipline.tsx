@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
@@ -28,17 +28,11 @@ const Discipline = () => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#0EA68D',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+    <View style={styles.container}>
       {/* Back Button */}
       <View style={{position: 'absolute', top: 10, left: 0}}>
         <TouchableOpacity onPress={handleBack}>
-          <Backarrow width={40} height={40} color={'#000'} />
+          <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>
       </View>
 
@@ -55,10 +49,10 @@ const Discipline = () => {
       {/* Progress Bar */}
       <Bar
         progress={progress / 100}
-        width={300}
+        width={Dimensions.get('window').width * 0.8} // 80% of the window width
         color={'black'}
-        borderRadius={0} // remove the default amount of border radius that comes with the progress bar
-        unfilledColor={'#D9D9D9'} // Color of the unfilled portion of the progress bar, color gotten from figma
+        borderRadius={0}
+        unfilledColor={'#D9D9D9'}
         height={20}
       />
 
@@ -71,7 +65,7 @@ const Discipline = () => {
         inputSearchStyle={styles.inputSearchStyle}
         data={options}
         search
-        maxHeight={300}
+        maxHeight={Dimensions.get('window').height * 0.2}
         labelField="label"
         valueField="value"
         placeholder="Select Discipline"
@@ -83,22 +77,27 @@ const Discipline = () => {
       <TouchableOpacity onPress={handleContinue} style={styles.continueTouch}>
         <Text style={styles.continueText}>Continue</Text>
       </TouchableOpacity>
-    </View>
+      </View>
   );
 };
 
 export default Discipline;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0EA68D',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   dropdown: {
-    width: 300,
-    margin: 16,
+    width: '80%',
     height: 50,
     borderBottomColor: 'black',
     borderBottomWidth: 1,
-    marginBottom: 200,
+    marginBottom: '45%',
     backgroundColor: 'white',
-    padding: 10,
+    padding: '2%',
   },
   placeholderStyle: {
     fontSize: 16,
@@ -120,15 +119,15 @@ const styles = StyleSheet.create({
   },
   continueTouch: {
     backgroundColor: 'white',
-    paddingHorizontal: 100,
-    paddingVertical: 8,
+    paddingHorizontal: '25%',
+    paddingVertical: '2%',
     elevation: 5,
-    marginBottom: 80,
+    marginBottom: '15%',
   },
   progressText: {
     color: 'black',
-    marginTop: 30,
-    marginLeft: 45,
+    marginTop: '10%',
+    marginLeft: '12%',
     fontSize: 25,
     alignSelf: 'flex-start',
   },
@@ -141,8 +140,9 @@ const styles = StyleSheet.create({
   },
   question: {
     color: 'black',
-    marginTop: 20,
-    marginRight: 20,
+    marginTop: '7%',
+    marginRight: '3%',
+    marginBottom:'2%',
     fontSize: 25,
   },
 });
