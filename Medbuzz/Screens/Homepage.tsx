@@ -1,5 +1,6 @@
 import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity } from 'react-native';
 import React, {useState} from 'react';
+import DropShadow from 'react-native-drop-shadow';
 
 
 type JobProps = {
@@ -10,16 +11,19 @@ type JobProps = {
 
 const Job = (props: JobProps) => {
     return (
-        <View style={styles.jobStyle}>
-            <View>
-            <   Text style={{color: 'black', fontSize: 24, marginLeft: 10}}>{props.jobType}</Text>
-                <Text style={{color: 'black', marginLeft: 15, fontSize: 16}}>{props.companyName}</Text>
+        
+            <View style={styles.jobStyle}>
+                <View>
+                    <Text style={{color: 'black', fontSize: 24, marginLeft: 10}}>{props.jobType}</Text>
+                    <Text style={{color: 'black', marginLeft: 15, fontSize: 16}}>{props.companyName}</Text>
+                </View>
+                <Text style={styles.jobTextStyle}>{props.jobText}</Text>
+                <TouchableOpacity style={styles.detailsButton}>
+                    <Text style={{padding: 5, color: 'black'}}>Click for more details</Text>
+                </TouchableOpacity>
             </View>
-            <Text style={styles.jobTextStyle}>{props.jobText}</Text>
-            <TouchableOpacity style={styles.detailsButton}>
-                <Text style={{padding: 5, color: 'black'}}>Click for more details</Text>
-            </TouchableOpacity>
-        </View>
+        
+        
     )
 }
 
@@ -45,7 +49,6 @@ const Homepage = () => {
             <Job jobType="Job Type" companyName="Company" jobText="Some Text about said job"/>
         </ScrollView>
     )
-
 }
 
 const styles = StyleSheet.create({
@@ -70,7 +73,15 @@ const styles = StyleSheet.create({
         borderColor: "black", 
         borderRadius: 10, 
         alignSelf: 'center', 
-        marginBottom: 30
+        marginBottom: 30,
+        elevation: 5, // This will add a box shadow for Android
+        shadowColor: "#000",  // this will add a box shadow for IOS
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
 
     jobTextStyle: {
@@ -91,7 +102,18 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10, 
         marginBottom: 5
-    }
-});
+    }, 
+
+//     shadow: {
+//         shadowColor: '#000',
+//         shadowOffset: {
+//           width: 2,
+//           height: 5,
+//         },
+//         shadowOpacity: 0.5,
+//         shadowRadius: 3.84,
+//         elevation: 5,
+//       }
+ });
 
 export default Homepage
