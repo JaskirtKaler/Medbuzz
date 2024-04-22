@@ -4,14 +4,17 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Dimensions,
   TextInput,
+  ScrollView,
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import Backarrow from '../Components/Svg/Backarrow';
 
 const UserLocation = () => {
   const progress = 45; // Example progress percentage
-  const [ zipCode, setZipCode ] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [isValidZipCode, setIsValidZipCode] = useState(true);
 
   const handleBack = () => {
     console.log('Back button clicked');
@@ -21,13 +24,22 @@ const UserLocation = () => {
     console.log('Continue button clicked');
   };
 
+  //to validate the entered zip code
+  const validateZipCode = (text: string) => {
+    const zipCodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+    const isValid = zipCodeRegex.test(text);
+    setIsValidZipCode(isValid); // Update validity state
+    setZipCode(text); // Update zip code state
+    console.log(zipCode)
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#0EA68D',
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#0EA68D',
       }}>
       {/* Back Button */}
       <View style={{position: 'absolute', top: 10, left: 0}}>
@@ -49,22 +61,27 @@ const UserLocation = () => {
       {/* Progress Bar */}
       <Bar
         progress={progress / 100}
-        width={300}
+        width={Dimensions.get('window').width * 0.8} // 80% of the window width
         color={'black'}
-        borderRadius={0} // remove the default amount of border radius that comes with the progress bar
-        unfilledColor={'#D9D9D9'} // Color of the unfilled portion of the progress bar, color gotten from figma
+        borderRadius={0}
+        unfilledColor={'#D9D9D9'}
         height={20}
       />
 
       <Text style={styles.question}>Where do you Live?</Text>
 
-      <TextInput style={styles.input} placeholder="Home Zip Code" onChangeText={text => setZipCode(text)}></TextInput>
+      <TextInput
+        style={[styles.input, !isValidZipCode && styles.inputError]} // Apply error style if zip code is invalid
+        placeholder="Home Zip Code"
+        onChangeText={validateZipCode} // Call validation function
+        keyboardType="numeric"
+      />
 
       {/* Continue Button */}
       <TouchableOpacity onPress={handleContinue} style={styles.continueTouch}>
         <Text style={styles.continueText}>Continue</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -74,10 +91,13 @@ const styles = StyleSheet.create({
   input: {
     width: '72%',
     borderRadius: 30,
-    marginTop: 20,
-    marginBottom: 200,
+    marginBottom: '45%',
     backgroundColor: 'white',
     paddingHorizontal: 20,
+  },
+  inputError: {
+    borderColor: 'red', 
+    borderWidth: 1,
   },
   continueText: {
     color: '#0EA68D',
@@ -86,15 +106,15 @@ const styles = StyleSheet.create({
   },
   continueTouch: {
     backgroundColor: 'white',
-    paddingHorizontal: 100,
-    paddingVertical: 8,
+    paddingHorizontal: '25%',
+    paddingVertical: '2%',
     elevation: 5,
-    marginBottom: 80,
+    marginBottom: '15%',
   },
   progressText: {
     color: 'black',
-    marginTop: 30,
-    marginLeft: 45,
+    marginTop: '10%',
+    marginLeft: '12%',
     fontSize: 25,
     alignSelf: 'flex-start',
   },
@@ -107,8 +127,9 @@ const styles = StyleSheet.create({
   },
   question: {
     color: 'black',
-    marginTop: 20,
-    marginRight: 20,
+    marginTop: '7%',
+    marginRight: '3%',
+    marginBottom: '2%',
     fontSize: 25,
   },
 });
