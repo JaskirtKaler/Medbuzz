@@ -10,24 +10,24 @@ import Backarrow from '../Components/Svg/Backarrow';
 
 const { width, height } = Dimensions.get('window');
 
-const ResetPassword = () => {
-  const [code, setCode] = React.useState('');
-  const [codeError, setCodeError] = React.useState('');
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+const ChangePassword = () => {
+    const [newPassword, setNewPassword] = React.useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const emailValid = true;
-  const realCode = "1111"
 
   const handleBack = () => {
     console.log("backarrow clicked")
 }
 
-  const handleContinue = () => {
-    if (code == realCode) {
-      navigation.navigate('RegContinue');
+  const handlePasswordChange = () => {
+    if (newPassword == confirmNewPassword) {
+      console.log("Same Password Inputted");
     } else {
-      setCodeError("We can't find your email!");
+        console.log("Password Mismatch");
     }
+    console.log("New: " + newPassword);
+    console.log("Confirm: " + confirmNewPassword);
   };
 
 
@@ -51,24 +51,25 @@ const ResetPassword = () => {
             <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
           </TouchableOpacity>
 
-        <Text style={styles.inputLabel}>Enter the Code</Text>
+        <Text style={styles.inputLabel}>New Password</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#ddd"
           onChangeText={(text) => {
-            setCode(text);
-            setCodeError('');
+            setNewPassword(text);
           }}
-          value = {code}
         />
-               {codeError ? (
-          <Text style={styles.errorText}>{codeError}</Text>
-        ) : null}
-
+        <Text style={styles.inputLabel}>Confirm Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#ddd"
+          onChangeText={(text) => {
+            setConfirmNewPassword(text);
+          }}
+        />
         <TouchableOpacity
           style={styles.submitButton}
-          onPress={handleContinue} // Use the handleContinue function here
-          disabled={!emailValid}
+          onPress={handlePasswordChange} // Use the handleContinue function here
         >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 0,
     marginTop: 20,
-    textAlign: "center"
+    textAlign: "left"
 
   },
   backArrowContainer: {
@@ -172,29 +173,15 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 20,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 50,
-  },
   returnToLogin: {
     fontSize: 14,
     color: '#0EA68D',
     marginBottom: 30,
     textAlign: "center"
   },
-  errorText: {
-    fontSize: 14,
-    color: 'red',
-    marginTop: 5,
-  },
   scrollView: {
     
   }
 });
 
-export default ResetPassword;
+export default ChangePassword;
