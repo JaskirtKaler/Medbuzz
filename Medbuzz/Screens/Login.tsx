@@ -13,13 +13,13 @@ import {
 } from 'react-native';
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
+import {RootStackParamList} from '../App';
+
 
 const { width, height } = Dimensions.get('window');
 const Login = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-
+  // const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -56,14 +56,17 @@ const Login = () => {
         <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
-        <View style={styles.signupTextContainer}>
-          <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signupText}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
+        <Text style={styles.loginButtonText}>Log In</Text>
+      </TouchableOpacity>
+      <View style={styles.signupTextContainer}>
+        <Text style={styles.signupPromptText}>Don’t have an account? </Text>
+        <TouchableOpacity>
+          <Text style={styles.signupText}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 

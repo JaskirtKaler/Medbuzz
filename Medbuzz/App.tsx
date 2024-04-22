@@ -21,6 +21,10 @@ import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
 import Homepage from './Screens/Homepage.tsx';
 
+import TempHome from './Screens/TempHome.tsx';
+import HomeSVG from './Components/Svg/HomeSVG.tsx';
+import ProfileSVG from "./Components/Svg/Profile.tsx";
+import 'react-native-gesture-handler';
 import {
   SafeAreaView,
   ScrollView,
@@ -31,17 +35,10 @@ import {
   View,
   Button,
 } from 'react-native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem, } from '@react-navigation/drawer';
 
 
-// import { Not sure if there is needed
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
 
-const Stack = createNativeStackNavigator();
 
 export type RootStackParamList = {
   //goBack(): void;
@@ -52,19 +49,55 @@ export type RootStackParamList = {
 };
 
 
-
+// Begining on Stack navigation where Login System will begine
 function App() {
+  const Stack = createNativeStackNavigator<any>();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="RegContinue" component={RegContinue} />
+        <Stack.Screen name="Main" component={Navigation} />
+        {/* <Stack.Screen name="Register" component={Register} /> */}
+        {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({});
+// this will be the Drawer Navigation
+// Beginning of Home Menu Pages
+function Navigation(){
+  const Drawer = createDrawerNavigator<any>();
+  return(
+    <Drawer.Navigator initialRouteName="TempHome" screenOptions={{ headerShown: false, drawerPosition: 'right',}} drawerContent={props => <CustomDrawerContent {...props} />}>
+        <Drawer.Screen name="TempHome" component={TempHome} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
+        <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} />}} />
+    </Drawer.Navigator> 
+  );
+}
+
+// This Navigation is for the signout button
+// Signout API calls will happen here
+function CustomDrawerContent(props: any) {
+  const navigation = useNavigation<any>();
+  return (
+    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+      <DrawerItemList {...props} />
+      <View style={{flex: 1}} />
+      <DrawerItem
+        label="Sign Out"
+        labelStyle={{color:'#DB0000'}}
+        onPress={() => {
+          // Add your sign out logic here
+          navigation.navigate('Login')
+          console.log('Signed out')
+          
+        }}
+      />
+    </DrawerContentScrollView>
+  );
+}
+
+const styles = StyleSheet.create({ });
 
 export default App;
