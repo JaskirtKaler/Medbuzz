@@ -6,7 +6,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import CheckBox from '@react-native-community/checkbox';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Alert } from 'react-native'; // Import Alert
+import {
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform, Alert
+} from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 
@@ -34,57 +38,68 @@ const RegContinue = () => {
         }
     };
     return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Text style={styles.backButtonText}>{`<`}</Text>
-            </TouchableOpacity>
-            <View style={styles.logoBox}>
-                <Text style={styles.logoText}>M</Text>
-            </View>
-            <View style={styles.formContainer}>
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setPassword} // Set the state for password
-                    placeholderTextColor="#ddd"
-                    secureTextEntry
-                />
-                <Text style={styles.label}>Phone Number</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setPhoneNumber} // Set the state for phone number
-                    placeholderTextColor="#ddd"
-                    keyboardType="phone-pad"
-                />
-                <Text style={styles.label}>How Did you hear about us?</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setReferral} // Set the state for how did you hear about us
-                    placeholderTextColor="#ddd"
-                />
-                <View style={styles.checkboxContainer}>
-                    <CheckBox
-                        value={isSelected}
-                        onValueChange={setSelection}
-                        style={styles.checkbox}
-                        tintColors={{ true: 'white', false: 'white' }}
-                    />
-                    <Text style={styles.termsText}>By tapping continue you're agreeing with our terms of service and privacy policies</Text>
-                </View>
-                <TouchableOpacity
-                    style={[styles.continueButton, !allInputsFilled ? styles.disabledButton : {}]}
-                    onPress={handleContinue}
-                    disabled={!allInputsFilled}
-                >
-                    <Text style={styles.continueButtonText}>Continue</Text>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
+        >
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>{`<`}</Text>
                 </TouchableOpacity>
-            </View>
-        </View>
+                <View style={styles.logoBox}>
+                    <Text style={styles.logoText}>M</Text>
+                </View>
+                <View style={styles.formContainer}>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setPassword}
+                        placeholderTextColor="#ddd"
+                        secureTextEntry
+                    />
+                    <Text style={styles.label}>Phone Number</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setPhoneNumber}
+                        placeholderTextColor="#ddd"
+                        keyboardType="phone-pad"
+                    />
+                    <Text style={styles.label}>How Did you hear about us?</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setReferral}
+                        placeholderTextColor="#ddd"
+                    />
+                    <View style={styles.checkboxContainer}>
+                        <CheckBox
+                            value={isSelected}
+                            onValueChange={setSelection}
+                            style={styles.checkbox}
+                            tintColors={{ true: 'white', false: 'white' }}
+                        />
+                        <Text style={styles.termsText}>By tapping continue you're agreeing with our terms of service and privacy policies</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.continueButton, !allInputsFilled ? styles.disabledButton : {}]}
+                        onPress={handleContinue}
+                        disabled={!allInputsFilled}
+                    >
+                        <Text style={styles.continueButtonText}>Continue</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 
 // Styles
 const styles = StyleSheet.create({
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center'
+    },
+
     container: {
         flex: 1,
         backgroundColor: '#0EA68D', // Set the background color to match the design

@@ -21,14 +21,14 @@ import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
 
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
-    Button,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Button,
 } from 'react-native';
 
 
@@ -57,13 +57,13 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
-        {/* <Stack.Screen name="Register" component={Register} /> */}
-        {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="RegContinue" component={RegContinue} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({ });
+const styles = StyleSheet.create({});
 
 export default App;
