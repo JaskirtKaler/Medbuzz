@@ -53,7 +53,7 @@ const ForgotPassword = () => {
         </View>
         <Text style={styles.headerText}>Forgot Password?</Text>
         <View style={styles.signupTextContainer}>
-          <Text style={styles.signupPromptText}>Enter your email and we'll send you a link to reset your password</Text>
+          <Text style={styles.signupPromptText}>Enter your email and we'll send you a link to reset your password.</Text>
         </View>
 
         <Text style={styles.inputLabel}>Email</Text>
