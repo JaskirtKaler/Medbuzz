@@ -2,64 +2,77 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
 import {
+  ScrollView,
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
-import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../App';
 
 const { width, height } = Dimensions.get('window');
 const Login = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-       <View style={styles.curveOverlay} />
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>M</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
+    >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.headerContainer}>
+          <View style={styles.curveOverlay} />
+          <View style={styles.logoBox}>
+            <Text style={styles.logoText}>M</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.headerText}>Login</Text>
-        <Text style={styles.subHeaderText}>Sign in to Continue</Text>
-        <Text style={styles.inputLabel}>Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your name"
-          placeholderTextColor="#ddd"
-        />
-        <Text style={styles.inputLabel}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          placeholderTextColor="#ddd"
-          secureTextEntry
-        />
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.headerText}>Login</Text>
+          <Text style={styles.subHeaderText}>Sign in to Continue</Text>
+          <Text style={styles.inputLabel}>Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your name"
+            placeholderTextColor="#ddd"
+          />
+          <Text style={styles.inputLabel}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            placeholderTextColor="#ddd"
+            secureTextEntry
+          />
+          <TouchableOpacity>
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
-      <View style={styles.signupTextContainer}>
-        <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupText}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+        <View style={styles.signupTextContainer}>
+          <Text style={styles.signupPromptText}>Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.signupText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 // const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1, // This ensures the ScrollView content fills the space
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -86,14 +99,14 @@ const styles = StyleSheet.create({
     fontSize: 45,
     fontWeight: 'bold',
     color: 'black',
-    alignSelf: 'center', 
-    marginBottom: 10, 
+    alignSelf: 'center',
+    marginBottom: 10,
   },
   subHeaderText: {
     fontSize: 18,
     color: 'black',
-    alignSelf: 'center', 
-    marginBottom: 20, 
+    alignSelf: 'center',
+    marginBottom: 20,
   },
 
   inputContainer: {
@@ -110,19 +123,19 @@ const styles = StyleSheet.create({
     //bottom: 0,
     height: 280,
     backgroundColor: 'white',
-    borderTopRightRadius: width, 
+    borderTopRightRadius: width,
   },
   inputLabel: {
     fontSize: 20,
     color: 'black',
     marginBottom: 5,
-    marginTop:5,
+    marginTop: 5,
   },
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,
     paddingVertical: 12,
-    borderRadius: 30, 
+    borderRadius: 30,
     marginTop: 10,
     fontSize: 18,
     borderWidth: 0.3,
@@ -138,13 +151,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     alignSelf: 'flex-end',
     marginTop: 15,
-    marginBottom:5,
+    marginBottom: 5,
   },
   loginButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 3,
     marginHorizontal: 40,
-    marginTop:25,
+    marginTop: 25,
     paddingVertical: 12,
     alignItems: 'center',
   },

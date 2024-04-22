@@ -22,14 +22,14 @@ import Profile from './Screens/Profile.tsx';
 import Homepage from './Screens/Homepage.tsx';
 
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
-    Button,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Button,
 } from 'react-native';
 
 
@@ -56,16 +56,15 @@ export type RootStackParamList = {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Homepage" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Homepage" component={Homepage} />
-        {/* <Stack.Screen name="Login" component={Login} /> */}
-        {/* <Stack.Screen name="Register" component={Register} /> */}
-        {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="RegContinue" component={RegContinue} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({ });
+const styles = StyleSheet.create({});
 
 export default App;
