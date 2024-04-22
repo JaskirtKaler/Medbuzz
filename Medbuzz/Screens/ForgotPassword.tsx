@@ -9,6 +9,7 @@ import { RootStackParamList }from '../App';
 import { Alert } from 'react-native'; // Import Alert
 import Warning from '../SVG/Warning-Logo';
 import validate from 'react-native-email-validator';
+import Backarrow from '../Components/Svg/Backarrow';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,13 +29,19 @@ const ForgotPassword = () => {
     }
   };
 
+  const handleBack = () => {
+    console.log("backarrow clicked")
+}
+
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
-          <Text style={styles.backButtonText}>{`<`}</Text>
-        </TouchableOpacity>
+        <View style={styles.backArrowContainer}>
+          <TouchableOpacity onPress={handleBack}>
+            <Backarrow width={40} height={40} color={"white"}/>
+          </TouchableOpacity>
+        </View>
         <View style={styles.curveOverlay} />
         <View style={styles.logoBox}>
           <Text style={styles.logoText}>M</Text>
@@ -91,7 +98,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#0EA68D',
     height: height * 0.3,
     alignItems: 'center', // Center horizontally
-    justifyContent: 'center', // Center vertically
+  },
+  backArrowContainer: {
+    justifyContent: 'flex-start',
+    width: '100%',
+    paddingTop: '5%',
   },
   logoBox: {
     backgroundColor: 'white',
@@ -118,10 +129,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
-
   inputContainer: {
     flex: 0.8, // This will allow the container to fill the rest of the screen
-    justifyContent: 'center', // This centers the children vertically
     paddingHorizontal: 40,
     marginTop: 20,
   },
@@ -193,15 +202,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0EA68D',
     textDecorationLine: 'underline',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 20,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 50,
   },
   returnToLogin: {
     fontSize: 14,
