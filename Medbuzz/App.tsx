@@ -20,7 +20,6 @@ import UserLocation from './Screens/UserLocation.tsx';
 import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
 import Homepage from './Screens/Homepage.tsx';
-
 import TempHome from './Screens/TempHome.tsx';
 import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from "./Components/Svg/Profile.tsx";

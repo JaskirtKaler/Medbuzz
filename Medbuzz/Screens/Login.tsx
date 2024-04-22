@@ -53,20 +53,17 @@ const Login = () => {
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>Log In</Text>
-        </TouchableOpacity>
-      </ScrollView>
       <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
+      </ScrollView>
       <View style={styles.signupTextContainer}>
         <Text style={styles.signupPromptText}>Don’t have an account? </Text>
         <TouchableOpacity>
           <Text style={styles.signupText}>Sign up</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
