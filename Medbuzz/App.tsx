@@ -19,6 +19,7 @@ import Licenses from './Screens/Licenses.tsx';
 import UserLocation from './Screens/UserLocation.tsx';
 import LicensesLocation from './Screens/LicenseLocation.tsx';
 import Profile from './Screens/Profile.tsx';
+import Homepage from './Screens/Homepage.tsx';
 
 import {
   SafeAreaView,
