@@ -43,7 +43,9 @@ const Profile = () => {
 
 
     const handleEdit = () => {
+        navigation.navigate('EditProfile')
         console.log("edit clicked")
+
     }
 
     const handleDoc = () => {

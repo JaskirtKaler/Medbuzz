@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
+import { useNavigation } from '@react-navigation/native';
 
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
@@ -100,6 +101,7 @@ const disciplines = [
 
 // Screen - Edit Basic Details
 const EditBasicDetails = () => {
+  const navigation = useNavigation<any>(); // Stack Navigation
   const [discipline, setDiscipline] = useState("");
   const [schoolState, setSchoolState] = useState("");
   const [month, setMonth] = useState("");
@@ -385,7 +387,7 @@ const EditBasicDetails = () => {
       </TouchableOpacity>
 
       {/* Cancel button */}
-      <TouchableOpacity style={styles.cancelButton}>
+      <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
       </TouchableOpacity>  
     </ScrollView>

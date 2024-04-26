@@ -1,6 +1,8 @@
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, Dimensions } from 'react-native';
 import React, {useState} from 'react';
-
+import NavigationBar from '../Components/Svg/NavigationBar.tsx';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+const { width, height } = Dimensions.get('window'); // screen max width and height
 // properties for Job component
 type JobProps = {
     jobType: string;
@@ -27,7 +29,7 @@ const Job = (props: JobProps) => {
 
 
 const Homepage = () => {
-
+    const navigation = useNavigation<any>();
     // Create an array of 25 Jobs
     const myJobsArray = Array.from({ length: 25 }, (_, i) => (
         <Job 
@@ -43,7 +45,12 @@ const Homepage = () => {
 
             {/* Header with search bar*/ }
             <View style={styles.headerStyle}>
-                <TextInput placeholder="Search" placeholderTextColor='gray' style={styles.searchStyle}></TextInput>
+                <View style={{flex: 1, alignItems: 'center'}}>
+                    <TextInput placeholder="Search" placeholderTextColor='gray' style={styles.searchStyle}></TextInput>
+                </View>
+                <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+                    <NavigationBar width={35} height={35} color={'#000'} />
+                </TouchableOpacity>
             </View>
 
             {/* Job Feed title */}
@@ -110,9 +117,10 @@ const styles = StyleSheet.create({
     }, 
 
     headerStyle: {
-        backgroundColor: 'white',
-        height: 60, 
-        elevation: 15, // This will add a box shadow for Android
+        width: '100%',
+        height: height * 0.1,
+        backgroundColor: '#FFF',
+        elevation: 5, // This will add a box shadow for Android
         shadowColor: "#000",  // this will add a box shadow for IOS
         shadowOffset: {
             width: 0,
@@ -121,17 +129,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         justifyContent: 'center', 
-        alignItems: 'center',
-        borderWidth: 1, 
-        borderColor: 'black' 
+        alignItems:'center',
+        padding: 10,
+        flexDirection: 'row',
     },
 
     searchStyle: {
         backgroundColor: 'white',
-        height: 35, 
         borderColor: 'black', 
         borderWidth: 0.5, 
-        width: '60%', 
         borderRadius: 12,
         elevation: 8, // This will add a box shadow for Android
         shadowColor: "#000",  // this will add a box shadow for IOS
@@ -141,6 +147,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
+        width: '70%',  
     }
  });
 

@@ -56,6 +56,7 @@ function App() {
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Navigation} />
+        <Stack.Screen name="EditProfile" component={EditBasicDetails} />
         {/* <Stack.Screen name="Register" component={Register} /> */}
         {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
       </Stack.Navigator>
@@ -68,8 +69,8 @@ function App() {
 function Navigation(){
   const Drawer = createDrawerNavigator<any>();
   return(
-    <Drawer.Navigator initialRouteName="TempHome" screenOptions={{ headerShown: false, drawerPosition: 'right',}} drawerContent={props => <CustomDrawerContent {...props} />}>
-        <Drawer.Screen name="TempHome" component={TempHome} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
+    <Drawer.Navigator initialRouteName="Homepage" screenOptions={{ headerShown: false, drawerPosition: 'right',}} drawerContent={props => <CustomDrawerContent {...props} />}>
+        <Drawer.Screen name="Homepage" component={Homepage} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} />}} />
     </Drawer.Navigator> 
   );
