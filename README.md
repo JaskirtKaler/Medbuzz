@@ -2,8 +2,6 @@
 
 ## Contributors
 
-<!-- TODO: Enter everyone's email -->
-
 - Jaskirt Kaler (jaskirtkaler@csus.edu)
 - Ashar Javid (ajavid@csus.edu)
 - Alex Muir (alexmuir@csus.edu)
@@ -37,15 +35,11 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 
 ## Software Images
 
-<!-- TODO: Need software logo. Doesn't have to be located anywhere in readme -->
-
 ![](./imgs/Medbuzz.png)
 
 ### Entity Relationship Diagram
 
 ![](./imgs/CSC190ERDiagram.jpg)
-
-<!-- TODO: Need ER Diagram -->
 
 ### Product Mockup Images
 
@@ -55,12 +49,9 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
     <img src=./imgs/Profile.png width="200"/>
 </div>
 
-<!-- TODO: Need mockup images -->
-
 ## Timeline
 
 ### Sprint 5 (8/26/24 - 9/9/24)
-<!-- Need more info -->
 
 - Integrate new UI Pages: My Jobs, Job Posting, Inbox. 
 
@@ -76,18 +67,16 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 
 ### Sprint 6 (9/9/24 - 9/23/24)
 
-<!-- Need more info -->
 - Fix Alpha Testing Bugs. 
 
 - Set up Azure API Gateway for runtime and application proxying. 
 
-- Connect string and Int data to SQL dB. 
+- Connect string and Int data to SQL DB. 
 
 - Integrate the Applicant Tracking System (ATS) into the app to render new job postings. 
 
 ### Sprint 7 (9/23/24 - 10/7/24)
 
-<!-- Need more info -->
 - Configure Azure Blob storage for users. 
 
 - Test user data storage and retrieval. 
@@ -100,7 +89,6 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 
 ### Sprint 8 (10/7/24 - 10/21/24)
 
-<!-- Need more info -->
 - Integrate Azure Function for messaging system 
 
 - Run Azure Function for users on a 24-hour basis. 
@@ -122,24 +110,3 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 ## Deployment
 
 <!-- Place holder until 191 -->
-
-# Key Features
-
-- Profile Creation: Healthcare workers can create detailed profiles, highlighting their qualifications - and experiences.
-- Job Search & Filter: A robust search function with filters to help users find the best job - opportunities.
-- Application Tracking: Integration with Applicant Tracking Systems (ATS) for streamlined application - processes and real-time updates.
-- Real-time Notifications: Keeps users informed about changes in application status.
-- E-Signature Integration: For efficient paperwork processing.
-- In-App Messaging: Facilitates direct communication between employers and candidates.
-
-# Technology Stack
-
-- Frontend: React Native for cross-platform compatibility on both iOS and Android.
-- Backend: Azure Entra for secure login, authentication, and reliable database services.
-- Integration: Client API for seamless ATS functionality and E-signature for document exchanges.
-
-# Project Objectives
-
-- Enhance Recruitment Process: Make job searching, application tracking, and communication more - efficient for medical professionals.
-- Automate Manual Processes: Transition Radixsol's manual processes to a digital platform for improved - efficiency and user experience.
-- Foster Engagement: Create a community where recruiters and healthcare professionals can interact directly and transparently.
