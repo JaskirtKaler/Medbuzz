@@ -49,6 +49,11 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 
 ### Product Mockup Images
 
+
+<img src=./imgs/Login.png width="200" style="margin-right:10"/>
+<img src=./imgs/Homepage.png width="200" style="margin-right:10"/>
+<img src=./imgs/Profile.png width="200"/>
+
 <!-- TODO: Need mockup images -->
 
 ## Timeline
