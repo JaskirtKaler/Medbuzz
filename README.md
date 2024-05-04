@@ -39,7 +39,11 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 
 <!-- TODO: Need software logo. Doesn't have to be located anywhere in readme -->
 
+![](./imgs/Medbuzz.png)
+
 ### Entity Relationship Diagram
+
+![](./imgs/CSC190ERDiagram.jpg)
 
 <!-- TODO: Need ER Diagram -->
 
