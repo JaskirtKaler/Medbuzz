@@ -5,13 +5,13 @@
 <!-- TODO: Enter everyone's email -->
 
 - Jaskirt Kaler (jaskirtkaler@csus.edu)
-- Ashar Javid ()
-- Alex Muir ()
-- Maddie Ananda ()
+- Ashar Javid (ajavid@csus.edu)
+- Alex Muir (alexmuir@csus.edu)
+- Maddie Ananda (manandasubramanian@csus.edu)
 - Fadi Zubeideh (fzubeideh@csus.edu)
 - Richard E. Varela (rvarela@csus.edu)
-- Adiba Akter ()
-- Avneet Brar ()
+- Adiba Akter (adibaakter@csus.edu)
+- Avneet Brar (avneetbrar@csus.edu)
 
 ## Table of Contents
 
