@@ -16,7 +16,7 @@ const { width, height } = Dimensions.get('window');
 const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const emailValid = true;
 
@@ -30,8 +30,8 @@ const ForgotPassword = () => {
   };
 
   const handleBack = () => {
-    console.log("backarrow clicked")
-}
+    navigation.goBack()
+  }
 
 
   return (
@@ -72,15 +72,16 @@ const ForgotPassword = () => {
 
         <TouchableOpacity
           style={[styles.loginButton, !emailValid ? styles.disabledButton : {}]}
-          onPress={handleContinue} // Use the handleContinue function here
+          //onPress={handleContinue} // Use the handleContinue function here
+          onPress={() => navigation.navigate('ResetPassword')}
           disabled={!emailValid}
         >
           <Text style={styles.loginButtonText}>Continue</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
 
       </View>

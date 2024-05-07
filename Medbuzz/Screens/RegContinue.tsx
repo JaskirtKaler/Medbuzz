@@ -11,22 +11,24 @@ import {
     KeyboardAvoidingView,
     Platform, Alert
 } from 'react-native';
-
+import Backarrow from '../Components/Svg/Backarrow';
 const { height, width } = Dimensions.get('window');
 
 const RegContinue = () => {
+    
     const [isSelected, setSelection] = useState(false);
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [referral, setReferral] = useState('');
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
 
     const allInputsFilled = password && phoneNumber && referral && isSelected;
 
     const handleContinue = () => {
         if (allInputsFilled) {
-            // Proceed with the next action
+            // Proceed with the next action'
+            navigation.navigate('Discipline');
         } else {
             Alert.alert(
                 "Incomplete Form",
@@ -45,7 +47,7 @@ const RegContinue = () => {
         >
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>{`<`}</Text>
+                    <Backarrow width={40} height={40} color={"white"}/>
                 </TouchableOpacity>
                 <View style={styles.logoBox}>
                     <Text style={styles.logoText}>M</Text>
@@ -171,8 +173,8 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        left: 20,
-        top: 20,
+        left: 3,
+        top: 10,
     },
     backButtonText: {
         color: 'white',

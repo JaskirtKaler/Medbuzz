@@ -3,10 +3,12 @@ import {View, Text, TouchableOpacity, StyleSheet, Dimensions, KeyboardAvoidingVi
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
+import { useNavigation } from '@react-navigation/native';
 
 const Discipline = () => {
   const progress = 20; // Example progress percentage
   const [selectedOption, setSelectedOption] = useState(''); //To hold the selected Discipline
+  const navigation = useNavigation<any>();
 
   const options = [
     {label: 'Registered Nurse', value: 'Registered Nurse'},
@@ -20,10 +22,12 @@ const Discipline = () => {
   ];
 
   const handleBack = () => {
+    navigation.goBack();
     console.log('Back button clicked');
   };
 
   const handleContinue = () => {
+    navigation.navigate('Specialty');
     console.log('Continue button clicked');
   };
 

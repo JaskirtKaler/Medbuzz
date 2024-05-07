@@ -18,9 +18,6 @@ const ResetPassword = () => {
   const emailValid = true;
   const realCode = "1111"
 
-  const handleBack = () => {
-    console.log("backarrow clicked")
-}
 
   const handleContinue = () => {
     if (code == realCode) {
@@ -35,7 +32,7 @@ const ResetPassword = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
       <View style={styles.backArrowContainer}>
-          <TouchableOpacity onPress={handleBack}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Backarrow width={40} height={40} color={"white"}/>
           </TouchableOpacity>
         </View>
@@ -140,8 +137,8 @@ const styles = StyleSheet.create({
     width: '100%',
     // paddingTop: '5%',
     position: 'absolute',
-    left: 20,
-    top: 20,
+    left: 3,
+    top: 10,
   },
 
   input: {

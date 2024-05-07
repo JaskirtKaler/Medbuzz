@@ -16,6 +16,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 
 
+
 const { width, height } = Dimensions.get('window');
 const Login = () => {
   // const navigation = useNavigation();
@@ -26,6 +27,7 @@ const Login = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
     >
+      
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.headerContainer}>
           <View style={styles.curveOverlay} />
@@ -49,20 +51,20 @@ const Login = () => {
             placeholderTextColor="#ddd"
             secureTextEntry
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
       <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
-      </ScrollView>
       <View style={styles.signupTextContainer}>
         <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.signupText}>Sign up</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

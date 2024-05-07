@@ -11,14 +11,16 @@ import React, { useState } from 'react';
 import {Bar} from 'react-native-progress';
 import { Svg, Path} from 'react-native-svg';
 import BackArrow from '../Components/Svg/Backarrow';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
 const Specialty = () => {
+    const navigation = useNavigation<any>();
     const progress = 35;
 
     const handleBack = () => {
-        console.log("tapped");
+        navigation.goBack();
     }
 
     const addSpecailtyListener = () => {
@@ -26,6 +28,7 @@ const Specialty = () => {
     }
 
     const continueListener = () => {
+        navigation.navigate('Certificates');
         console.log("Tapped continue");
     }
 

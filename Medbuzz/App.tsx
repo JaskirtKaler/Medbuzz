@@ -23,6 +23,8 @@ import Homepage from './Screens/Homepage.tsx';
 import TempHome from './Screens/TempHome.tsx';
 import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from "./Components/Svg/Profile.tsx";
+import Location from './Screens/Location.tsx';
+import StateLocation from './Components/Svg/Statelocation.tsx';
 import 'react-native-gesture-handler';
 import {
   SafeAreaView,
@@ -35,6 +37,7 @@ import {
   Button,
 } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem, } from '@react-navigation/drawer';
+import ChangePassword from './Screens/ChangePassword.tsx';
 
 
 
@@ -57,8 +60,16 @@ function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Navigation} />
         <Stack.Screen name="EditProfile" component={EditBasicDetails} />
-        {/* <Stack.Screen name="Register" component={Register} /> */}
-        {/* <Stack.Screen name="RegContinue" component={RegContinue} /> */}
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="RegContinue" component={RegContinue} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="Discipline" component={Discipline} />
+        <Stack.Screen name="Specialty" component={Specialty} />
+        <Stack.Screen name="Certificates" component={Certificates} />
+        <Stack.Screen name="Licenses" component={Licenses} />
+        <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -72,6 +83,7 @@ function Navigation(){
     <Drawer.Navigator initialRouteName="Homepage" screenOptions={{ headerShown: false, drawerPosition: 'right',}} drawerContent={props => <CustomDrawerContent {...props} />}>
         <Drawer.Screen name="Homepage" component={Homepage} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} />}} />
+        <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
     </Drawer.Navigator> 
   );
 }

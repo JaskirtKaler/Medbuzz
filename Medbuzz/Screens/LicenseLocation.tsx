@@ -3,11 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Dropdown } from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
+import { useNavigation } from '@react-navigation/native';
 
 const LicensesLocation = () => {
     const progress = 50; // Example progress percentage
     const [selectedOption, setSelectedOption] = useState('');
-
+    const navigation = useNavigation<any>();
     const options = [
         { "label": "Alabama", "value": "Alabama" },
         { "label": "Alaska", "value": "Alaska" },
@@ -65,10 +66,12 @@ const LicensesLocation = () => {
     ];
 
     const handleBack = () => {
+        navigation.goBack();
         console.log('Back button clicked');
     };
 
     const handleContinue = () => {
+        navigation.navigate('Main')
         console.log('Continue button clicked');
         // navigation.navigate('LicensesLocation'); // Navigate to LicensesLocation screen
     };

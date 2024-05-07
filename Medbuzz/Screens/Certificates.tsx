@@ -17,11 +17,13 @@ import {Bar} from 'react-native-progress';
 import { Svg, Path} from 'react-native-svg';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import BackArrow from '../Components/Svg/Backarrow';
+import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 
 var selected_certs = new Array(20);
 
 const Certificates = () => {
+    const navigation = useNavigation<any>();
     const progress = 50;
     const [dropDownVisible, setDropDownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
@@ -49,6 +51,7 @@ const Certificates = () => {
     }
 
     const handleBack = () => {
+        navigation.goBack();
         console.log("Back arrow");
     }
 
@@ -109,7 +112,7 @@ const Certificates = () => {
             </View>
 
             <View style={cert_style.footer}>
-                <TouchableOpacity style={button_style.button_content}>
+                <TouchableOpacity style={button_style.button_content} onPress={() => navigation.navigate('Licenses')}>
                     <Text style={button_style.button_text}>Continue</Text>
                 </TouchableOpacity>
             </View>

@@ -5,12 +5,15 @@ import Backarrow from '../Components/Svg/Backarrow'
 import Statelocation from '../Components/Svg/Statelocation'
 import Citylocation from '../Components/Svg/Citylocation'
 import ZipCodeLocation from '../Components/Svg/Zipcodelocation'
+import { useNavigation } from '@react-navigation/native'
 
 const { width, height } = Dimensions.get('window'); // screen max width and height
 
 const Location = ({ header = "Locations" }) => {
+    const navigation = useNavigation<any>();
 
     const handleBack = () => {
+        navigation.goBack();
         console.log("backarrow clicked")
     }
 

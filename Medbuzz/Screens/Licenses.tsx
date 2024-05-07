@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 const Licenses = () => {
     const progress = 50; // progress percentage
     const [selectedOption, setSelectedOption] = useState('');
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
     const options = [
         { label: 'Registered Nurse (RN)', value: 'Registered Nurse (RN)' },
@@ -28,10 +28,12 @@ const Licenses = () => {
     ];
 
     const handleBack = () => {
+        navigation.goBack()
         console.log('Back button clicked');
     };
 
     const handleContinue = () => {
+        navigation.navigate('LicenseLocation');
         console.log('Continue button clicked');
         //navigation.navigate('LicensesLocation'); // Navigate to LicensesLocation screen
     };

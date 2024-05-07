@@ -11,14 +11,14 @@ import {
   ScrollView,
   Platform, Alert
 } from 'react-native';
-
+import Backarrow from '../Components/Svg/Backarrow';
 const { width, height } = Dimensions.get('window');
 
 const Register = () => {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<any>();
 
   const allInputsFilled = firstName && lastName && email; // Check if all inputs are filled
 
@@ -50,7 +50,7 @@ const Register = () => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backButtonText}>{`<`}</Text>
+            <Backarrow width={40} height={40} color={"white"}/>
           </TouchableOpacity>
           <View style={styles.curveOverlay} />
           <View style={styles.logoBox}>
@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    left: 20,
-    top: 20,
+    left: 3,
+    top: 10,
   },
   backButtonText: {
     color: 'white',
