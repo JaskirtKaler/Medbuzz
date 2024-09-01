@@ -24,7 +24,7 @@ const Login = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
     >
       
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    flex: 0.8, // This will allow the container to fill the rest of the screen
+    flex: 0.5, // This will allow the container to fill the rest of the screen
     justifyContent: 'center', // This centers the children vertically
     paddingHorizontal: 40,
     marginTop: 20,
@@ -130,15 +130,15 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 20,
     color: 'black',
-    marginBottom: 5,
-    marginTop: 5,
+ 
+    marginTop: 10,
   },
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,
     paddingVertical: 12,
     borderRadius: 30,
-    marginTop: 10,
+    marginTop: 5,
     fontSize: 18,
     borderWidth: 0.3,
     borderColor: 'grey',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#0EA68D',
-    borderRadius: 3,
+    borderRadius: 6,
     marginHorizontal: 40,
     marginTop: 25,
     paddingVertical: 12,

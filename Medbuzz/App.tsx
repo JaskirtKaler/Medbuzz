@@ -70,6 +70,7 @@ function App() {
         <Stack.Screen name="Certificates" component={Certificates} />
         <Stack.Screen name="Licenses" component={Licenses} />
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
+        <Stack.Screen name="UserLocation" component={UserLocation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

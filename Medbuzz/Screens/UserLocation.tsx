@@ -10,18 +10,28 @@ import {
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import Backarrow from '../Components/Svg/Backarrow';
+import { useNavigation } from '@react-navigation/native';
+import Navigation from '../Components/Navigation';
 
 const UserLocation = () => {
   const progress = 45; // Example progress percentage
   const [zipCode, setZipCode] = useState('');
   const [isValidZipCode, setIsValidZipCode] = useState(true);
+  const navigation = useNavigation<any>();
 
   const handleBack = () => {
+    navigation.goBack();
     console.log('Back button clicked');
   };
 
   const handleContinue = () => {
-    console.log('Continue button clicked');
+    if (isValidZipCode && zipCode) {
+      // Save zip code to local storage or context here if needed
+      navigation.navigate('Main');
+      console.log('Continue button clicked with valid zip code:', zipCode);
+    } else {
+      console.log('Invalid zip code, cannot proceed');
+    }
   };
 
   //to validate the entered zip code
@@ -30,7 +40,6 @@ const UserLocation = () => {
     const isValid = zipCodeRegex.test(text);
     setIsValidZipCode(isValid); // Update validity state
     setZipCode(text); // Update zip code state
-    console.log(zipCode)
   };
 
   return (
@@ -68,7 +77,7 @@ const UserLocation = () => {
         height={20}
       />
 
-      <Text style={styles.question}>Where do you Live?</Text>
+      <Text style={styles.question}>Where do you live?</Text>
 
       <TextInput
         style={[styles.input, !isValidZipCode && styles.inputError]} // Apply error style if zip code is invalid
@@ -110,6 +119,7 @@ const styles = StyleSheet.create({
     paddingVertical: '2%',
     elevation: 5,
     marginBottom: '15%',
+    borderRadius: 6,
   },
   progressText: {
     color: 'black',

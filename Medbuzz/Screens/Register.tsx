@@ -2,17 +2,20 @@
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Dimensions } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
 import {
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform, Alert
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
+import {Dimensions} from 'react-native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from '../App';
+import {KeyboardAvoidingView, ScrollView, Platform, Alert} from 'react-native';
 import Backarrow from '../Components/Svg/Backarrow';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = () => {
   const [firstName, setFirstName] = React.useState('');
@@ -22,35 +25,52 @@ const Register = () => {
 
   const allInputsFilled = firstName && lastName && email; // Check if all inputs are filled
 
-  const handleContinue = () => {
+  //create a new user object here with the firstname, lastname and email as attributes and save that to the local storage
+  const handleContinue = async () => {
     if (allInputsFilled) {
-      navigation.navigate('RegContinue');
+      try {
+        const user = {
+          firstName,
+          lastName,
+          email,
+        };
+        //save the newly created object locally
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        console.log(
+          'New user object created and first, last name and email has been saved' +
+            JSON.stringify(user),
+        );
+        //navigate to the next registration page
+        navigation.navigate('RegContinue');
+      } catch (error) {
+        console.error('There was a problem saving user info' + error);
+      }
     } else {
       // Show an alert if not all inputs are filled
       Alert.alert(
-        "Incomplete Form",
-        "Please fill all the inputs to continue.",
+        'Incomplete Form',
+        'Please fill all the inputs to continue.',
         [
           {
-            text: "OK",
-            style: "cancel"
-          }
-        ]
+            text: 'OK',
+            style: 'cancel',
+          },
+        ],
       );
     }
   };
 
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Backarrow width={40} height={40} color={"white"}/>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <Backarrow width={40} height={40} color={'white'} />
           </TouchableOpacity>
           <View style={styles.curveOverlay} />
           <View style={styles.logoBox}>
@@ -84,10 +104,12 @@ const Register = () => {
             onChangeText={setEmail}
           />
           <TouchableOpacity
-            style={[styles.loginButton, !allInputsFilled ? styles.disabledButton : {}]}
+            style={[
+              styles.loginButton,
+              !allInputsFilled ? styles.disabledButton : {},
+            ]}
             onPress={handleContinue}
-            disabled={!allInputsFilled}
-          >
+            disabled={!allInputsFilled}>
             <Text style={styles.loginButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
@@ -95,8 +117,6 @@ const Register = () => {
     </KeyboardAvoidingView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   scrollViewContent: {
@@ -139,7 +159,7 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    flex: 0.8, // This will allow the container to fill the rest of the screen
+    flex: 0.5, // This will allow the container to fill the rest of the screen
     justifyContent: 'center', // This centers the children vertically
     paddingHorizontal: 40,
     marginTop: 20,
@@ -160,7 +180,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 18,
     color: 'black',
-    marginBottom: 5,
+    marginTop: 10,
   },
 
   signupTextContainer: {
@@ -173,12 +193,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 30,
-    marginTop: 10,
+    marginTop: 5,
     fontSize: 18,
     borderWidth: 0.3,
     borderColor: 'grey',
     shadowColor: '#010',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#0EA68D',
-    borderRadius: 3,
+    borderRadius: 6,
     marginHorizontal: 12,
     marginTop: 25,
     paddingVertical: 12,
