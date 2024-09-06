@@ -25,6 +25,7 @@ import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from "./Components/Svg/Profile.tsx";
 import Location from './Screens/Location.tsx';
 import StateLocation from './Components/Svg/Statelocation.tsx';
+import UpdateLicense from './Screens/UpdateLicense.tsx';
 import 'react-native-gesture-handler';
 import {
   SafeAreaView,
@@ -71,6 +72,7 @@ function App() {
         <Stack.Screen name="Licenses" component={Licenses} />
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
+        <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
       </Stack.Navigator>
     </NavigationContainer>
   );

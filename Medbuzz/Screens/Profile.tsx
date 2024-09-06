@@ -68,14 +68,18 @@ const Profile = () => {
     const handleStringProp = (stringProp: string) => {
         console.log(stringProp);
     };
-
+    // When License btn is clicked
+    const handleLicense = () =>{
+        navigation.navigate('UpdateLicense');
+        console.log('Lisence')
+    };
 
   return (
     <View style={styles.container}>
 
         <View style={styles.topThird}>
         {/* Back Arrow */}
-        <View style={styles.svgContainer}>
+            <View style={styles.svgContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <View style={styles.backArrowTopLeft}>
                         <Backarrow width={40} height={40} color={"#000"}/>
@@ -151,7 +155,7 @@ const Profile = () => {
                     </TouchableOpacity>
 
                     {/* Licenses */}
-                    <TouchableOpacity style={styles.additionalSectionRow} onPress={() => handleStringProp('Licenses')}>
+                    <TouchableOpacity style={styles.additionalSectionRow} onPress={handleLicense}>
                         <Text style={styles.additionalSection}>Licenses</Text>
                         <View style={styles.rightArrowAlign}>
                             <Text style={styles.rightArrow}>{'>'}</Text>
