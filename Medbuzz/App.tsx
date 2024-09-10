@@ -25,7 +25,9 @@ import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from "./Components/Svg/Profile.tsx";
 import Location from './Screens/Location.tsx';
 import StateLocation from './Components/Svg/Statelocation.tsx';
+import BlankPage from './Screens/MyJobs.tsx';
 import 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   SafeAreaView,
   ScrollView,
@@ -47,7 +49,7 @@ export type RootStackParamList = {
   //navigate(arg0: string): void;
   Login: undefined;
   Register: undefined;
-  RegContinue: undefined; // And other screens if needed
+  RegContinue: undefined; // 
 };
 
 
@@ -85,9 +87,17 @@ function Navigation(){
         <Drawer.Screen name="Homepage" component={Homepage} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
+        {/* Add My Jobs Screen */}
+        <Drawer.Screen 
+          name="My Jobs" 
+          component={BlankPage} // BlankPage is my jobs for now
+          options={{drawerIcon: () => <Icon name="briefcase" size={30} color="black" />}} 
+        />
+    
     </Drawer.Navigator> 
   );
 }
+
 
 // This Navigation is for the signout button
 // Signout API calls will happen here
