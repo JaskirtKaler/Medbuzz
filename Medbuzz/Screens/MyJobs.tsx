@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+
+// Removed unused imports
+// import type { RootStackParamList } from '../App';
 
 type JobProps = {
   jobType: string;
@@ -29,7 +30,7 @@ const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps)
 
 const MyJobsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const jobsPerPage: number = 20; //jobs per page
+  const jobsPerPage: number = 20; // Jobs per page
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   // Sample jobs data
@@ -50,11 +51,12 @@ const MyJobsPage: React.FC = () => {
   // Function to handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true }); // Use optional chaining
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   return (
     <View style={styles.container}>
+      {/* Job Listings */}
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
         {currentJobs.map((job, index) => (
           <Job key={index} {...job} />
