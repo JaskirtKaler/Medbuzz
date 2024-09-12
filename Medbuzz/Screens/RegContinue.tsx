@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
     paddingTop: 250, // Start the form a bit lower from the top
   },
   logoBox: {
-    height: 120,
-    width: 120,
+    height: 100,
+    width: 100,
     position: 'absolute',
     top: height * 0.1,
     left: width * 0.5 - 50, // Center the logo horizontally
@@ -170,25 +170,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logoText: {
-    fontSize: 75,
+    fontSize: 65,
     color: '#0EA68D',
     fontWeight: 'bold',
   },
   label: {
     color: 'black',
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 5,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: 'white',//good
     paddingHorizontal: 15,
     paddingVertical: 12,
-    borderRadius: 25,
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    elevation: 3,
-    marginBottom: 15,
+    borderRadius: 30, //good
+    fontSize: 18,//good
+    borderWidth: 0.5, //good
+    borderColor: 'grey', //good
+    elevation: 5, //good
+    shadowColor: '#010', //good
+    shadowOffset: {width: 0, height: 2}, //good
+    shadowOpacity: 0.1, //good
+    shadowRadius: 8, //good
+    marginBottom: 15, //good
   },
   disabledButton: {
     backgroundColor: '#cccccc',
@@ -210,14 +214,15 @@ const styles = StyleSheet.create({
   continueButton: {
     backgroundColor: 'white',
     borderRadius: 6,
-    paddingVertical: 4,
+    marginHorizontal: '6%',
+    marginTop: '15%',
+    paddingVertical: '2.5%',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+    elevation: 5
   },
   continueButtonText: {
     color: '#0EA68D',
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: 'bold',
   },
   backButton: {
@@ -225,6 +230,7 @@ const styles = StyleSheet.create({
     left: 3,
     top: 10,
   },
+
   backButtonText: {
     color: 'white',
     fontSize: 50,

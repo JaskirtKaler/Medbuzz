@@ -121,10 +121,12 @@ const Register = () => {
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
+    
   },
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center'
   },
   headerContainer: {
     backgroundColor: '#0EA68D',
@@ -133,14 +135,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center vertically
   },
   logoBox: {
-    backgroundColor: 'white',
-    height: 100,
     width: 100,
-    justifyContent: 'center',
+    height: 100,
+    backgroundColor: 'white',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   logoText: {
-    fontSize: 58,
+    fontSize: 65,
     color: '#0EA68D',
     fontWeight: 'bold',
   },
@@ -213,14 +215,16 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 6,
-    marginHorizontal: 12,
-    marginTop: 25,
-    paddingVertical: 12,
+    marginHorizontal: '3%',
+    marginTop: '15%',
+    paddingVertical: '3%',
+    elevation: 5,
     alignItems: 'center',
   },
+
   loginButtonText: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 25,
     fontWeight: 'bold',
   },
   // signupTextContainer: {
