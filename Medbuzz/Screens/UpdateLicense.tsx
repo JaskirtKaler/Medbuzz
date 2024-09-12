@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, ScrollView, TextInput  } from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, ScrollView, TextInput, Platform, KeyboardAvoidingView  } from 'react-native';
 const { width, height } = Dimensions.get('window'); // screen max width and height
 import Backarrow from '../Components/Svg/Backarrow'
 import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker';
-
 import Calender from '../Components/Svg/Calender.tsx';
+import Plus from '../Components/Svg/Plusarrow.tsx';
+
 function UpdateLicense() {
     const navigation = useNavigation<any>(); // Stack Navigation
     // License for the selected license type in the dropdown
@@ -14,16 +15,33 @@ function UpdateLicense() {
     // State for the selected state in the dropdown
     const [selectedState, setSelectedState] = useState("");
     const [licenseNumber, setLicenseNumber] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
 
-
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
+    const [isModalVisible, setIsModalVisible] = useState(false); // Control modal visibility
+    const [selectedDate, setSelectedDate] = useState('MM/DD/YYYY'); // Default date text
+    
+
+
+    // Open calendar modal
+    const handlePress = () => {
+      setIsModalVisible(true);
+    };
     const handleInputChange = (text: string) => {
       // Ensure only numeric values are entered
       const numericValue = text.replace(/[^0-9]/g, '');
       setLicenseNumber(numericValue);
     };
+    const handleClose = () => {
+      setIsModalVisible(false);
+    };
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0].replace(/-/g, '/'); // Format as YYYY/MM/DD
+
+
     //  Label is what is displayed
     //  value is what is passed
     const lisenceType = [
@@ -96,8 +114,12 @@ function UpdateLicense() {
     ];
 
 
-    const handlePress = () => {
+    const handleUpload = () => {
 
+    }
+
+    const handleSave = () =>{
+      
     }
   return (
         <View style={styles.main}>
@@ -170,26 +192,7 @@ function UpdateLicense() {
 
                         {/* License Number Input */}
                         <Text style={{ color : "#000", padding : 5}}>License Number</Text>
-                        
 
-                        {/* --- PUT ON HOLD don't know the Licensing Params for the Inputs
-                        <TextInput
-                                style={[
-                                styles.input,
-                                isFocused && !isValidLength ? styles.inputError : null,
-                                ]}
-                                value={licenseNumber}
-                                onChangeText={handleInputChange}
-                                // keyboardType="numeric"
-                                maxLength={9} // Limit input to 9 digits
-                                onFocus={() => setIsFocused(true)}
-                                onBlur={() => setIsFocused(false)}
-                            />
-                            {!isValidLength && isFocused && (
-                                <Text style={styles.errorText}>
-                                License number must be 9 digits long.
-                                </Text>
-                            )} */}
                         <TextInput
                             style={styles.input}
                             value={licenseNumber}
@@ -199,77 +202,101 @@ function UpdateLicense() {
                         />
 
 
-
                     {/* Expiration date */}
                     <View style={{ width : "100%", height : height*0.05}}></View>
                         <Text style={{ color : "#000", padding : 5}}>Expiration date</Text>
                         <TouchableOpacity onPress={handlePress}>
                                 <View style={styles.calender}>
-                                    <Text style={{color: "#B8AEAE",}}>MM/DD/YYYY</Text>
+                                    <Text style={{color: "#B8AEAE",}}>{selectedDate}</Text>
                                     <Calender width={40} height={40} color={"#000"} />
                                 </View>
                         </TouchableOpacity>
+
+
+                          {/* Modal for Calendar */}
+                        <Modal visible={isModalVisible} transparent={true} animationType="slide">
+                          <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                              {/* <DatePicker
+                                mode="calender"
+                                selected={date}
+
+                              /> */}
+                              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>Close</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </Modal>
                     <View style={{ width : "100%", height : height*0.05}}></View>
                     {/* Line */}
                     <View style={{ width : "100%", height : height * 0.001, backgroundColor: "#B8AEAE"}}></View> 
-
-
                     
                 </View>
                 <View style={{ width : "100%", height : height*0.05}}></View>
                     
-                    {/* <View style={{width: width, height: 1000, backgroundColor: "#e60508"}}></View> */}
-                    <View style={{width: "100%", height: 1000, backgroundColor: "#e60508"}}></View> 
-                    <View style={{flex: 1, width: "100%", height: height * 0.4, backgroundColor: "#14e35d"}}></View>
 
+                    {/* Name on License section */}
+                    <View style={{width: "100%", padding : 15}}>
+                      <Text style={{ color: "#000", paddingLeft: 10, fontWeight: "600", fontSize: 24 }}>License State</Text>
+                      <View style={{ width : "100%", height : height*0.05}}></View>
+                      <Text style={{ color: "#000", paddingLeft: 10, fontSize: 16 }}>Provide you name as stated on your license</Text>
+
+                      <View style={{ width : "100%", height : height*0.05}}></View>
+                        <Text style={{ color: "#000", paddingLeft: 10, fontWeight: "400", fontSize: 16 }}>First Name</Text>
+                        <View style={{paddingTop: 5}}>
+                          <TextInput
+                                style={styles.input}
+                                value={firstName}
+                                onChangeText={setFirstName}
+                                placeholder="First Name"
                 
+                            />
+                        </View>
+                        <View style={{ width : "100%", height : height*0.05}}></View>
+                        <Text style={{ color: "#000", paddingLeft: 10, fontWeight: "400", fontSize: 16 }}>Last Name</Text>
+                        <View style={{paddingTop: 5}}>
+                          <TextInput
+                                style={styles.input}
+                                value={lastName}
+                                onChangeText={setLastName}
+                                placeholder="Last Name"
+                
+                            />
+                        </View>
+
+
+                        {/* Line */}
+                        <View style={{ width : "100%", height : height*0.05}}></View>
+                        <View style={{ width : "100%", height : height * 0.001, backgroundColor: "#B8AEAE"}}></View> 
+
+                    </View> 
+                    {/* Upload License */}
+                    <View style={{flex: 1, width: "100%", padding: 15}}>
+                      <View style={{paddingLeft: 10, paddingBottom: 5}}>
+
+                      <Text style={{ color: "#000", fontWeight: "600", fontSize: 24,}}>Upload license</Text>
+                          <TouchableOpacity onPress={handleUpload} style={{paddingTop: 5}}>
+                            <View style={styles.upload}>
+                                <Plus width={40} height={30} color={'#0EA68D'} />
+                                <Text style={{color: "#0EA68D", fontWeight: "500"}}>Upload File</Text>
+                            </View>
+                          </TouchableOpacity>
+                      </View>
+                            <View style={{width: "100%", height: height *0.08, paddingTop: 15}}>
+                              <TouchableOpacity style={{backgroundColor: '#0EA68D', padding: 10, borderRadius: 5, flex: 1, justifyContent: "center", alignItems: "center"}} onPress={handleSave}>
+                                  <Text style={{color: "#FFF", fontWeight: "500", fontSize: 16}}>Save</Text>
+                              </TouchableOpacity>
+
+                            </View>
+                    </View>
                 
             </ScrollView>
-        </View>
-        
+        </View>  
 
   )
 }
 
-
-const CalendarModal = () => {
-    const [date, setDate] = useState(new Date()); // Default to today's date
-    const [open, setOpen] = useState(false);
-  
-    return (
-      <View style={calendarStyles.container}>
-        {/* <Text style={calendarStyles.label}>Select Date</Text> */}
-  
-        {/* Touchable container to open the date picker modal */}
-        <TouchableOpacity style={calendarStyles.dateContainer} onPress={() => setOpen(true)}>
-          <Text style={calendarStyles.dateText}>{date.toDateString()}</Text>
-        </TouchableOpacity>
-  
-        {/* Date Picker Modal */}
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={open}
-          onRequestClose={() => setOpen(false)}
-        >
-          <View style={calendarStyles.modalContainer}>
-            <View style={calendarStyles.modalContent}>
-              <Text style={calendarStyles.modalTitle}>Pick a Date</Text>
-              <DatePicker
-                date={date}
-                onDateChange={setDate}
-                mode="date"
-                minimumDate={new Date()} // Prevent selecting past dates
-              />
-              <TouchableOpacity onPress={() => setOpen(false)} style={calendarStyles.closeButton}>
-                <Text style={calendarStyles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
-  };
 
 export default UpdateLicense
 
@@ -383,67 +410,39 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: "center",
       },
+      modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContent: {
+        backgroundColor: '#FFF',
+        padding: 20,
+        borderRadius: 10,
+        width: '90%',
+        alignItems: 'center',
+      },
+      closeButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#0EA68D',
+        borderRadius: 5,
+      },
+      closeButtonText: {
+        color: '#FFF',
+        fontSize: 16,
+      },
+      upload:{
+        width: width * 0.5, 
+        height: height * 0.08, 
+        borderWidth: 1, 
+        borderColor:"#0EA68D",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: 'row',
+      },
 });
 
 
-const calendarStyles = StyleSheet.create({
-    container: {
-      paddingHorizontal: 15,
-      marginBottom: 20,
-    },
-    label: {
-      color: '#000',
-      paddingBottom: 5,
-    },
-    dateContainer: {
-      width: '100%',
-      height: 40,
-      justifyContent: 'center',
-      borderColor: '#B8AEAE',
-      borderWidth: 1,
-      borderRadius: 10,
-      backgroundColor: '#FFF',
-      paddingHorizontal: 10,
-      elevation: 5, // Shadow for Android
-      shadowColor: '#000', // Shadow for iOS
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    dateText: {
-      color: '#000',
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-      width: '80%',
-      backgroundColor: '#FFF',
-      borderRadius: 10,
-      padding: 20,
-      alignItems: 'center',
-      elevation: 10,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    closeButton: {
-      marginTop: 20,
-      padding: 10,
-      backgroundColor: '#2196F3',
-      borderRadius: 5,
-    },
-    closeButtonText: {
-      color: '#FFF',
-      fontWeight: 'bold',
-    },
-  });
