@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
-// Removed unused imports
-// import type { RootStackParamList } from '../App';
-
+// Define the type for job properties
 type JobProps = {
   jobType: string;
   companyName: string;
@@ -13,27 +13,32 @@ type JobProps = {
   dateApplied: string;
 };
 
+// Component to display each job
 const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps) => (
   <View style={styles.jobStyle}>
     <View style={styles.jobHeader}>
       <Text style={styles.jobHeaderText}>{jobType}</Text>
-      <Text style={styles.jobHeaderText}>{location}</Text>
+      <View style={styles.locationDateContainer}>
+        <Text style={styles.jobHeaderText}>{location}</Text>
+        <Text style={styles.dateApplied}>{dateApplied}</Text>
+      </View>
     </View>
     <Text style={styles.companyName}>{companyName}</Text>
     <Text style={styles.jobTextStyle}>{jobText}</Text>
-    <Text style={styles.dateApplied}>{dateApplied}</Text>
     <TouchableOpacity style={styles.detailsButton}>
       <Text style={{ color: 'black' }}>Click for more details</Text>
     </TouchableOpacity>
   </View>
 );
 
+// Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
+  // State to keep track of the current page for pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const jobsPerPage: number = 20; // Jobs per page
-  const scrollViewRef = useRef<ScrollView | null>(null);
+  const jobsPerPage: number = 20; // Number of jobs to display per page
+  const scrollViewRef = useRef<ScrollView | null>(null); // Reference to the ScrollView for scrolling back to top on page change
 
-  // Sample jobs data
+  // Sample jobs data, replace with data fetched from ATS API
   const jobsData: JobProps[] = Array.from({ length: 75 }, (_) => ({
     jobType: 'Job Type',
     companyName: 'Company',
@@ -42,13 +47,13 @@ const MyJobsPage: React.FC = () => {
     dateApplied: 'Date Applied',
   }));
 
-  // Calculate current jobs to display
+  // Calculate the current set of jobs to display based on the page number
   const currentJobs: JobProps[] = jobsData.slice(
     (currentPage - 1) * jobsPerPage,
     currentPage * jobsPerPage
   );
 
-  // Function to handle page change
+  // Function to handle page change and scroll to the top
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
@@ -58,14 +63,19 @@ const MyJobsPage: React.FC = () => {
     <View style={styles.container}>
       {/* Job Listings */}
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
+        {/* This is where the job types are rendered */}
+        {/* Replace this with the API call to fetch jobs from ATS and map over the data */}
         {currentJobs.map((job, index) => (
           <Job key={index} {...job} />
         ))}
       </ScrollView>
+
       {/* Pagination Navigation Bar */}
       <View style={styles.pagination}>
+        {/* Dynamically create pagination buttons */}
         {[1, 2, 3].map((page) => (
           <TouchableOpacity key={page} onPress={() => handlePageChange(page)} style={styles.pageNumber}>
+            {/* Highlight the current page in blue */}
             <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
           </TouchableOpacity>
         ))}
@@ -74,6 +84,7 @@ const MyJobsPage: React.FC = () => {
   );
 };
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -103,10 +114,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  locationDateContainer: {
+    flexDirection: 'column', // Stack 'Location' and 'Date Applied' vertically
+    alignItems: 'flex-end',  // Align to the right
+  },
   jobHeaderText: {
     color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  dateApplied: {
+    color: 'black',
+    fontSize: 12,
+    marginTop: 5,
   },
   companyName: {
     color: 'black',
@@ -119,12 +139,6 @@ const styles = StyleSheet.create({
     padding: 25,
     textAlign: 'center',
     marginVertical: 5,
-  },
-  dateApplied: {
-    color: 'black',
-    alignSelf: 'flex-end',
-    fontSize: 12,
-    marginBottom: 5,
   },
   detailsButton: {
     backgroundColor: '#0EA68D',

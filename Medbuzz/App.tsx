@@ -112,6 +112,7 @@ function Navigation() {
         component={Profile}
         options={{ drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} /> }}
       />
+      <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
       <Drawer.Screen
         name="My Jobs"
         component={MyJobsPage}
