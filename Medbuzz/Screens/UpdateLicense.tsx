@@ -4,9 +4,9 @@ const { width, height } = Dimensions.get('window'); // screen max width and heig
 import Backarrow from '../Components/Svg/Backarrow'
 import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown';
-import DatePicker from 'react-native-date-picker';
 import Calender from '../Components/Svg/Calender.tsx';
 import Plus from '../Components/Svg/Plusarrow.tsx';
+
 
 function UpdateLicense() {
     const navigation = useNavigation<any>(); // Stack Navigation
@@ -21,26 +21,31 @@ function UpdateLicense() {
 
 
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
-    const [isModalVisible, setIsModalVisible] = useState(false); // Control modal visibility
-    const [selectedDate, setSelectedDate] = useState('MM/DD/YYYY'); // Default date text
     
 
 
-    // Open calendar modal
-    const handlePress = () => {
-      setIsModalVisible(true);
-    };
-    const handleInputChange = (text: string) => {
-      // Ensure only numeric values are entered
-      const numericValue = text.replace(/[^0-9]/g, '');
-      setLicenseNumber(numericValue);
-    };
-    const handleClose = () => {
-      setIsModalVisible(false);
-    };
-    const today = new Date();
-    const formattedToday = today.toISOString().split('T')[0].replace(/-/g, '/'); // Format as YYYY/MM/DD
 
+    
+    const [expirationDate, setExpirationDate] = useState<string>('');
+
+    const handleDateInput = (text: string) => {
+      // Remove non-numeric characters
+      const numericValue = text.replace(/\D/g, '');
+
+      // Format the value to MM/DD/YYYY
+      let formattedDate = numericValue;
+
+      if (numericValue.length >= 3 && numericValue.length <= 4) {
+        // Add first slash after MM
+        formattedDate = numericValue.slice(0, 2) + '/' + numericValue.slice(2);
+      } else if (numericValue.length > 4) {
+        // Add second slash after DD
+        formattedDate = numericValue.slice(0, 2) + '/' + numericValue.slice(2, 4) + '/' + numericValue.slice(4, 8);
+      }
+
+      // Limit the input to 10 characters (MM/DD/YYYY)
+      setExpirationDate(formattedDate.slice(0, 10));
+    };
 
     //  Label is what is displayed
     //  value is what is passed
@@ -205,29 +210,15 @@ function UpdateLicense() {
                     {/* Expiration date */}
                     <View style={{ width : "100%", height : height*0.05}}></View>
                         <Text style={{ color : "#000", padding : 5}}>Expiration date</Text>
-                        <TouchableOpacity onPress={handlePress}>
-                                <View style={styles.calender}>
-                                    <Text style={{color: "#B8AEAE",}}>{selectedDate}</Text>
-                                    <Calender width={40} height={40} color={"#000"} />
-                                </View>
-                        </TouchableOpacity>
-
-
-                          {/* Modal for Calendar */}
-                        <Modal visible={isModalVisible} transparent={true} animationType="slide">
-                          <View style={styles.modalContainer}>
-                            <View style={styles.modalContent}>
-                              {/* <DatePicker
-                                mode="calender"
-                                selected={date}
-
-                              /> */}
-                              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
-                                <Text style={styles.closeButtonText}>Close</Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        </Modal>
+                          <TextInput
+                              style={styles.calender}
+                              value={expirationDate}
+                              onChangeText={handleDateInput}
+                              keyboardType='numeric'
+                              placeholder="MM/DD/YYYY" 
+                              maxLength={10}   
+                          />
+                          
                     <View style={{ width : "100%", height : height*0.05}}></View>
                     {/* Line */}
                     <View style={{ width : "100%", height : height * 0.001, backgroundColor: "#B8AEAE"}}></View> 
@@ -293,9 +284,11 @@ function UpdateLicense() {
                 
             </ScrollView>
         </View>  
+       
 
   )
 }
+
 
 
 export default UpdateLicense
