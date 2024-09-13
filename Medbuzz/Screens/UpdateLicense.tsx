@@ -147,7 +147,6 @@ function UpdateLicense() {
 
                     {/* License Type Dropdown */}
                     <Text style={{ color : "#000", padding : 5}}>License Type</Text>
-                    {/* <View style={{width : "100%", flex : 1, justifyContent : 'flex-start', alignItems : 'center', backgroundColor: "#e60508"}}> */}
                         <Dropdown
                         style={styles.dropdown}
                         placeholderStyle={styles.placeholderStyle}
@@ -168,7 +167,6 @@ function UpdateLicense() {
                         }}
                         />
 
-                    {/* </View> */}
                     <View style={{ width : "100%", height : height*0.05}}></View>
                         {/* License State Dropdown */}
                         <Text style={{ color : "#000", padding : 5}}>License State</Text>
