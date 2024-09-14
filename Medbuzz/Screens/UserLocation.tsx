@@ -27,7 +27,7 @@ const UserLocation = () => {
   const handleContinue = () => {
     if (isValidZipCode && zipCode) {
       // Save zip code to local storage or context here if needed
-      navigation.navigate('Main');
+      navigation.navigate('LoadingScreen');
       console.log('Continue button clicked with valid zip code:', zipCode);
     } else {
       console.log('Invalid zip code, cannot proceed');
