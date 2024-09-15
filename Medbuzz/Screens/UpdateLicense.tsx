@@ -6,27 +6,121 @@ import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown';
 import Calender from '../Components/Svg/Calender.tsx';
 import Plus from '../Components/Svg/Plusarrow.tsx';
+import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 
+interface License{
+  licenseType: string;
+  licenseState: string;
+  licenseNumber: string;
+  expirationDate: string;
+  firstName: string;
+  lastName: string;
+}
 
 function UpdateLicense() {
     const navigation = useNavigation<any>(); // Stack Navigation
     // License for the selected license type in the dropdown
-    const [Licensetype, setLicensetype] = useState("");
+    const [licenseType, setLicenseType] = useState<string>("");
     // State for the selected state in the dropdown
-    const [selectedState, setSelectedState] = useState("");
-    const [licenseNumber, setLicenseNumber] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
+    const [selectedState, setSelectedState] = useState<string>("");
+    const [licenseNumber, setLicenseNumber] = useState<string>('');
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
+    const [expirationDate, setExpirationDate] = useState<string>('');
 
 
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
+     //  Label is what is displayed
+    //  value is what is passed
+    const lisenceType = [
+      { label: 'Registered Nurse (RN)', value: 'rn' },
+      { label: 'Licensed Practical Nurse (LPN)', value: 'lpn' },
+      { label: 'Certified Nursing Assistant (CNA)', value: 'cna' },
+      { label: 'Nurse Practitioner (NP)', value: 'np' },
+      { label: 'Clinical Nurse Specialist (CNS)', value: 'cns' },
+      { label: 'Certified Nurse Midwife (CNM)', value: 'cnm' },
+      { label: 'Certified Registered Nurse Anesthetist (CRNA)', value: 'crna' },
+      { label: 'Travel Nurse - Registered Nurse (Travel RN)', value: 'travel_rn' },
+      { label: 'Travel Nurse - Licensed Practical Nurse (Travel LPN)', value: 'travel_lpn' },
+      { label: 'Travel Nurse - Certified Nursing Assistant (Travel CNA)', value: 'travel_cna' },
+      { label: 'Travel Nurse - Nurse Practitioner (Travel NP)', value: 'travel_np' },
+      { label: 'Travel Nurse - Clinical Nurse Specialist (Travel CNS)', value: 'travel_cns' },
+      { label: 'Travel Nurse - Certified Nurse Midwife (Travel CNM)', value: 'travel_cnm' },
+      { label: 'Travel Nurse - Certified Registered Nurse Anesthetist (Travel CRNA)', value: 'travel_crna' },
+  ];
+  const usaStates = [
+      { label: "Alabama", value: "Alabama" },
+      { label: "Alaska", value: "Alaska" },
+      { label: "Arizona", value: "Arizona" },
+      { label: "Arkansas", value: "Arkansas" },
+      { label: "California", value: "California" },
+      { label: "Colorado", value: "Colorado" },
+      { label: "Connecticut", value: "Connecticut" },
+      { label: "Delaware", value: "Delaware" },
+      { label: "Florida", value: "Florida" },
+      { label: "Georgia", value: "Georgia" },
+      { label: "Hawaii", value: "Hawaii" },
+      { label: "Idaho", value: "Idaho" },
+      { label: "Illinois", value: "Illinois" },
+      { label: "Indiana", value: "Indiana" },
+      { label: "Iowa", value: "Iowa" },
+      { label: "Kansas", value: "Kansas" },
+      { label: "Kentucky", value: "Kentucky" },
+      { label: "Louisiana", value: "Louisiana" },
+      { label: "Maine", value: "Maine" },
+      { label: "Maryland", value: "Maryland" },
+      { label: "Massachusetts", value: "Massachusetts" },
+      { label: "Michigan", value: "Michigan" },
+      { label: "Minnesota", value: "Minnesota" },
+      { label: "Mississippi", value: "Mississippi" },
+      { label: "Missouri", value: "Missouri" },
+      { label: "Montana", value: "Montana" },
+      { label: "Nebraska", value: "Nebraska" },
+      { label: "Nevada", value: "Nevada" },
+      { label: "New Hampshire", value: "New Hampshire" },
+      { label: "New Jersey", value: "New Jersey" },
+      { label: "New Mexico", value: "New Mexico" },
+      { label: "New York", value: "New York" },
+      { label: "North Carolina", value: "North Carolina" },
+      { label: "North Dakota", value: "North Dakota" },
+      { label: "Ohio", value: "Ohio" },
+      { label: "Oklahoma", value: "Oklahoma" },
+      { label: "Oregon", value: "Oregon" },
+      { label: "Pennsylvania", value: "Pennsylvania" },
+      { label: "Rhode Island", value: "Rhode Island" },
+      { label: "South Carolina", value: "South Carolina" },
+      { label: "South Dakota", value: "South Dakota" },
+      { label: "Tennessee", value: "Tennessee" },
+      { label: "Texas", value: "Texas" },
+      { label: "Utah", value: "Utah" },
+      { label: "Vermont", value: "Vermont" },
+      { label: "Virginia", value: "Virginia" },
+      { label: "Washington", value: "Washington" },
+      { label: "West Virginia", value: "West Virginia" },
+      { label: "Wisconsin", value: "Wisconsin" },
+      { label: "Wyoming", value: "Wyoming" }
+  ];
+
+
+    const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
+    const handleUpload = async () =>{
+        try{
+            const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
+            setSelectedDocument(doc); // Save the document path to the state
+            console.log(doc);
+        }catch (err){
+            if (DocumentPicker.isCancel(err)) {
+                // User cancelled the picker
+                console.log('user Cancelled the upload', err);
+            } else {
+                throw err;
+            }
+        }
+
+
+    }
+
     
-
-
-
-    
-    const [expirationDate, setExpirationDate] = useState<string>('');
 
     const handleDateInput = (text: string) => {
       // Remove non-numeric characters
@@ -47,85 +141,22 @@ function UpdateLicense() {
       setExpirationDate(formattedDate.slice(0, 10));
     };
 
-    //  Label is what is displayed
-    //  value is what is passed
-    const lisenceType = [
-        { label: 'Registered Nurse (RN)', value: 'rn' },
-        { label: 'Licensed Practical Nurse (LPN)', value: 'lpn' },
-        { label: 'Certified Nursing Assistant (CNA)', value: 'cna' },
-        { label: 'Nurse Practitioner (NP)', value: 'np' },
-        { label: 'Clinical Nurse Specialist (CNS)', value: 'cns' },
-        { label: 'Certified Nurse Midwife (CNM)', value: 'cnm' },
-        { label: 'Certified Registered Nurse Anesthetist (CRNA)', value: 'crna' },
-        { label: 'Travel Nurse - Registered Nurse (Travel RN)', value: 'travel_rn' },
-        { label: 'Travel Nurse - Licensed Practical Nurse (Travel LPN)', value: 'travel_lpn' },
-        { label: 'Travel Nurse - Certified Nursing Assistant (Travel CNA)', value: 'travel_cna' },
-        { label: 'Travel Nurse - Nurse Practitioner (Travel NP)', value: 'travel_np' },
-        { label: 'Travel Nurse - Clinical Nurse Specialist (Travel CNS)', value: 'travel_cns' },
-        { label: 'Travel Nurse - Certified Nurse Midwife (Travel CNM)', value: 'travel_cnm' },
-        { label: 'Travel Nurse - Certified Registered Nurse Anesthetist (Travel CRNA)', value: 'travel_crna' },
-    ];
-    const usaStates = [
-        { label: "Alabama", value: "Alabama" },
-        { label: "Alaska", value: "Alaska" },
-        { label: "Arizona", value: "Arizona" },
-        { label: "Arkansas", value: "Arkansas" },
-        { label: "California", value: "California" },
-        { label: "Colorado", value: "Colorado" },
-        { label: "Connecticut", value: "Connecticut" },
-        { label: "Delaware", value: "Delaware" },
-        { label: "Florida", value: "Florida" },
-        { label: "Georgia", value: "Georgia" },
-        { label: "Hawaii", value: "Hawaii" },
-        { label: "Idaho", value: "Idaho" },
-        { label: "Illinois", value: "Illinois" },
-        { label: "Indiana", value: "Indiana" },
-        { label: "Iowa", value: "Iowa" },
-        { label: "Kansas", value: "Kansas" },
-        { label: "Kentucky", value: "Kentucky" },
-        { label: "Louisiana", value: "Louisiana" },
-        { label: "Maine", value: "Maine" },
-        { label: "Maryland", value: "Maryland" },
-        { label: "Massachusetts", value: "Massachusetts" },
-        { label: "Michigan", value: "Michigan" },
-        { label: "Minnesota", value: "Minnesota" },
-        { label: "Mississippi", value: "Mississippi" },
-        { label: "Missouri", value: "Missouri" },
-        { label: "Montana", value: "Montana" },
-        { label: "Nebraska", value: "Nebraska" },
-        { label: "Nevada", value: "Nevada" },
-        { label: "New Hampshire", value: "New Hampshire" },
-        { label: "New Jersey", value: "New Jersey" },
-        { label: "New Mexico", value: "New Mexico" },
-        { label: "New York", value: "New York" },
-        { label: "North Carolina", value: "North Carolina" },
-        { label: "North Dakota", value: "North Dakota" },
-        { label: "Ohio", value: "Ohio" },
-        { label: "Oklahoma", value: "Oklahoma" },
-        { label: "Oregon", value: "Oregon" },
-        { label: "Pennsylvania", value: "Pennsylvania" },
-        { label: "Rhode Island", value: "Rhode Island" },
-        { label: "South Carolina", value: "South Carolina" },
-        { label: "South Dakota", value: "South Dakota" },
-        { label: "Tennessee", value: "Tennessee" },
-        { label: "Texas", value: "Texas" },
-        { label: "Utah", value: "Utah" },
-        { label: "Vermont", value: "Vermont" },
-        { label: "Virginia", value: "Virginia" },
-        { label: "Washington", value: "Washington" },
-        { label: "West Virginia", value: "West Virginia" },
-        { label: "Wisconsin", value: "Wisconsin" },
-        { label: "Wyoming", value: "Wyoming" }
-    ];
+   
 
+    
+    const handleSave = () => {
+      const licenseData: License = {
+        licenseType,
+        licenseState: selectedState,
+        licenseNumber,
+        expirationDate,
+        firstName,
+        lastName
+      };
+  
+      console.log(licenseData);
+    };
 
-    const handleUpload = () => {
-
-    }
-
-    const handleSave = () =>{
-      
-    }
   return (
         <View style={styles.main}>
         {/* Header Section */}
@@ -160,10 +191,10 @@ function UpdateLicense() {
                         valueField="value"
                         placeholder="Select"
                         searchPlaceholder="Search..."
-                        value={Licensetype}
+                        value={licenseType}
                         onChange={item => {
-                            setLicensetype(item.value);
-                            console.log(Licensetype);
+                            setLicenseType(item.value);
+                            console.log(licenseType);
                         }}
                         />
 
@@ -265,12 +296,25 @@ function UpdateLicense() {
                       <View style={{paddingLeft: 10, paddingBottom: 5}}>
 
                       <Text style={{ color: "#000", fontWeight: "600", fontSize: 24,}}>Upload license</Text>
+
+                        {/* Top part is if there is a file bottom is nothing is uploaded at the moment */}
+                        {selectedDocument ? ( 
+                          // { justifyContent: 'center', alignItems: 'center' }
+                          <View style={styles.upload}> 
+                            <Text style={{ color: '#000' }}>{selectedDocument["name"] || 'No file name available'}</Text> {/* Show the selected document name */}
+                          </View>
+                          
+                        ) : (
                           <TouchableOpacity onPress={handleUpload} style={{paddingTop: 5}}>
                             <View style={styles.upload}>
-                                <Plus width={40} height={30} color={'#0EA68D'} />
-                                <Text style={{color: "#0EA68D", fontWeight: "500"}}>Upload File</Text>
+                              <Plus width={40} height={30} color={'#0EA68D'} />
+                              <Text style={{color: "#0EA68D", fontWeight: "500"}}>Upload File</Text>
                             </View>
                           </TouchableOpacity>
+                        )}
+
+
+
                       </View>
                             <View style={{width: "100%", height: height *0.08, paddingTop: 15}}>
                               <TouchableOpacity style={{backgroundColor: '#0EA68D', padding: 10, borderRadius: 5, flex: 1, justifyContent: "center", alignItems: "center"}} onPress={handleSave}>
