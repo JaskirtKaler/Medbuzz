@@ -49,6 +49,8 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   RegContinue: undefined; // And other screens if needed
+  UploadDoc: { header: string }; // UploadDoc expects a "header" string
+
 };
 
 
@@ -73,6 +75,7 @@ function App() {
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
         <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
+        <Stack.Screen name="UploadDoc" component={UploadDoc} />
       </Stack.Navigator>
     </NavigationContainer>
   );

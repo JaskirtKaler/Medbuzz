@@ -5,11 +5,19 @@ const { width, height } = Dimensions.get('window'); // screen max width and heig
 import { Svg, Path} from 'react-native-svg';
 import BackArrow from '../Components/Svg/Backarrow';
 import Download from '../Components/Svg/Download';
+import { useNavigation } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 
+// Define the expected parameter type
+type UploadDocRouteProp = RouteProp<{ params: { header: string } }, 'params'>;
 
-const UploadDoc = ({ header = "Default Header" }) => {
+interface UploadDocProps {
+  route: UploadDocRouteProp;
+}
 
-
+const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
+  const { header } = route.params || { header: 'Default Header' }; // Set a default header
+const navigation = useNavigation<any>(); // Stack Navigation
 const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
 const handleUpload = async () =>{
     try{
@@ -35,6 +43,7 @@ const handleDownload = () => {
 
 // handle when back arrow is clicked
 const handleBack = () => {
+  navigation.goBack();
   console.log('backarrow clicked')
 }
 

@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import Editbutton from '../Components/Svg/Editbutton'
 import { useNavigation } from '@react-navigation/native'
+import UploadDoc from './UploadDoc.tsx';
 
 const Profile = () => {
     const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
@@ -66,6 +67,26 @@ const Profile = () => {
     }
 
     const handleStringProp = (stringProp: string) => {
+        switch(stringProp){
+            case "Resume":
+                navigation.navigate('UploadDoc', { header: 'Resume' });
+                break;
+            case 'Degree':
+                navigation.navigate('UploadDoc', { header: 'Degree' });
+                break;
+            case 'Certifications':
+                navigation.navigate('UploadDoc', { header: 'Certifications' });
+                break;
+            case 'References':
+                navigation.navigate('UploadDoc', { header: 'References' });
+                break;
+            case 'Vaccination':
+                navigation.navigate('UploadDoc', { header: 'Vaccination' });
+                break;
+            default:
+                navigation.navigate(UploadDoc,{header: "Error"});
+                break;
+        }
         console.log(stringProp);
     };
     // When License btn is clicked
