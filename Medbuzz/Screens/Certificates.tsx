@@ -21,7 +21,7 @@ const CertificatesScreen = () => {
       options={options}
       certificate={selectedOption}
       setCertificate={setSelectedOption}
-      title="Select Certificates"
+      title="Select Certificate"
       nextScreen="Licenses"
     />
   );
