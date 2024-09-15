@@ -25,7 +25,7 @@ const LoadingScreen = () => {
     const navigation = useNavigation<any>();
 
     const handleContinue = () => {
-        console.log('Continued was hit, now waiting to simulate network traffic for 3 seconds.')
+        console.log('Continued was hit, now waiting to simulate network traffic for 5 seconds.')
         setTimeout(()=> {
             console.log("done");
             navigation.navigate('Main');
