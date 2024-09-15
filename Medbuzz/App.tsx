@@ -38,6 +38,7 @@ import {
 } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem, } from '@react-navigation/drawer';
 import ChangePassword from './Screens/ChangePassword.tsx';
+import JobPosting from './Screens/JobPosting.tsx';
 
 
 
@@ -71,6 +72,7 @@ function App() {
         <Stack.Screen name="Licenses" component={Licenses} />
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
+        <Stack.Screen name="JobPosting" component={JobPosting}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
