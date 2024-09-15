@@ -26,6 +26,7 @@ import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from './Components/Svg/Profile.tsx';
 import Location from './Screens/Location.tsx';
 import StateLocation from './Components/Svg/Statelocation.tsx';
+import LoadingScreen from './Screens/LoadingScreen.tsx';
 import MyJobsPage from './Screens/MyJobs.tsx';
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -74,6 +75,7 @@ function App() {
         <Stack.Screen name="Licenses" component={Licenses} />
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
+        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
         <Stack.Screen
           name="MyJobs"
           component={MyJobsPage}
