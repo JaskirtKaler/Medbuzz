@@ -25,7 +25,9 @@ import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from "./Components/Svg/Profile.tsx";
 import Location from './Screens/Location.tsx';
 import StateLocation from './Components/Svg/Statelocation.tsx';
+import Message from './Components/Svg/Message.tsx';
 import 'react-native-gesture-handler';
+import MessagePage from './Screens/MessagePage.tsx';
 import {
   SafeAreaView,
   ScrollView,
@@ -85,6 +87,7 @@ function Navigation(){
         <Drawer.Screen name="Homepage" component={Homepage} options={{drawerIcon: () => <HomeSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Profile" component={Profile} options={{drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} />}} />
         <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
+        <Drawer.Screen name="Messages" component={MessagePage} options={{drawerIcon: () => <Message width={30} height={30} color={'#000'} />}} />
     </Drawer.Navigator> 
   );
 }
