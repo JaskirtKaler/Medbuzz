@@ -51,9 +51,10 @@ const UserLocation = () => {
       //save the final object to the db
 
       //clear the local storage
-      AsyncStorage.removeItem('user')
-      
-      navigation.navigate('Main');
+      AsyncStorage.removeItem('user')     
+
+      navigation.navigate('LoadingScreen');
+
     } else {
       ToastAndroid.show('Invalid zip code, cannot proceed', ToastAndroid.SHORT);
       console.log('Invalid zip code, cannot proceed');
