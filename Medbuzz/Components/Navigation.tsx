@@ -4,6 +4,7 @@ import Nav from './Svg/NavigationBar.tsx'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import TempHome from '../Screens/TempHome.tsx';
 import Profile from '../Screens/Profile.tsx';
+import MessagePage from '../Screens/MessagePage.tsx';
 
 
 
@@ -15,6 +16,7 @@ const Navigation = () => {
     <Drawer.Navigator initialRouteName="TempHome" screenOptions={{ drawerType: 'back', drawerPosition: 'right',}}>
         <Drawer.Screen name="TempHome" component={TempHome} />
         <Drawer.Screen name="Profile" component={Profile} />
+        <Drawer.Screen name="Messages" component={MessagePage} />
     </Drawer.Navigator> 
 
   )

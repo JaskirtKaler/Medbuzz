@@ -26,6 +26,8 @@ import HomeSVG from './Components/Svg/HomeSVG.tsx';
 import ProfileSVG from './Components/Svg/Profile.tsx';
 import Location from './Screens/Location.tsx';
 import StateLocation from './Components/Svg/Statelocation.tsx';
+import Message from './Components/Svg/Message.tsx';
+import MessagePage from './Screens/MessagePage.tsx';
 import LoadingScreen from './Screens/LoadingScreen.tsx';
 import MyJobsPage from './Screens/MyJobs.tsx';
 import 'react-native-gesture-handler';
@@ -115,6 +117,7 @@ function Navigation() {
         options={{ drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} /> }}
       />
       <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
+      <Drawer.Screen name="Messages" component={MessagePage} options={{drawerIcon: () => <Message width={30} height={30} color={'#000'} />}} />
       <Drawer.Screen
         name="My Jobs"
         component={MyJobsPage}
