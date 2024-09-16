@@ -49,13 +49,13 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   RegContinue: undefined; // And other screens if needed
-  UploadDoc: { header: string }; // UploadDoc expects a "header" string
+   UploadDoc: { header: string };   // UploadDoc expects a "header" string
 
 };
 
-
 // Begining on Stack navigation where Login System will begine
 function App() {
+  
   const Stack = createNativeStackNavigator<any>();
   return (
     <NavigationContainer>
@@ -75,7 +75,7 @@ function App() {
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
         <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
-        <Stack.Screen name="UploadDoc" component={UploadDoc} />
+        <Stack.Screen name="UploadDoc"  component={UploadDoc as React.FC<any>} initialParams={{header: "Error"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -6,24 +6,24 @@ import { Svg, Path} from 'react-native-svg';
 import BackArrow from '../Components/Svg/Backarrow';
 import Download from '../Components/Svg/Download';
 import { useNavigation } from '@react-navigation/native';
-import { RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../App'; // Import the type for RootStackParamList
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-// Define the expected parameter type
-type UploadDocRouteProp = RouteProp<{ params: { header: string } }, 'params'>;
 
-interface UploadDocProps {
-  route: UploadDocRouteProp;
-}
+
+// Define props type using NativeStackScreenProps
+type UploadDocProps = NativeStackScreenProps<RootStackParamList, 'UploadDoc'>;
 
 const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
-  const { header } = route.params || { header: 'Default Header' }; // Set a default header
-const navigation = useNavigation<any>(); // Stack Navigation
-const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
+  const navigation = useNavigation<any>(); // Stack Navigation
+  const header  = route.params.header; // returns the header : value
+  const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
 const handleUpload = async () =>{
     try{
         const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
         setSelectedDocument(doc); // Save the document path to the state
         console.log(doc);
+        console.log(header)
     }catch (err){
         if (DocumentPicker.isCancel(err)) {
             // User cancelled the picker
@@ -59,7 +59,7 @@ const handleBack = () => {
         >
           <BackArrow width={40} height={40} color={"#000"}/>
         </TouchableOpacity>
-          <Text style={{color:'#000'}}>{header}</Text>
+          <Text style={{color:'#000', fontWeight: "500", fontSize: 18}}>{header}</Text>
         <View style={{width:40}} /> 
       </View>
       {/*Contents section */}
