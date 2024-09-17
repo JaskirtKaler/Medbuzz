@@ -47,6 +47,7 @@ import {
 } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import ChangePassword from './Screens/ChangePassword.tsx';
+import JobPosting from './Screens/JobPosting.tsx';
 
 // Import the image for the "My Jobs" icon
 const myJobsIcon = require('./SVG/myJobs.png');
@@ -82,6 +83,7 @@ function App() {
         <Stack.Screen name="Licenses" component={Licenses} />
         <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
         <Stack.Screen name="UserLocation" component={UserLocation} />
+        <Stack.Screen name="JobPosting" component={JobPosting}/>
         <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
         <Stack.Screen
           name="MyJobs"
