@@ -1,4 +1,4 @@
-import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch} from 'react-native'
+import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal} from 'react-native'
 import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import Editbutton from '../Components/Svg/Editbutton'
@@ -212,8 +212,10 @@ const Profile = () => {
                             value={staffRoles}
                         />
                      </View>
-
-                     <Text style={styles.jobTypeText}>Staff Roles</Text>
+                     <View style={{flexDirection: 'row'}}>     
+                        <Text style={styles.jobTypeText}>Staff Roles</Text>
+                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                     </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleStaffDetails}>
                                 <Text style={styles.seeMoreDetailsText}> {'>'} See more details</Text>
@@ -247,7 +249,10 @@ const Profile = () => {
                         />
                      </View>
 
-                     <Text style={styles.jobTypeText}>Travel Contracts</Text>
+                     <View style={{flexDirection: 'row'}}>     
+                        <Text style={styles.jobTypeText}>Travel Contracts</Text>
+                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                     </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleTravelDetails}>
                                 <Text style={styles.seeMoreDetailsText}> {'>'} See more details</Text>
@@ -282,7 +287,10 @@ const Profile = () => {
                         />
                      </View>
 
-                     <Text style={styles.jobTypeText}>Local Contracts</Text>
+                     <View style={{flexDirection: 'row'}}>     
+                        <Text style={styles.jobTypeText}>Local Contracts</Text>
+                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                     </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleLocalDetails}>
                                 <Text style={styles.seeMoreDetailsText}> {'>'} See more details</Text>
@@ -496,6 +504,7 @@ const styles = StyleSheet.create({
         color: 'black',
         marginTop: 10,
         marginLeft: 30,
+        flex: 1
     },
     seeMoreDetailsContainer: {
         marginBottom: 30,
