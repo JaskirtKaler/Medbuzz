@@ -5,17 +5,26 @@ const { width, height } = Dimensions.get('window'); // screen max width and heig
 import { Svg, Path} from 'react-native-svg';
 import BackArrow from '../Components/Svg/Backarrow';
 import Download from '../Components/Svg/Download';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../App'; // Import the type for RootStackParamList
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 
-const UploadDoc = ({ header = "Default Header" }) => {
 
+// Define props type using NativeStackScreenProps
+type UploadDocProps = NativeStackScreenProps<RootStackParamList, 'UploadDoc'>;
 
-const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
+const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
+  const navigation = useNavigation<any>(); // Stack Navigation
+  const header  = route.params.header; // returns the header : value
+  const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
 const handleUpload = async () =>{
     try{
         const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
         setSelectedDocument(doc); // Save the document path to the state
         console.log(doc);
+        console.log(header)
+        // create switch statment for back end calls
     }catch (err){
         if (DocumentPicker.isCancel(err)) {
             // User cancelled the picker
@@ -35,6 +44,7 @@ const handleDownload = () => {
 
 // handle when back arrow is clicked
 const handleBack = () => {
+  navigation.goBack();
   console.log('backarrow clicked')
 }
 
@@ -50,7 +60,7 @@ const handleBack = () => {
         >
           <BackArrow width={40} height={40} color={"#000"}/>
         </TouchableOpacity>
-          <Text style={{color:'#000'}}>{header}</Text>
+          <Text style={{color:'#000', fontWeight: "500", fontSize: 18}}>{header}</Text>
         <View style={{width:40}} /> 
       </View>
       {/*Contents section */}

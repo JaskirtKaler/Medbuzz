@@ -99,6 +99,19 @@ const disciplines = [
   {label: '---', value: '---'}
 ];
 
+// Certifications for use with certification Dropdown selector
+// Added in by Richard Varela for SCRUM - 106
+const certificates = [
+  { label: 'ACLS', value: 'ACLS' },
+  { label: 'BLS', value: 'BLS' },
+  { label: 'Cert3', value: 'Cert3' },
+  { label: 'Cert4', value: 'Cert4' },
+  { label: 'Cert5', value: 'Cert5' },
+  { label: 'Bla', value: 'Bla' },
+  { label: 'Duende', value: 'Duende' },
+  { label: '---', value: '---' }
+];
+
 // Screen - Edit Basic Details
 const EditBasicDetails = () => {
   const navigation = useNavigation<any>(); // Stack Navigation
@@ -122,8 +135,15 @@ const EditBasicDetails = () => {
   const [homeCity, setHomeCity] = useState("");
   const [homeState, setHomeState] = useState("");
   const [yearsOfSpecialty, setYearsOfSpecialty] = useState("");
+  const[certificate, setCertificate] = useState("");
+  const[zipCode, setZipCode] = useState("");
+  const[ssn, setSSN] = useState("");
+  const[legalFirstName, setLegalFirstName] = useState("");
+  const[legalLastName, setLegalLastName] = useState("");
+  const [isValidZipCode, setIsValidZipCode] = useState(true);
 
   // prints all inputs when 'Save' button is pressed
+  // Temporary function. Later this information will be saved to the database.
   function printInputs() {
     console.log("First name: " + firstName);
     console.log("Middle name: " + middleName);
@@ -144,8 +164,21 @@ const EditBasicDetails = () => {
     console.log("Home state: " + homeState);
     console.log("Discipline: " + discipline);
     console.log("Years of specialty: " + yearsOfSpecialty);
+    console.log("Certificate: " + certificate);
+    console.log("ZIP Code: " + zipCode);
+    console.log("SSN: " + ssn)
+    console.log("Legal first name: " + legalFirstName);
+    console.log("Legal last name: " + legalLastName);
+    console.log("Valid ZIP code: " + isValidZipCode);
   }
-  
+
+  // Created by Ashar from the UserLocation.tsx file
+  const validateZipCode = (text: string) => {
+    const zipCodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+    const isValid = zipCodeRegex.test(text);
+    setIsValidZipCode(isValid); // Update validity state
+    setZipCode(text); // Update zip code state
+  };
   
   return(
     
@@ -197,13 +230,6 @@ const EditBasicDetails = () => {
       {/* Professional summary field and TextBox */}
       <Text style={styles.fieldTextStyle}>Professional summary</Text>
       <TextInput onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
-
-      {/* Date of birth field and TextBox */}
-      <Text style = {styles.fieldTextStyle}>
-        <Text>Date of birth</Text>
-        <Text style={{color: 'red'}}> *</Text>
-      </Text>
-      <TextInput onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
 
       {/* Education header */}
       <Text style={styles.headerTextStyle}>Education</Text>
@@ -347,6 +373,13 @@ const EditBasicDetails = () => {
       </Text>
       <TextInput onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
 
+      {/* Zip code field and TextBox */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>ZIP Code</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={validateZipCode} style={styles.textBoxStyle}></TextInput>
+
       {/* Your Expertise header */}
       <Text style={styles.headerTextStyle}>Your expertise</Text>
 
@@ -374,12 +407,68 @@ const EditBasicDetails = () => {
         }}
       />
 
+      {/* Certificate field and Dropdown selector */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>Certification</Text>
+        <Text style={{color:'red'}}> *</Text>
+      </Text>
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={certificates}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder="Select item"
+        searchPlaceholder="Search..."
+        value={certificate}
+        onChange={item => {
+          setCertificate(item.value);
+        }}
+      />
+
       {/* Years of specialty experience field and TextBox */}
       <Text style={styles.fieldTextStyle}>
-        <Text>Years of specialty experience</Text>
+        <Text>Years of experience</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
       <TextInput onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
+
+      {/* IDENTITY VERIFICATION SECTION */}
+      {/* Richard Varela add the identity verification section related to SCRUM - 106 */}
+      <Text style={styles.headerTextStyle}>Identity verfication</Text>
+
+      {/* Date of birth field and TextBox */}
+      <Text style = {styles.fieldTextStyle}>
+        <Text>Date of birth</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
+
+      {/* Input field for last four of SSN */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>Last four of SSN</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setSSN} style={styles.textBoxStyle}></TextInput>
+
+      {/* Input field for legal first name */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>Legal First Name</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setLegalFirstName} style={styles.textBoxStyle}></TextInput>
+
+      {/* Input field for legal last name */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>Legal Last Name</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput onChangeText={setLegalLastName} style={styles.textBoxStyle}></TextInput>
 
       {/* Save button */}
       <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
@@ -389,10 +478,9 @@ const EditBasicDetails = () => {
       {/* Cancel button */}
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
-      </TouchableOpacity>  
-    </ScrollView>
-
-    
+      </TouchableOpacity>
+      
+    </ScrollView>    
   )
 }
 
