@@ -112,6 +112,7 @@ function Navigation() {
         headerShown: false, // DO NOT change this
         drawerPosition: 'right',
       })}
+      drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
         name="Homepage"
@@ -123,8 +124,9 @@ function Navigation() {
         component={Profile}
         options={{ drawerIcon: () => <ProfileSVG width={30} height={30} color={'#000'} /> }}
       />
-      <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
       <Drawer.Screen name="Messages" component={MessagePage} options={{drawerIcon: () => <Message width={30} height={30} color={'#000'} />}} />
+      <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
+      
       <Drawer.Screen
         name="My Jobs"
         component={MyJobsPage}
