@@ -109,7 +109,7 @@ function Navigation() {
     <Drawer.Navigator
       initialRouteName="Homepage"
       screenOptions={({ route }) => ({
-        headerShown: route.name !== 'Homepage', // Show header only on "My Jobs" page
+        headerShown: false, // DO NOT change this
         drawerPosition: 'right',
       })}
     >
