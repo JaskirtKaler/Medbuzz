@@ -7,6 +7,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Calender from '../Components/Svg/Calender.tsx';
 import Plus from '../Components/Svg/Plusarrow.tsx';
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
+import Download from '../Components/Svg/Download';
 
 interface License{
   licenseType: string;
@@ -15,6 +16,7 @@ interface License{
   expirationDate: string;
   firstName: string;
   lastName: string;
+ 
 }
 
 function UpdateLicense() {
@@ -27,6 +29,7 @@ function UpdateLicense() {
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [expirationDate, setExpirationDate] = useState<string>('');
+    const [upload, setUpload] = useState<boolean>(false);
 
 
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
@@ -107,6 +110,7 @@ function UpdateLicense() {
         try{
             const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
             setSelectedDocument(doc); // Save the document path to the state
+            setUpload(true);
             console.log(doc);
         }catch (err){
             if (DocumentPicker.isCancel(err)) {
@@ -151,11 +155,16 @@ function UpdateLicense() {
         licenseNumber,
         expirationDate,
         firstName,
-        lastName
+        lastName, 
       };
   
       console.log(licenseData);
+      console.log(selectedDocument?.name || 'None');
     };
+    // if user decides to download document
+    const handleDownload = () =>{
+      console.log('Download document')
+    }
 
   return (
         <View style={styles.main}>
@@ -299,21 +308,23 @@ function UpdateLicense() {
 
                         {/* Top part is if there is a file bottom is nothing is uploaded at the moment */}
                         {selectedDocument ? ( 
-                          // { justifyContent: 'center', alignItems: 'center' }
-                          <View style={styles.upload}> 
-                            <Text style={{ color: '#000' }}>{selectedDocument["name"] || 'No file name available'}</Text> {/* Show the selected document name */}
-                          </View>
-                          
-                        ) : (
-                          <TouchableOpacity onPress={handleUpload} style={{paddingTop: 5}}>
-                            <View style={styles.upload}>
-                              <Plus width={40} height={30} color={'#0EA68D'} />
-                              <Text style={{color: "#0EA68D", fontWeight: "500"}}>Upload File</Text>
-                            </View>
+                          <TouchableOpacity onPress={handleDownload}> 
+                            <View style={styles.file}>
+                              <Text>{selectedDocument["name"]}</Text>
+                              <Download width={50} height={50} color={'#000'} />
+                            </View> 
                           </TouchableOpacity>
-                        )}
+                          ) : (
+                          <Text>File not uploaded</Text>
+                          )}
+                         <TouchableOpacity onPress={handleUpload} style={{paddingTop: 5}}>
+                           <View style={styles.upload}>
+                             <Plus width={40} height={30} color={'#0EA68D'} />
+                             <Text style={{color: "#0EA68D", fontWeight: "500"}}>{upload ? 'Upload New File' : 'Upload File'}</Text>
+                           </View>
+                         </TouchableOpacity>
 
-
+                
 
                       </View>
                             <View style={{width: "100%", height: height *0.08, paddingTop: 15}}>
@@ -478,6 +489,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: 'row',
       },
+      file:{
+        width: width * 0.9, 
+        height: height * 0.08, 
+        borderWidth: 1, 
+        borderColor:"#0EA68D",
+        borderRadius: 10,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: 'row',
+        padding: 10,
+      }, 
 });
 
 

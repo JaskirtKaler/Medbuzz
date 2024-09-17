@@ -24,6 +24,7 @@ const handleUpload = async () =>{
         setSelectedDocument(doc); // Save the document path to the state
         console.log(doc);
         console.log(header)
+        // create switch statment for back end calls
     }catch (err){
         if (DocumentPicker.isCancel(err)) {
             // User cancelled the picker

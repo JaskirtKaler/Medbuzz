@@ -49,7 +49,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   RegContinue: undefined; // And other screens if needed
-   UploadDoc: { header: string };   // UploadDoc expects a "header" string
+  UploadDoc: { header: string };   // UploadDoc expects a "header" string
 
 };
 
