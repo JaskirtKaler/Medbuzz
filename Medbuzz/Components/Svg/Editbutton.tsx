@@ -9,8 +9,8 @@ interface SvgComponentProps extends SvgProps {
 
 const SvgComponent = ({ width = 40, height = 40, color = "#231f20", ...props }: SvgComponentProps) => (
   <Svg
-    width={40}
-    height={40}
+    width={width}
+    height={height}
     fill="none"
     viewBox="0 0 24 24"
     {...props}
