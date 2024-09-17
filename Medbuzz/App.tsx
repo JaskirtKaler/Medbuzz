@@ -30,6 +30,7 @@ import Message from './Components/Svg/Message.tsx';
 import MessagePage from './Screens/MessagePage.tsx';
 import LoadingScreen from './Screens/LoadingScreen.tsx';
 import MyJobsPage from './Screens/MyJobs.tsx';
+import UpdateLicense from './Screens/UpdateLicense.tsx';
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -56,9 +57,13 @@ export type RootStackParamList = {
   RegContinue: undefined;
   Homepage: undefined;
   MyJobs: undefined;
+  UploadDoc: { header: string };   // UploadDoc expects a "header" string
+
 };
 
+// Begining on Stack navigation where Login System will begine
 function App() {
+  
   const Stack = createNativeStackNavigator<any>();
   return (
     <NavigationContainer>
@@ -91,6 +96,8 @@ function App() {
             ),
           })}
         />
+        <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
+        <Stack.Screen name="UploadDoc"  component={UploadDoc as React.FC<any>} initialParams={{header: "Error"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
