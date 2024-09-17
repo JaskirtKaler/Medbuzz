@@ -1,3 +1,11 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable comma-dangle */
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable jsx-quotes */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, Dimensions } from 'react-native';
 import React, {useState} from 'react';
 import NavigationBar from '../Components/Svg/NavigationBar.tsx';
@@ -61,6 +69,7 @@ const Homepage = () => {
         </ScrollView>
     )
 }
+
 
 const styles = StyleSheet.create({
     containerStyle: {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,29 +7,56 @@ import {
   Dimensions,
   TextInput,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import Backarrow from '../Components/Svg/Backarrow';
-import { useNavigation } from '@react-navigation/native';
-import Navigation from '../Components/Navigation';
+import {useNavigation} from '@react-navigation/native';
+import {styles} from './ParentPage';
+import {loadUser, saveUser, User} from '../Utility/userStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserLocation = () => {
-  const progress = 45; // Example progress percentage
+  const progress = 90; // Example progress percentage
   const [zipCode, setZipCode] = useState('');
   const [isValidZipCode, setIsValidZipCode] = useState(true);
   const navigation = useNavigation<any>();
+  const [user, setUser] = useState<User | null>();
+
+  //everytime the page mounts, this use effect would be called and the user object from local storage will be retrieved
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await loadUser();
+      setUser(userData);
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleBack = () => {
     navigation.goBack();
     console.log('Back button clicked');
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (isValidZipCode && zipCode) {
-      // Save zip code to local storage or context here if needed
-      navigation.navigate('Main');
-      console.log('Continue button clicked with valid zip code:', zipCode);
+      //since this is the last of the survey page, delete the info from local storage after saving to db or sending to backend.
+
+      const updatedUser: User = {
+        ...user,
+        zipCode,
+      };
+
+      console.log('Final updatedUser object:', JSON.stringify(updatedUser));
+      //save the final object to the db
+
+      //clear the local storage
+      AsyncStorage.removeItem('user')     
+
+      navigation.navigate('LoadingScreen');
+
     } else {
+      ToastAndroid.show('Invalid zip code, cannot proceed', ToastAndroid.SHORT);
       console.log('Invalid zip code, cannot proceed');
     }
   };
@@ -70,7 +97,7 @@ const UserLocation = () => {
       {/* Progress Bar */}
       <Bar
         progress={progress / 100}
-        width={Dimensions.get('window').width * 0.8} // 80% of the window width
+        width={Dimensions.get('window').width * 0.8}
         color={'black'}
         borderRadius={0}
         unfilledColor={'#D9D9D9'}
@@ -80,7 +107,7 @@ const UserLocation = () => {
       <Text style={styles.question}>Where do you live?</Text>
 
       <TextInput
-        style={[styles.input, !isValidZipCode && styles.inputError]} // Apply error style if zip code is invalid
+        style={[stylesLocal.input, !isValidZipCode && stylesLocal.inputError]} // Apply error style if zip code is invalid
         placeholder="Home Zip Code"
         onChangeText={validateZipCode} // Call validation function
         keyboardType="numeric"
@@ -96,50 +123,15 @@ const UserLocation = () => {
 
 export default UserLocation;
 
-const styles = StyleSheet.create({
+const stylesLocal = StyleSheet.create({
   input: {
     width: '72%',
-    borderRadius: 30,
-    marginBottom: '45%',
+    borderRadius: 25,
     backgroundColor: 'white',
     paddingHorizontal: 20,
   },
   inputError: {
-    borderColor: 'red', 
+    borderColor: 'red',
     borderWidth: 1,
-  },
-  continueText: {
-    color: '#0EA68D',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  continueTouch: {
-    backgroundColor: 'white',
-    paddingHorizontal: '25%',
-    paddingVertical: '2%',
-    elevation: 5,
-    marginBottom: '15%',
-    borderRadius: 6,
-  },
-  progressText: {
-    color: 'black',
-    marginTop: '10%',
-    marginLeft: '12%',
-    fontSize: 25,
-    alignSelf: 'flex-start',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  question: {
-    color: 'black',
-    marginTop: '7%',
-    marginRight: '3%',
-    marginBottom: '2%',
-    fontSize: 25,
   },
 });

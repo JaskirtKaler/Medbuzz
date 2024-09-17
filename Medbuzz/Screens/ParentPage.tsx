@@ -2,45 +2,58 @@
    it serves as a reusable component
 */
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Bar } from 'react-native-progress';
-import { Dropdown } from 'react-native-element-dropdown';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import {Bar} from 'react-native-progress';
+import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {loadUser, saveUser, User} from '../Utility/userStorage';
 
-// Define the prop types for the ParentPage component, make the ones which wont be used in every page optional
+// Define the prop types for the ParentPage component, make the ones which wont be used in every page optional by (?)
 interface ParentPageProps {
-    progress: number;
-    options: Array<{ label: string; value: string }>;
-    discipline?: string;
-    setDiscipline?: (value: string) => void;
-    certificate?: string;
-    setCertificate?: (value: string) => void;
-    licenses?: string;
-    setLicenses?: (value: string) => void;
-    licenseLocation?: string;
-    setLicenseLocation?: (value: string) => void;
-    title: string;
-    nextScreen: string;
+  progress: number;
+  options: Array<{label: string; value: string}>;
+  certificate?: string;
+  setCertificate?: (value: string) => void;
+  license?: string;
+  setLicense?: (value: string) => void;
+  licenseLocation?: string;
+  setLicenseLocation?: (value: string) => void;
+  title: string;
+  nextScreen?: string;
 }
 
 const ParentPage: React.FC<ParentPageProps> = ({
-    progress,
-    options,
-    discipline,
-    setDiscipline,
-    certificate,
-    setCertificate,
-    licenses,
-    setLicenses,
-    licenseLocation,
-    setLicenseLocation,
-    title,
-    nextScreen,
-   
+  progress,
+  options,
+  certificate,
+  setCertificate,
+  license,
+  setLicense,
+  licenseLocation,
+  setLicenseLocation,
+  title,
+  nextScreen,
 }) => {
   const navigation = useNavigation<any>();
+  const [user, setUser] = useState<User | null>();
+
+  //everytime the page mounts, this use effect would be called and the user object from local storage will be retrieved
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await loadUser();
+      setUser(userData);
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleBack = () => {
     navigation.goBack();
@@ -49,46 +62,51 @@ const ParentPage: React.FC<ParentPageProps> = ({
 
   //this will handle the continue with each page, each page's specific logic can be entered inside the respective IF statement
   //will store those values in local storage temporarily.
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    try {
+      // Create an updated user object with relevant fields to save locally later
+      const updatedUser: User = {
+        ...user,
+        ...(certificate !== undefined && {certificate}),
+        ...(license !== undefined && {license}),
+        ...(licenseLocation !== undefined && {licenseLocation}),
+      };
 
-     if (discipline !== undefined) {
-        console.log('Discipline:', discipline);
-    }
-    if (certificate !== undefined) {
-        console.log('Certificate:', certificate);
-    }
-    if (licenses !== undefined) {
-        console.log('Licenses:', licenses);
-    }
-    if (licenseLocation !== undefined) {
-        console.log('License Location:', licenseLocation);
-    }
+      // Save the updated user data
+      await saveUser(updatedUser);
 
-    navigation.navigate(nextScreen);
-    console.log('Continue button clicked');
+      console.log(
+        'User data saved successfully, updatedUser:',
+        JSON.stringify(updatedUser),
+      );
+
+      // Navigate to the next screen
+      navigation.navigate(nextScreen);
+      console.log('Continue button clicked');
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
   };
 
   // Function to get the currently selected value based on which prop is provided
   const getSelectedValue = () => {
-    if (discipline !== undefined) return discipline;
     if (certificate !== undefined) return certificate;
-    if (licenses !== undefined) return licenses;
+    if (license !== undefined) return license;
     if (licenseLocation !== undefined) return licenseLocation;
     return '';
   };
 
   //update whatever state based on if its provided
-  const handleDropdownChange = (item: { value: string }) => {
-    if (setDiscipline) setDiscipline(item.value);
+  const handleDropdownChange = (item: {value: string}) => {
     if (setCertificate) setCertificate(item.value);
-    if (setLicenses) setLicenses(item.value);
+    if (setLicense) setLicense(item.value);
     if (setLicenseLocation) setLicenseLocation(item.value);
   };
 
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <View style={{ position: 'absolute', top: 10, left: 0 }}>
+      <View style={{position: 'absolute', top: 10, left: 0}}>
         <TouchableOpacity onPress={handleBack}>
           <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>
@@ -96,7 +114,9 @@ const ParentPage: React.FC<ParentPageProps> = ({
 
       {/* Logo Placement */}
       <View style={styles.logo}>
-        <Text style={{ color: '#0EA68D', fontSize: 65, fontWeight: 'bold' }}>M</Text>
+        <Text style={{color: '#0EA68D', fontSize: 65, fontWeight: 'bold'}}>
+          M
+        </Text>
       </View>
 
       {/* Progress Text */}
@@ -141,7 +161,7 @@ const ParentPage: React.FC<ParentPageProps> = ({
 
 export default ParentPage;
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0EA68D',
@@ -153,7 +173,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderBottomColor: 'black',
     borderBottomWidth: 1,
-    marginBottom: '60%',
     backgroundColor: 'white',
     padding: '2%',
   },
@@ -180,7 +199,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: '25%',
     paddingVertical: '2%',
     elevation: 5,
-    marginBottom: '15%',
+    marginTop:'70%',
+   
     borderRadius: 6,
   },
   progressText: {

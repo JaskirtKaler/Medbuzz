@@ -25,8 +25,8 @@ const LicensesScreen = () => {
     <ParentPage
       progress={60}
       options={options}
-      licenses={selectedOption}
-      setLicenses={setSelectedOption}
+      license={selectedOption}
+      setLicense={setSelectedOption}
       title="Type of License"
       nextScreen="LicenseLocation"
     />
