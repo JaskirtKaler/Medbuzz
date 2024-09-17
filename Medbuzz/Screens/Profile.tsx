@@ -1,4 +1,4 @@
-import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal} from 'react-native'
+import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput} from 'react-native'
 import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import Editbutton from '../Components/Svg/Editbutton'
@@ -12,6 +12,13 @@ const Profile = () => {
     const [showTravelDetails, setShowTravelDetails] = useState(false); // State for travel contracts details
     const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
     const navigation = useNavigation<any>(); // Stack Navigation
+
+    const [startDate, setStartDate] = useState("");
+    const [preferredLocation, setPreferredLocation] = useState("");
+
+    const [modalVisible, setModalVisible] = useState(false); // State for edit Modal
+    const [isSelected, setSelection] = useState(false); // State for checkbox in Job Preferences
+
 
     const firstName = "First";
     const lastName = "Last";
@@ -69,9 +76,59 @@ const Profile = () => {
         console.log(stringProp);
     };
 
+    // Handle a press of the edit buttons within the Job Preferences
+    const handleJobEditPress = () => {
+        setModalVisible(true);
+    };
+
+    // Handle press of the Confirm Choice button in Job Preferences edit
+    const handleConfirmChoices = () => {
+        console.log("Start Date: " + startDate);
+        console.log("Preferred Location: " + preferredLocation)
+    };
+
+    
+
 
   return (
     <View style={styles.container}>
+
+        {/* Modal for editing Job Preferences */}
+        <Modal
+            animationType='slide'
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+        >
+            <View style={{flex: 1}}>
+                <Text style={styles.modalTitle}>Modal Title</Text>
+
+                {/* Start Date selection */}
+                <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                <TextInput 
+                    placeholder="Choose a start date" 
+                    onChangeText={newText => setStartDate(newText)} 
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                {/* Preferred Location Selection */}
+                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <TextInput 
+                    placeholder="Type any cities, states, or regions" 
+                    onChangeText={newText => setPreferredLocation(newText)}
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                {/* Confirm Choices Button */}
+                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {setModalVisible(!modalVisible); handleConfirmChoices();}}>
+                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+        </Modal>
 
         <View style={styles.topThird}>
         {/* Back Arrow */}
@@ -214,8 +271,12 @@ const Profile = () => {
                      </View>
                      <View style={{flexDirection: 'row'}}>     
                         <Text style={styles.jobTypeText}>Staff Roles</Text>
-                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
-                     </View> 
+
+                        {/* Edit button*/}
+                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                            <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                        </TouchableOpacity>
+                    </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleStaffDetails}>
                                 <Text style={styles.seeMoreDetailsText}> {'>'} See more details</Text>
@@ -251,7 +312,11 @@ const Profile = () => {
 
                      <View style={{flexDirection: 'row'}}>     
                         <Text style={styles.jobTypeText}>Travel Contracts</Text>
-                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+
+                        {/* Edit Button */}
+                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                            <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                        </TouchableOpacity>
                      </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleTravelDetails}>
@@ -289,7 +354,11 @@ const Profile = () => {
 
                      <View style={{flexDirection: 'row'}}>     
                         <Text style={styles.jobTypeText}>Local Contracts</Text>
-                        <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+
+                        {/* Edit Button */}
+                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)} >
+                            <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
+                        </TouchableOpacity>
                      </View> 
                      <View style={styles.seeMoreDetailsContainer}>
                         <TouchableOpacity onPress={toggleLocalDetails}>
@@ -533,6 +602,55 @@ const styles = StyleSheet.create({
         flex: 4,
         backgroundColor: 'white',
     },
+
+    modalStyle: {
+        width: '50%',
+        height: '60%', 
+        backgroundColor:'black'
+    },
+
+    exitModalButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '6.6%',
+        width: '80%',
+        backgroundColor: '#0EA68D',
+        borderRadius: 6,
+        marginBottom: '18%'
+    },
+
+    exitModalButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 25,
+
+    }, 
+
+    modalTitle: {
+        fontWeight: 'bold',
+        fontSize: 18, 
+        color: 'black',
+        marginLeft: '2%',
+        marginTop: '2%',
+        marginBottom: '3%'
+    }, 
+
+    textBoxStyle: {
+        borderColor: 'black',
+        borderWidth: 1, 
+        borderRadius: 10,
+        marginLeft: '2%',
+        marginRight: '2%',
+        marginTop: '3%',
+        marginBottom: '3%',
+        height: 40
+      },
+
+      modalQuestion: {
+        color: 'black', 
+        marginLeft: '2%',
+      }
+
 
     })
 
