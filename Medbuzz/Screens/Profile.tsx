@@ -1,11 +1,46 @@
-import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput} from 'react-native'
+import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions} from 'react-native'
 import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import Editbutton from '../Components/Svg/Editbutton'
 import { useNavigation } from '@react-navigation/native'
 import UploadDoc from './UploadDoc.tsx';
+import CheckBox from '@react-native-community/checkbox';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const Profile = () => {
+
+    // Interface for user's Staff Role Preferences
+    interface StaffRoles {
+        startDate: string;
+        preferredLocation: string;
+        relocate: boolean;
+        desiredPay: string;
+        preferredHours: string
+    }
+
+    // Use State for user's Staff Role Preferences
+    const [staffRolePrefs, setStaffRolePrefs] = useState<StaffRoles>(
+        {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
+    );
+
+    // Temporary useSates to handle changes to the user's Staff Role Preferences. Updates staffRolePrefs after confirmation
+    const [tmpStartDate, setTmpStartDate] = useState("");
+    const [tmpPreferredLocation, setTmpPreferredLocation] = useState("");
+    // checkbox isSelcted  value functions as the value for the relocate attribute of the staffRolePrefs
+    const [tmpDesiredPay, setTmpDesiredPay] = useState("");
+    const [tmpPreferredHours, setTmpPreferredHours] = useState("");
+
+
+    const updateStaffRolePrefs = () => {
+        setStaffRolePrefs({
+            startDate: tmpStartDate,
+            preferredLocation: tmpPreferredLocation,
+            relocate: isSelected, 
+            desiredPay: tmpDesiredPay,
+            preferredHours: tmpPreferredHours
+        });
+    };
+
     const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
     const [localContracts, setLocalContracts] = useState(false); // State for actively looking switch (Local Contracts)
     const [travelContracts, setTravelContracts] = useState(false); // State for actively looking switch (Travel Contracts)
@@ -14,12 +49,11 @@ const Profile = () => {
     const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
     const navigation = useNavigation<any>(); // Stack Navigation
 
-    const [startDate, setStartDate] = useState("");
-    const [preferredLocation, setPreferredLocation] = useState("");
-
+    // Modals
     const [modalVisible, setModalVisible] = useState(false); // State for edit Modal
     const [isSelected, setSelection] = useState(false); // State for checkbox in Job Preferences
 
+    const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
 
     const firstName = "First";
     const lastName = "Last";
@@ -30,6 +64,18 @@ const Profile = () => {
     const profileStrength = 33;
     const phoneNumber = "(123) 456-7890"; 
     const email = "example@example.com"; 
+
+    // hourly pay for dropdown menu in Job Preference edits
+    const hourlyPay = [
+        {label: '$20.00 - $25.00', value: '$20.00 - $25.00'},
+        {label: '$25.00 - $30.00', value: '$25.00 - $30.00'},
+        {label: '$30.00 - $35.00', value: '$30.00 - $35.00'},
+        {label: '$35.00 - $40.00', value: '$35.00 - $40.00'},
+        {label: '$40.00 - $45.00', value: '$40.00 - $45.00'},
+        {label: '$45.00 - $50.00', value: '$45.00 - $50.00'},
+        {label: '$50.00+', value: '$50.00+'},
+        {label: '---', value: '---'}
+      ];
 
     // Function to toggle visibility of staff roles details
     const toggleStaffDetails = () => {
@@ -106,15 +152,6 @@ const Profile = () => {
         setModalVisible(true);
     };
 
-    // Handle press of the Confirm Choice button in Job Preferences edit
-    const handleConfirmChoices = () => {
-        console.log("Start Date: " + startDate);
-        console.log("Preferred Location: " + preferredLocation)
-    };
-
-    
-
-
   return (
     <View style={styles.container}>
 
@@ -133,7 +170,7 @@ const Profile = () => {
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
                 <TextInput 
                     placeholder="Choose a start date" 
-                    onChangeText={newText => setStartDate(newText)} 
+                    onChangeText={newText => setTmpStartDate(newText)} 
                     style={styles.textBoxStyle}>
                 </TextInput>
 
@@ -141,18 +178,60 @@ const Profile = () => {
                 <Text style={styles.modalQuestion}>Choose prefered locations</Text>
                 <TextInput 
                     placeholder="Type any cities, states, or regions" 
-                    onChangeText={newText => setPreferredLocation(newText)}
+                    onChangeText={newText => setTmpPreferredLocation(newText)}
                     style={styles.textBoxStyle}>
                 </TextInput>
 
+                <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    <CheckBox
+                        value={isSelected}
+                        onValueChange={setSelection}
+                    />
+                    <Text style={{color: 'black'}}>Open to relocation</Text>
+                </View>
+
+                <View >
+                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                    <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={hourlyPay}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="$"
+                        searchPlaceholder="Search..."
+                        value={tmpDesiredPay}
+                        onChange={item => {
+                          setTmpDesiredPay(item.value);
+                        }}
+                    />
+                </View>
+                <View>
+                    <Text style={styles.modalQuestion}>Preferred Hours</Text>
+                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <CheckBox />
+                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
+                        <CheckBox />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
+                        <CheckBox />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
+                        <CheckBox />
+                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                    </View>
+                </View>
+
                 {/* Confirm Choices Button */}
                 <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {setModalVisible(!modalVisible); handleConfirmChoices();}}>
+                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {setModalVisible(!modalVisible); updateStaffRolePrefs();}}>
                         <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-
         </Modal>
 
         <View style={styles.topThird}>
@@ -311,10 +390,11 @@ const Profile = () => {
                         {/* Staff Roles See More Details Information*/}
                         {showStaffDetails && (
                         <View style={styles.seeMoreDetailsInformationContainer}>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Start Date: {staffRolePrefs.startDate}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Location: {staffRolePrefs.preferredLocation}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Open to Relocation: {staffRolePrefs.relocate ? "yes" : "no"}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Desired Pay: {staffRolePrefs.desiredPay}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Hours: {staffRolePrefs.preferredHours}</Text>
                         </View>
                         )}
                      </View>
@@ -405,9 +485,7 @@ const Profile = () => {
         </View>
         </ScrollView>
     </View>
-    
-    
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -637,18 +715,17 @@ const styles = StyleSheet.create({
     exitModalButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: '6.6%',
+        height: '8%',
         width: '80%',
         backgroundColor: '#0EA68D',
         borderRadius: 6,
-        marginBottom: '18%'
+        marginBottom: '30%'
     },
 
     exitModalButtonText: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 25,
-
     }, 
 
     modalTitle: {
@@ -674,6 +751,38 @@ const styles = StyleSheet.create({
       modalQuestion: {
         color: 'black', 
         marginLeft: '2%',
+      }, 
+
+      dropdown: {
+        borderColor: 'black',
+        borderWidth: 1, 
+        borderRadius: 10,
+        marginLeft: '2%',
+        marginRight: '2%',
+        marginTop: '3%',
+        marginBottom: '3%',
+        height: 40
+      },
+
+      placeholderStyle: {
+        fontSize: 16,
+        paddingLeft: 5
+      },
+    
+      selectedTextStyle: {
+        color: 'black',
+        fontSize: 16,
+        paddingLeft: 5
+      },
+    
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+    
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
       }
 
 
