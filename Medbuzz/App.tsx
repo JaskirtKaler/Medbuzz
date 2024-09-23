@@ -102,6 +102,7 @@ function App() {
         <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
         <Stack.Screen name="UploadDoc"  component={UploadDoc as React.FC<any>} initialParams={{header: "Error"}} />
         <Stack.Screen name="JobInfo" component={JobInfo} />
+        <Stack.Screen name="MessagePage" component={MessagePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
