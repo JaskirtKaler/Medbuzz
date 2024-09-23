@@ -60,9 +60,9 @@ const Profile = () => {
     // Temporary useSates to handle changes to the user's Staff Role Preferences. Updates staffRolePrefs after confirmation
     const [tmpStartDate, setTmpStartDate] = useState("");
     const [tmpPreferredLocation, setTmpPreferredLocation] = useState("");
-    // checkbox isSelcted  value functions as the value for the relocate attribute of the staffRolePrefs
+    // checkbox isSelcted value functions as the value for the relocate attribute of the staffRolePrefs
     const [tmpDesiredPay, setTmpDesiredPay] = useState("");
-    const [tmpPreferredHours, setTmpPreferredHours] = useState("");
+    // value for preffered hours is determined by the time checkboxe(s) values
 
     // funtion to update StaffRollPrefs based on tmp variable use states
     const updateStaffRolePrefs = () => {
@@ -71,7 +71,7 @@ const Profile = () => {
             preferredLocation: tmpPreferredLocation,
             relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
-            preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)    
+            preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
     };
 
@@ -82,7 +82,7 @@ const Profile = () => {
             preferredLocation: tmpPreferredLocation,
             relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
-            preferredHours: tmpPreferredHours
+            preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
     };
 
@@ -93,10 +93,11 @@ const Profile = () => {
             preferredLocation: tmpPreferredLocation,
             relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
-            preferredHours: tmpPreferredHours
+            preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
     };
 
+    // function to determin preferred hours
     const determinePrefHours = (morning: boolean, afternoon: boolean, evening: boolean, flexible: boolean) => {
         if (morning)
             return "Morning"
@@ -281,7 +282,7 @@ const Profile = () => {
                     />
                 </View>
                 <View>
-                    <Text style={styles.modalQuestion}>Preferred Hours</Text>
+                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
                     <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
                         <CheckBox 
                             value={isMorningSelected}
@@ -308,7 +309,9 @@ const Profile = () => {
 
                 {/* Confirm Choices Button */}
                 <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {setModalVisible(!modalVisible); updateStaffRolePrefs();}}>
+                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                        updateStaffRolePrefs();
+                        setModalVisible(!modalVisible);}}>
                         <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                     </TouchableOpacity>
                 </View>
