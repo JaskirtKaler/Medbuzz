@@ -16,12 +16,46 @@ const Profile = () => {
         relocate: boolean;
         desiredPay: string;
         preferredHours: string
+    };
+
+    // Interface for user's Local Contracts Preferences
+    interface LocalContracts {
+        startDate: string;
+        preferredLocation: string;
+        relocate: boolean;
+        desiredPay: string;
+        preferredHours: string
+    }
+
+    // Interface for user's Travel Contracts Preferences
+    interface TravelContracts {
+        startDate: string;
+        preferredLocation: string;
+        relocate: boolean;
+        desiredPay: string;
+        preferredHours: string
     }
 
     // Use State for user's Staff Role Preferences
     const [staffRolePrefs, setStaffRolePrefs] = useState<StaffRoles>(
         {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
     );
+
+    // Use State for user's Local Contracts Preferences
+    const [localContractsPrefs, setLocalContractsPrefs] = useState<LocalContracts>(
+        {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
+    );
+
+    // Use State for user's Travel Contracts Preferences
+    const [travelContractsPrefs, setTravelContractsPrefs] = useState<StaffRoles>(
+        {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
+    );
+
+    const [isRelocateSelected, setRelocateSelection] = useState(false); // State for checkbox in Job Preferences
+    const [isMorningSelected, setMorningSelection] = useState(false);   // State for Morning Checkbox in Job Preferences
+    const [isAfternoonSelected, setAfternoonSelection] = useState(false);   // State for Afternoon Checkbox in Job Preferences
+    const [isEveningSelected, setEveningSelection] = useState(false);   // State for Evening Checkbox in Job Preferences
+    const [isFlexibleSelected, setFlexibleSelection] = useState(false); // State for Flexible Checkbox in Job Preferences
 
     // Temporary useSates to handle changes to the user's Staff Role Preferences. Updates staffRolePrefs after confirmation
     const [tmpStartDate, setTmpStartDate] = useState("");
@@ -30,16 +64,52 @@ const Profile = () => {
     const [tmpDesiredPay, setTmpDesiredPay] = useState("");
     const [tmpPreferredHours, setTmpPreferredHours] = useState("");
 
-
+    // funtion to update StaffRollPrefs based on tmp variable use states
     const updateStaffRolePrefs = () => {
         setStaffRolePrefs({
             startDate: tmpStartDate,
             preferredLocation: tmpPreferredLocation,
-            relocate: isSelected, 
+            relocate: isRelocateSelected, 
+            desiredPay: tmpDesiredPay,
+            preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)    
+        });
+    };
+
+    // funtion to update LocalContractPrefs based on tmp variable use states
+    const updateLocalContractsPrefs = () => {
+        setStaffRolePrefs({
+            startDate: tmpStartDate,
+            preferredLocation: tmpPreferredLocation,
+            relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
             preferredHours: tmpPreferredHours
         });
     };
+
+    // funtion to update TravelContractsPrefs
+    const updateTravelContractsPrefs = () => {
+        setStaffRolePrefs({
+            startDate: tmpStartDate,
+            preferredLocation: tmpPreferredLocation,
+            relocate: isRelocateSelected, 
+            desiredPay: tmpDesiredPay,
+            preferredHours: tmpPreferredHours
+        });
+    };
+
+    const determinePrefHours = (morning: boolean, afternoon: boolean, evening: boolean, flexible: boolean) => {
+        if (morning)
+            return "Morning"
+        else if (afternoon)
+            return "Afternoon"
+        else if (evening)
+            return "Evening"
+        else if (flexible)
+            return "Flexible"
+        else
+            return "ERROR: cannot determine preferred hours"
+    };       
+    
 
     const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
     const [localContracts, setLocalContracts] = useState(false); // State for actively looking switch (Local Contracts)
@@ -51,7 +121,6 @@ const Profile = () => {
 
     // Modals
     const [modalVisible, setModalVisible] = useState(false); // State for edit Modal
-    const [isSelected, setSelection] = useState(false); // State for checkbox in Job Preferences
 
     const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
 
@@ -184,8 +253,8 @@ const Profile = () => {
 
                 <View style={{flexDirection:'row', alignItems: 'center'}}>
                     <CheckBox
-                        value={isSelected}
-                        onValueChange={setSelection}
+                        value={isRelocateSelected}
+                        onValueChange={setRelocateSelection}
                     />
                     <Text style={{color: 'black'}}>Open to relocation</Text>
                 </View>
@@ -214,13 +283,25 @@ const Profile = () => {
                 <View>
                     <Text style={styles.modalQuestion}>Preferred Hours</Text>
                     <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                        <CheckBox />
+                        <CheckBox 
+                            value={isMorningSelected}
+                            onValueChange={setMorningSelection}
+                        />
                         <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
-                        <CheckBox />
+                        <CheckBox 
+                            value={isAfternoonSelected}
+                            onValueChange={setAfternoonSelection}
+                        />
                         <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
-                        <CheckBox />
+                        <CheckBox 
+                            value={isEveningSelected}
+                            onValueChange={setEveningSelection}
+                        />
                         <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
-                        <CheckBox />
+                        <CheckBox 
+                            value={isFlexibleSelected}
+                            onValueChange={setFlexibleSelection}
+                        />
                         <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
                     </View>
                 </View>
