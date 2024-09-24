@@ -250,7 +250,7 @@ const Profile = () => {
               }}
         >
             <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Staff Role Preferrences</Text>
+                <Text style={styles.modalTitle}>Staff Role Preferences</Text>
 
                 {/* Start Date selection */}
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -261,7 +261,7 @@ const Profile = () => {
                 </TextInput>
 
                 {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
                 <TextInput 
                     placeholder="Type any cities, states, or regions" 
                     onChangeText={newText => setTmpPreferredLocation(newText)}
@@ -344,7 +344,7 @@ const Profile = () => {
               }}
         >
             <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Travel Contract Preferrences</Text>
+                <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
 
                 {/* Start Date selection */}
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -355,7 +355,7 @@ const Profile = () => {
                 </TextInput>
 
                 {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
                 <TextInput 
                     placeholder="Type any cities, states, or regions" 
                     onChangeText={newText => setTmpPreferredLocation(newText)}
@@ -438,7 +438,7 @@ const Profile = () => {
               }}
         >
             <View style={{flex: 1, backgroundColor: 'white', height: '85%'}}>
-                <Text style={styles.modalTitle}>Local Contract Preferrences</Text>
+                <Text style={styles.modalTitle}>Local Contract Preferences</Text>
 
                 {/* Start Date selection */}
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -449,7 +449,7 @@ const Profile = () => {
                 </TextInput>
 
                 {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
                 <TextInput 
                     placeholder="Type any cities, states, or regions" 
                     onChangeText={newText => setTmpPreferredLocation(newText)}
