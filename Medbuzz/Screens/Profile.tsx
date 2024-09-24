@@ -243,13 +243,13 @@ const Profile = () => {
         {/* Modal for editing Job Preferences */}
         <Modal
             animationType='slide'
-            transparent={true}
+            //transparent={true}
             visible={staffRoleModalVisible}
             onRequestClose={() => {
                 setStaffRoleModalVisible(!staffRoleModalVisible);
               }}
         >
-            <View style={{flex: 1, backgroundColor: 'white', height: '85%'}}>
+            <View style={{flex: 1}}>
                 <Text style={styles.modalTitle}>Staff Role Preferrences</Text>
 
                 {/* Start Date selection */}
@@ -344,7 +344,7 @@ const Profile = () => {
               }}
         >
             <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Travel Contracts Preferrences</Text>
+                <Text style={styles.modalTitle}>Travel Contract Preferrences</Text>
 
                 {/* Start Date selection */}
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -422,6 +422,100 @@ const Profile = () => {
                     <TouchableOpacity style={styles.exitModalButton} onPress={() => {
                         updateTravelContractsPrefs();
                         setTravelContractsModalVisible(!travelContractsModalVisible);}}>
+                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+
+        {/* Modal for editing Job Preferences */}
+        <Modal
+            animationType='slide'
+            //transparent={true}
+            visible={localContractsModalVisible}
+            onRequestClose={() => {
+                setLocalContractsModalVisible(!localContractsModalVisible);
+              }}
+        >
+            <View style={{flex: 1, backgroundColor: 'white', height: '85%'}}>
+                <Text style={styles.modalTitle}>Local Contract Preferrences</Text>
+
+                {/* Start Date selection */}
+                <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                <TextInput 
+                    placeholder="Choose a start date" 
+                    onChangeText={newText => setTmpStartDate(newText)} 
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                {/* Preferred Location Selection */}
+                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <TextInput 
+                    placeholder="Type any cities, states, or regions" 
+                    onChangeText={newText => setTmpPreferredLocation(newText)}
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    <CheckBox
+                        value={isRelocateSelected}
+                        onValueChange={setRelocateSelection}
+                    />
+                    <Text style={{color: 'black'}}>Open to relocation</Text>
+                </View>
+
+                <View >
+                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                    <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={hourlyPay}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="$"
+                        searchPlaceholder="Search..."
+                        value={tmpDesiredPay}
+                        onChange={item => {
+                          setTmpDesiredPay(item.value);
+                        }}
+                    />
+                </View>
+                <View>
+                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
+                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <CheckBox 
+                            value={isMorningSelected}
+                            onValueChange={setMorningSelection}
+                        />
+                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
+                        <CheckBox 
+                            value={isAfternoonSelected}
+                            onValueChange={setAfternoonSelection}
+                        />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
+                        <CheckBox 
+                            value={isEveningSelected}
+                            onValueChange={setEveningSelection}
+                        />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
+                        <CheckBox 
+                            value={isFlexibleSelected}
+                            onValueChange={setFlexibleSelection}
+                        />
+                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                    </View>
+                </View>
+
+                {/* Confirm Choices Button */}
+                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                        updateLocalContractsPrefs();
+                        setLocalContractsModalVisible(!localContractsModalVisible);}}>
                         <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                     </TouchableOpacity>
                 </View>
@@ -669,10 +763,11 @@ const Profile = () => {
                         {/* Local Contracts See More Details Information*/}
                         {showLocalDetails && (
                         <View style={styles.seeMoreDetailsInformationContainer}>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Start Date: {localContractsPrefs.startDate}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Location: {localContractsPrefs.preferredLocation}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Open to Relocation: {localContractsPrefs.relocate ? "yes" : "no"}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Desired Pay: {localContractsPrefs.desiredPay}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Hours: {localContractsPrefs.preferredHours}</Text>
                         </View>
                         )}
                      </View>
