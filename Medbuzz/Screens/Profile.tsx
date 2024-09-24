@@ -243,93 +243,95 @@ const Profile = () => {
         {/* Modal for editing Job Preferences */}
         <Modal
             animationType='slide'
-            //transparent={true}
+            transparent={true}
             visible={staffRoleModalVisible}
             onRequestClose={() => {
                 setStaffRoleModalVisible(!staffRoleModalVisible);
               }}
         >
             <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Staff Role Preferences</Text>
+                <View style={styles.modalStyle}>
+                    <Text style={styles.modalTitle}>Staff Role Preferences</Text>
 
-                {/* Start Date selection */}
-                <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                <TextInput 
-                    placeholder="Choose a start date" 
-                    onChangeText={newText => setTmpStartDate(newText)} 
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Start Date selection */}
+                    <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                    <TextInput 
+                        placeholder="Choose a start date" 
+                        onChangeText={newText => setTmpStartDate(newText)} 
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
-                <TextInput 
-                    placeholder="Type any cities, states, or regions" 
-                    onChangeText={newText => setTmpPreferredLocation(newText)}
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Preferred Location Selection */}
+                    <Text style={styles.modalQuestion}>Choose preferred locations</Text>
+                    <TextInput 
+                        placeholder="Type any cities, states, or regions" 
+                        onChangeText={newText => setTmpPreferredLocation(newText)}
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                <View style={{flexDirection:'row', alignItems: 'center'}}>
-                    <CheckBox
-                        value={isRelocateSelected}
-                        onValueChange={setRelocateSelection}
-                    />
-                    <Text style={{color: 'black'}}>Open to relocation</Text>
-                </View>
-
-                <View >
-                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
-                    <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={hourlyPay}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="$"
-                        searchPlaceholder="Search..."
-                        value={tmpDesiredPay}
-                        onChange={item => {
-                          setTmpDesiredPay(item.value);
-                        }}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                        <CheckBox 
-                            value={isMorningSelected}
-                            onValueChange={setMorningSelection}
+                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                        <CheckBox
+                            value={isRelocateSelected}
+                            onValueChange={setRelocateSelection}
                         />
-                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
-                        <CheckBox 
-                            value={isAfternoonSelected}
-                            onValueChange={setAfternoonSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
-                        <CheckBox 
-                            value={isEveningSelected}
-                            onValueChange={setEveningSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
-                        <CheckBox 
-                            value={isFlexibleSelected}
-                            onValueChange={setFlexibleSelection}
-                        />
-                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                        <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
-                </View>
 
-                {/* Confirm Choices Button */}
-                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
-                        updateStaffRolePrefs();
-                        setStaffRoleModalVisible(!staffRoleModalVisible);}}>
-                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: '2%'}}>
+                        <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                        <Dropdown
+                            style={styles.dropdown}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={hourlyPay}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="$"
+                            searchPlaceholder="Search..."
+                            value={tmpDesiredPay}
+                            onChange={item => {
+                            setTmpDesiredPay(item.value);
+                            }}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
+                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                            <CheckBox 
+                                value={isMorningSelected}
+                                onValueChange={setMorningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Morning</Text>
+                            <CheckBox 
+                                value={isAfternoonSelected}
+                                onValueChange={setAfternoonSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Afternoon</Text>
+                            <CheckBox 
+                                value={isEveningSelected}
+                                onValueChange={setEveningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Evening</Text>
+                            <CheckBox 
+                                value={isFlexibleSelected}
+                                onValueChange={setFlexibleSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Flexible</Text>
+                        </View>
+                    </View>
+
+                    {/* Confirm Choices Button */}
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                            updateStaffRolePrefs();
+                            setStaffRoleModalVisible(!staffRoleModalVisible);}}>
+                            <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -338,92 +340,95 @@ const Profile = () => {
         {/* Modal for editing Job Preferences */}
         <Modal
             animationType='slide'
+            transparent={true}
             visible={travelContractsModalVisible}
             onRequestClose={() => {
                 setTravelContractsModalVisible(!travelContractsModalVisible);
               }}
         >
-            <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
+            <View style={{flex:1}}>
+                <View style={styles.modalStyle}>
+                    <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
 
-                {/* Start Date selection */}
-                <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                <TextInput 
-                    placeholder="Choose a start date" 
-                    onChangeText={newText => setTmpStartDate(newText)} 
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Start Date selection */}
+                    <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                    <TextInput 
+                        placeholder="Choose a start date" 
+                        onChangeText={newText => setTmpStartDate(newText)} 
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
-                <TextInput 
-                    placeholder="Type any cities, states, or regions" 
-                    onChangeText={newText => setTmpPreferredLocation(newText)}
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Preferred Location Selection */}
+                    <Text style={styles.modalQuestion}>Choose preferred locations</Text>
+                    <TextInput 
+                        placeholder="Type any cities, states, or regions" 
+                        onChangeText={newText => setTmpPreferredLocation(newText)}
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                <View style={{flexDirection:'row', alignItems: 'center'}}>
-                    <CheckBox
-                        value={isRelocateSelected}
-                        onValueChange={setRelocateSelection}
-                    />
-                    <Text style={{color: 'black'}}>Open to relocation</Text>
-                </View>
-
-                <View >
-                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
-                    <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={hourlyPay}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="$"
-                        searchPlaceholder="Search..."
-                        value={tmpDesiredPay}
-                        onChange={item => {
-                          setTmpDesiredPay(item.value);
-                        }}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                        <CheckBox 
-                            value={isMorningSelected}
-                            onValueChange={setMorningSelection}
+                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                        <CheckBox
+                            value={isRelocateSelected}
+                            onValueChange={setRelocateSelection}
                         />
-                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
-                        <CheckBox 
-                            value={isAfternoonSelected}
-                            onValueChange={setAfternoonSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
-                        <CheckBox 
-                            value={isEveningSelected}
-                            onValueChange={setEveningSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
-                        <CheckBox 
-                            value={isFlexibleSelected}
-                            onValueChange={setFlexibleSelection}
-                        />
-                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                        <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
-                </View>
 
-                {/* Confirm Choices Button */}
-                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
-                        updateTravelContractsPrefs();
-                        setTravelContractsModalVisible(!travelContractsModalVisible);}}>
-                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: '2%'}}>
+                        <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                        <Dropdown
+                            style={styles.dropdown}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={hourlyPay}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="$"
+                            searchPlaceholder="Search..."
+                            value={tmpDesiredPay}
+                            onChange={item => {
+                                setTmpDesiredPay(item.value);
+                            }}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
+                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                            <CheckBox 
+                                value={isMorningSelected}
+                                onValueChange={setMorningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Morning</Text>
+                            <CheckBox 
+                                value={isAfternoonSelected}
+                                onValueChange={setAfternoonSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Afternoon</Text>
+                            <CheckBox 
+                                value={isEveningSelected}
+                                onValueChange={setEveningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Evening</Text>
+                            <CheckBox 
+                                value={isFlexibleSelected}
+                                onValueChange={setFlexibleSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Flexible</Text>
+                        </View>
+                    </View>
+
+                    {/* Confirm Choices Button */}
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                            updateTravelContractsPrefs();
+                            setTravelContractsModalVisible(!travelContractsModalVisible);}}>
+                            <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -431,93 +436,95 @@ const Profile = () => {
         {/* Modal for editing Job Preferences */}
         <Modal
             animationType='slide'
-            //transparent={true}
+            transparent={true}
             visible={localContractsModalVisible}
             onRequestClose={() => {
                 setLocalContractsModalVisible(!localContractsModalVisible);
               }}
         >
-            <View style={{flex: 1, backgroundColor: 'white', height: '85%'}}>
-                <Text style={styles.modalTitle}>Local Contract Preferences</Text>
+            <View style={{flex: 1}}>
+                <View style={styles.modalStyle}>
+                    <Text style={styles.modalTitle}>Local Contract Preferences</Text>
 
-                {/* Start Date selection */}
-                <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                <TextInput 
-                    placeholder="Choose a start date" 
-                    onChangeText={newText => setTmpStartDate(newText)} 
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Start Date selection */}
+                    <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                    <TextInput 
+                        placeholder="Choose a start date" 
+                        onChangeText={newText => setTmpStartDate(newText)} 
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                {/* Preferred Location Selection */}
-                <Text style={styles.modalQuestion}>Choose preferred locations</Text>
-                <TextInput 
-                    placeholder="Type any cities, states, or regions" 
-                    onChangeText={newText => setTmpPreferredLocation(newText)}
-                    style={styles.textBoxStyle}>
-                </TextInput>
+                    {/* Preferred Location Selection */}
+                    <Text style={styles.modalQuestion}>Choose preferred locations</Text>
+                    <TextInput 
+                        placeholder="Type any cities, states, or regions" 
+                        onChangeText={newText => setTmpPreferredLocation(newText)}
+                        style={styles.textBoxStyle}>
+                    </TextInput>
 
-                <View style={{flexDirection:'row', alignItems: 'center'}}>
-                    <CheckBox
-                        value={isRelocateSelected}
-                        onValueChange={setRelocateSelection}
-                    />
-                    <Text style={{color: 'black'}}>Open to relocation</Text>
-                </View>
-
-                <View >
-                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
-                    <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={hourlyPay}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="$"
-                        searchPlaceholder="Search..."
-                        value={tmpDesiredPay}
-                        onChange={item => {
-                          setTmpDesiredPay(item.value);
-                        }}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                        <CheckBox 
-                            value={isMorningSelected}
-                            onValueChange={setMorningSelection}
+                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                        <CheckBox
+                            value={isRelocateSelected}
+                            onValueChange={setRelocateSelection}
                         />
-                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
-                        <CheckBox 
-                            value={isAfternoonSelected}
-                            onValueChange={setAfternoonSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
-                        <CheckBox 
-                            value={isEveningSelected}
-                            onValueChange={setEveningSelection}
-                        />
-                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
-                        <CheckBox 
-                            value={isFlexibleSelected}
-                            onValueChange={setFlexibleSelection}
-                        />
-                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                        <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
-                </View>
 
-                {/* Confirm Choices Button */}
-                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
-                        updateLocalContractsPrefs();
-                        setLocalContractsModalVisible(!localContractsModalVisible);}}>
-                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: '2%'}}>
+                        <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                        <Dropdown
+                            style={styles.dropdown}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={hourlyPay}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="$"
+                            searchPlaceholder="Search..."
+                            value={tmpDesiredPay}
+                            onChange={item => {
+                                setTmpDesiredPay(item.value);
+                            }}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
+                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                            <CheckBox 
+                                value={isMorningSelected}
+                                onValueChange={setMorningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Morning</Text>
+                            <CheckBox 
+                                value={isAfternoonSelected}
+                                onValueChange={setAfternoonSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Afternoon</Text>
+                            <CheckBox 
+                                value={isEveningSelected}
+                                onValueChange={setEveningSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Evening</Text>
+                            <CheckBox 
+                                value={isFlexibleSelected}
+                                onValueChange={setFlexibleSelection}
+                            />
+                            <Text style={styles.timeOptionStyle}>Flexible</Text>
+                        </View>
+                    </View>
+
+                    {/* Confirm Choices Button */}
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                            updateLocalContractsPrefs();
+                            setLocalContractsModalVisible(!localContractsModalVisible);}}>
+                            <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -996,31 +1003,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 
-    modalStyle: {
-        width: '50%',
-        height: '60%', 
-        backgroundColor:'black'
-    },
-
     exitModalButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: '8%',
-        width: '80%',
+        height: 50,
+        width: 320,
         backgroundColor: '#0EA68D',
         borderRadius: 6,
-        marginBottom: '30%'
+        marginTop: '15%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        elevation: 5
     },
 
     exitModalButtonText: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 25,
+        alignSelf: 'center'
     }, 
 
     modalTitle: {
         fontWeight: 'bold',
-        fontSize: 18, 
+        fontSize: 22, 
         color: 'black',
         marginLeft: '2%',
         marginTop: '2%',
@@ -1041,6 +1046,7 @@ const styles = StyleSheet.create({
       modalQuestion: {
         color: 'black', 
         marginLeft: '2%',
+        fontSize: 18
       }, 
 
       dropdown: {
@@ -1073,6 +1079,22 @@ const styles = StyleSheet.create({
       inputSearchStyle: {
         height: 40,
         fontSize: 16,
+      }, 
+
+      modalStyle: {
+        flex: 1, 
+        backgroundColor:'white', 
+        borderColor: 'black', 
+        borderWidth: 1.5, 
+        borderTopRightRadius: 20, 
+        borderTopLeftRadius: 20, 
+        marginTop: '60%', 
+      }, 
+
+      timeOptionStyle: {
+        alignSelf:'center', 
+        color:'black', 
+        fontSize: 17
       }
 
 
