@@ -7,34 +7,34 @@ import UploadDoc from './UploadDoc.tsx';
 import CheckBox from '@react-native-community/checkbox';
 import { Dropdown } from 'react-native-element-dropdown';
 
+// Interface for user's Staff Role Preferences
+interface StaffRoles {
+    startDate: string;
+    preferredLocation: string;
+    relocate: boolean;
+    desiredPay: string;
+    preferredHours: string
+};
+
+// Interface for user's Local Contracts Preferences
+interface LocalContracts {
+    startDate: string;
+    preferredLocation: string;
+    relocate: boolean;
+    desiredPay: string;
+    preferredHours: string
+}
+
+// Interface for user's Travel Contracts Preferences
+interface TravelContracts {
+    startDate: string;
+    preferredLocation: string;
+    relocate: boolean;
+    desiredPay: string;
+    preferredHours: string
+}
+
 const Profile = () => {
-
-    // Interface for user's Staff Role Preferences
-    interface StaffRoles {
-        startDate: string;
-        preferredLocation: string;
-        relocate: boolean;
-        desiredPay: string;
-        preferredHours: string
-    };
-
-    // Interface for user's Local Contracts Preferences
-    interface LocalContracts {
-        startDate: string;
-        preferredLocation: string;
-        relocate: boolean;
-        desiredPay: string;
-        preferredHours: string
-    }
-
-    // Interface for user's Travel Contracts Preferences
-    interface TravelContracts {
-        startDate: string;
-        preferredLocation: string;
-        relocate: boolean;
-        desiredPay: string;
-        preferredHours: string
-    }
 
     // Use State for user's Staff Role Preferences
     const [staffRolePrefs, setStaffRolePrefs] = useState<StaffRoles>(
@@ -64,6 +64,17 @@ const Profile = () => {
     const [tmpDesiredPay, setTmpDesiredPay] = useState("");
     // value for preffered hours is determined by the time checkboxe(s) values
 
+    const resetTmps = () => {
+        setTmpStartDate("")
+        setTmpPreferredLocation("")
+        setTmpDesiredPay("")
+        setRelocateSelection(false)
+        setMorningSelection(false)
+        setAfternoonSelection(false)
+        setEveningSelection(false)
+        setFlexibleSelection(false)
+    }
+
     // funtion to update StaffRollPrefs based on tmp variable use states
     const updateStaffRolePrefs = () => {
         setStaffRolePrefs({
@@ -73,31 +84,37 @@ const Profile = () => {
             desiredPay: tmpDesiredPay,
             preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
+
+        resetTmps();
     };
 
     // funtion to update LocalContractPrefs based on tmp variable use states
     const updateLocalContractsPrefs = () => {
-        setStaffRolePrefs({
+        setLocalContractsPrefs({
             startDate: tmpStartDate,
             preferredLocation: tmpPreferredLocation,
             relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
             preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
+
+        resetTmps()
     };
 
     // funtion to update TravelContractsPrefs
     const updateTravelContractsPrefs = () => {
-        setStaffRolePrefs({
+        setTravelContractsPrefs({
             startDate: tmpStartDate,
             preferredLocation: tmpPreferredLocation,
             relocate: isRelocateSelected, 
             desiredPay: tmpDesiredPay,
             preferredHours: determinePrefHours(isMorningSelected, isAfternoonSelected, isEveningSelected, isFlexibleSelected)
         });
+
+        resetTmps()
     };
 
-    // function to determin preferred hours
+    // function to determine preferred hours
     const determinePrefHours = (morning: boolean, afternoon: boolean, evening: boolean, flexible: boolean) => {
         if (morning)
             return "Morning"
@@ -121,7 +138,9 @@ const Profile = () => {
     const navigation = useNavigation<any>(); // Stack Navigation
 
     // Modals
-    const [modalVisible, setModalVisible] = useState(false); // State for edit Modal
+    const [staffRoleModalVisible, setStaffRoleModalVisible] = useState(false); // State for edit Modal
+    const [travelContractsModalVisible, setTravelContractsModalVisible] = useState(false); // State for edit Modal
+    const [localContractsModalVisible, setLocalContractsModalVisible] = useState(false); // State for edit Modal
 
     const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
 
@@ -217,10 +236,6 @@ const Profile = () => {
         navigation.navigate('UpdateLicense');
         console.log('Lisence')
     };
-    // Handle a press of the edit buttons within the Job Preferences
-    const handleJobEditPress = () => {
-        setModalVisible(true);
-    };
 
   return (
     <View style={styles.container}>
@@ -228,13 +243,14 @@ const Profile = () => {
         {/* Modal for editing Job Preferences */}
         <Modal
             animationType='slide'
-            visible={modalVisible}
+            transparent={true}
+            visible={staffRoleModalVisible}
             onRequestClose={() => {
-                setModalVisible(!modalVisible);
+                setStaffRoleModalVisible(!staffRoleModalVisible);
               }}
         >
-            <View style={{flex: 1}}>
-                <Text style={styles.modalTitle}>Modal Title</Text>
+            <View style={{flex: 1, backgroundColor: 'white', height: '85%'}}>
+                <Text style={styles.modalTitle}>Staff Role Preferrences</Text>
 
                 {/* Start Date selection */}
                 <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -311,7 +327,101 @@ const Profile = () => {
                 <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
                     <TouchableOpacity style={styles.exitModalButton} onPress={() => {
                         updateStaffRolePrefs();
-                        setModalVisible(!modalVisible);}}>
+                        setStaffRoleModalVisible(!staffRoleModalVisible);}}>
+                        <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+
+
+        {/* Modal for editing Job Preferences */}
+        <Modal
+            animationType='slide'
+            visible={travelContractsModalVisible}
+            onRequestClose={() => {
+                setTravelContractsModalVisible(!travelContractsModalVisible);
+              }}
+        >
+            <View style={{flex: 1}}>
+                <Text style={styles.modalTitle}>Travel Contracts Preferrences</Text>
+
+                {/* Start Date selection */}
+                <Text style={styles.modalQuestion}>When would you like to start?</Text>
+                <TextInput 
+                    placeholder="Choose a start date" 
+                    onChangeText={newText => setTmpStartDate(newText)} 
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                {/* Preferred Location Selection */}
+                <Text style={styles.modalQuestion}>Choose prefered locations</Text>
+                <TextInput 
+                    placeholder="Type any cities, states, or regions" 
+                    onChangeText={newText => setTmpPreferredLocation(newText)}
+                    style={styles.textBoxStyle}>
+                </TextInput>
+
+                <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    <CheckBox
+                        value={isRelocateSelected}
+                        onValueChange={setRelocateSelection}
+                    />
+                    <Text style={{color: 'black'}}>Open to relocation</Text>
+                </View>
+
+                <View >
+                    <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
+                    <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={hourlyPay}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="$"
+                        searchPlaceholder="Search..."
+                        value={tmpDesiredPay}
+                        onChange={item => {
+                          setTmpDesiredPay(item.value);
+                        }}
+                    />
+                </View>
+                <View>
+                    <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
+                    <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <CheckBox 
+                            value={isMorningSelected}
+                            onValueChange={setMorningSelection}
+                        />
+                        <Text style={{alignSelf:'center', color:'black'}}>Morning</Text>
+                        <CheckBox 
+                            value={isAfternoonSelected}
+                            onValueChange={setAfternoonSelection}
+                        />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Afternoon</Text>
+                        <CheckBox 
+                            value={isEveningSelected}
+                            onValueChange={setEveningSelection}
+                        />
+                        <Text style={{alignSelf:'center', color: 'black'}}>Evening</Text>
+                        <CheckBox 
+                            value={isFlexibleSelected}
+                            onValueChange={setFlexibleSelection}
+                        />
+                        <Text style={{alignSelf:'center', color:'black'}}>Flexible</Text>
+                    </View>
+                </View>
+
+                {/* Confirm Choices Button */}
+                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+                    <TouchableOpacity style={styles.exitModalButton} onPress={() => {
+                        updateTravelContractsPrefs();
+                        setTravelContractsModalVisible(!travelContractsModalVisible);}}>
                         <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                     </TouchableOpacity>
                 </View>
@@ -461,7 +571,7 @@ const Profile = () => {
                         <Text style={styles.jobTypeText}>Staff Roles</Text>
 
                         {/* Edit button*/}
-                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                        <TouchableOpacity onPress={() => setStaffRoleModalVisible(!staffRoleModalVisible)}>
                             <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
                         </TouchableOpacity>
                     </View> 
@@ -503,7 +613,7 @@ const Profile = () => {
                         <Text style={styles.jobTypeText}>Travel Contracts</Text>
 
                         {/* Edit Button */}
-                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                        <TouchableOpacity onPress={() => setTravelContractsModalVisible(!travelContractsModalVisible)}>
                             <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
                         </TouchableOpacity>
                      </View> 
@@ -516,10 +626,11 @@ const Profile = () => {
                         {/* Travel Contracts See More Details Information*/}
                         {showTravelDetails && (
                         <View style={styles.seeMoreDetailsInformationContainer}>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
-                            <Text style={styles.seeMoreDetailsInformation}>Information</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Start Date: {travelContractsPrefs.startDate}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Location: {travelContractsPrefs.preferredLocation}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Open To Relocation: {travelContractsPrefs.relocate ? "yes" : "no"}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Desired Pay: {travelContractsPrefs.desiredPay}</Text>
+                            <Text style={styles.seeMoreDetailsInformation}>Preferred Hours: {travelContractsPrefs.preferredHours}</Text>
                         </View>
                         )}
                      </View>
@@ -545,7 +656,7 @@ const Profile = () => {
                         <Text style={styles.jobTypeText}>Local Contracts</Text>
 
                         {/* Edit Button */}
-                        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)} >
+                        <TouchableOpacity onPress={() => setLocalContractsModalVisible(!localContractsModalVisible)} >
                             <Editbutton width={25} height={25} color={"#000"} style={{marginRight: '10%', marginTop: 10}}/>
                         </TouchableOpacity>
                      </View> 
