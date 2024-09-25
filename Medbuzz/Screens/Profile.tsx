@@ -1,6 +1,7 @@
 import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions} from 'react-native'
 import React, {useState} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
+import CancelX from '../Components/Svg/CancelX.tsx'
 import Editbutton from '../Components/Svg/Editbutton'
 import { useNavigation } from '@react-navigation/native'
 import UploadDoc from './UploadDoc.tsx';
@@ -251,7 +252,12 @@ const Profile = () => {
         >
             <View style={{flex: 1}}>
                 <View style={styles.modalStyle}>
-                    <Text style={styles.modalTitle}>Staff Role Preferences</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.modalTitle}>Staff Role Preferences</Text>
+                        <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setStaffRoleModalVisible(!staffRoleModalVisible)}}>
+                            <CancelX  width={20} height={20} color={"#000"}></CancelX>
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -348,7 +354,12 @@ const Profile = () => {
         >
             <View style={{flex:1}}>
                 <View style={styles.modalStyle}>
-                    <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
+                        <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setTravelContractsModalVisible(!travelContractsModalVisible)}}>
+                            <CancelX width={20} height={20} color={"#000"}></CancelX>
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -444,7 +455,12 @@ const Profile = () => {
         >
             <View style={{flex: 1}}>
                 <View style={styles.modalStyle}>
-                    <Text style={styles.modalTitle}>Local Contract Preferences</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.modalTitle}>Local Contract Preferences</Text>
+                        <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setLocalContractsModalVisible(!localContractsModalVisible)}}>
+                            <CancelX width={20} height={20} color={"#000"}></CancelX>
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
@@ -1095,6 +1111,13 @@ const styles = StyleSheet.create({
         alignSelf:'center', 
         color:'black', 
         fontSize: 17
+      }, 
+
+      cancelModalButton: {
+        flex: 1, 
+        marginRight: '4%', 
+        alignItems: 'flex-end', 
+        alignSelf: 'center'
       }
 
 
