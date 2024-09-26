@@ -33,7 +33,10 @@ import MyJobsPage from './Screens/MyJobs.tsx';
 import UpdateLicense from './Screens/UpdateLicense.tsx';
 import JobInfo from './Screens/JobInfo.tsx';
 import 'react-native-gesture-handler';
+import SaveSVG from './Components/Svg/SaveSvg.tsx';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Backarrow from './Components/Svg/Backarrow.tsx';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -94,7 +97,8 @@ function App() {
             headerTitle: '', // Remove the title
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.navigate('Homepage')} style={{ marginLeft: 10 }}>
-                <Image source={require('./SVG/back-arrow.png')} style={{ width: 30, height: 30 }} />
+                {/* Replace Image with Backarrow SVG */}
+                <Backarrow width={45} height={45} color={'#000'} />
               </TouchableOpacity>
             ),
           })}
@@ -130,23 +134,21 @@ function Navigation() {
       />
       <Drawer.Screen name="Messages" component={MessagePage} options={{drawerIcon: () => <Message width={30} height={30} color={'#000'} />}} />
       <Drawer.Screen name="Location" component={Location} options={{drawerIcon: () => <StateLocation width={30} height={30} color={'#000'} />}} />
-      
       <Drawer.Screen
         name="My Jobs"
         component={MyJobsPage}
-        options={({ navigation }) => ({ // Ensure 'navigation' is passed correctly here
+        options={({ navigation }) => ({
           drawerIcon: () => (
-            <Image 
-              source={myJobsIcon} 
-              style={{ width: 30, height: 30 }} 
-              resizeMode="contain"
-            />
+            <View style={{ marginLeft: -9 }}>
+              <SaveSVG width={40} height={40} color={'#000'} />
+            </View>
           ),
           headerShown: true,
-          headerTitle: '', // Remove the title from "My Jobs" page
+          headerTitle: '',
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.navigate('Homepage')} style={{ marginLeft: 10 }}>
-              <Image source={require('./SVG/back-arrow.png')} style={{ width: 30, height: 30 }} />
+              {/* Use Backarrow SVG instead of the PNG */}
+              <Backarrow width={40} height={40} color={'#000'} />
             </TouchableOpacity>
           ),
         })}
