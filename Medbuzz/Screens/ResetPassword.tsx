@@ -1,11 +1,8 @@
- /* eslint-disable prettier/prettier */
-/* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList }from '../App';
 import Backarrow from '../Components/Svg/Backarrow';
 
 const { width, height } = Dimensions.get('window');
@@ -13,27 +10,24 @@ const { width, height } = Dimensions.get('window');
 const ResetPassword = () => {
   const [code, setCode] = React.useState('');
   const [codeError, setCodeError] = React.useState('');
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<any>>();
 
-  const emailValid = true;
-  const realCode = "1111"
-
+  const realCode = '1111';
 
   const handleContinue = () => {
-    if (code == realCode) {
+    if (code === realCode) {
       navigation.navigate('RegContinue');
     } else {
-      setCodeError("We can't find your email!");
+      setCodeError('Invalid code. Please try again.');
     }
   };
 
-
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-      <View style={styles.backArrowContainer}>
+        <View style={styles.backArrowContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Backarrow width={40} height={40} color={"white"}/>
+            <Backarrow width={40} height={40} color={'white'} />
           </TouchableOpacity>
         </View>
         <View style={styles.curveOverlay} />
@@ -41,13 +35,8 @@ const ResetPassword = () => {
           <Text style={styles.logoText}>M</Text>
         </View>
       </View>
-      <ScrollView style={styles.scrollView}>
       <View style={styles.inputContainer}>
-        <Text style={styles.headerText}>Reset Password</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
-          </TouchableOpacity>
-
+        <Text style={styles.headerText}>Enter Code</Text>
         <Text style={styles.inputLabel}>Enter the Code</Text>
         <TextInput
           style={styles.input}
@@ -56,24 +45,14 @@ const ResetPassword = () => {
             setCode(text);
             setCodeError('');
           }}
-          value = {code}
+          value={code}
         />
-               {codeError ? (
-          <Text style={styles.errorText}>{codeError}</Text>
-        ) : null}
-
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={handleContinue} // Use the handleContinue function here
-          disabled={!emailValid}
-        >
+        {codeError ? <Text style={styles.errorText}>{codeError}</Text> : null}
+        <TouchableOpacity style={styles.submitButton} onPress={handleContinue}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
-
-
       </View>
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -104,22 +83,21 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#0EA68D',
     alignSelf: 'center',
     marginBottom: 25,
   },
   inputContainer: {
-    // flex: 0.8, // This will allow the container to fill the rest of the screen
-    justifyContent: 'center', // This centers the children vertically
+    //flex: 0.8, // This will allow the container to fill the rest of the screen
+    //justifyContent: 'center', // This centers the children vertically
     paddingHorizontal: 40,
-    marginTop: 0,
+    marginTop: 20,
   },
   curveOverlay: {
     position: 'absolute',
-    top: height * 0.239, // top position to where the curve should start
+    top: height * 0.239,  // Same top position
     left: -80,
     right: -119.5,
-    //bottom: 0,
     height: 280,
     backgroundColor: 'white',
     borderTopRightRadius: width,
@@ -127,20 +105,16 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 18,
     color: 'black',
-    marginBottom: 0,
-    marginTop: 20,
-    textAlign: "center"
+    marginBottom: 5,
+    marginTop: 30,
+    //textAlign: "center"
 
   },
   backArrowContainer: {
-    // justifyContent: 'flex-start',
-    width: '100%',
-    // paddingTop: '5%',
     position: 'absolute',
     left: 3,
     top: 10,
-  },
-
+  },  
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,

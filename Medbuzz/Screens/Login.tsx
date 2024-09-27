@@ -12,8 +12,8 @@ import {
   Platform,
 } from 'react-native';
 
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import {RootStackParamList} from '../App';
+import { useNavigation } from '@react-navigation/native';
+// import {RootStackParamList} from '../App';
 
 
 
