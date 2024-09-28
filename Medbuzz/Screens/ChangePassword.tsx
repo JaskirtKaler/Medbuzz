@@ -1,4 +1,4 @@
- /* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React from 'react';
@@ -7,6 +7,7 @@ import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList }from '../App';
 import Backarrow from '../Components/Svg/Backarrow';
+import { Alert, Modal } from 'react-native'
 
 const { width, height } = Dimensions.get('window');
 
@@ -17,17 +18,30 @@ const ChangePassword = () => {
 
 
   const handleBack = () => {
-    console.log("backarrow clicked")
+    navigation.goBack()
 }
 
   const handlePasswordChange = () => {
     if (newPassword == confirmNewPassword) {
-      console.log("Same Password Inputted");
+      // console.log("Same Password Inputted");
+      navigation.navigate('Login');
     } else {
-        console.log("Password Mismatch");
+      // console.log("Password Mismatch");
+      Alert.alert('Password Do Not Match', 'Your new password and confirmation do not match. Try again.',
+        [
+          {
+            text: 'Okay',
+          }
+        ],
+        {
+          cancelable: false,
+          onDismiss: () => Alert.alert('Dismissed')
+        }
+      );
     }
-    console.log("New: " + newPassword);
-    console.log("Confirm: " + confirmNewPassword);
+    // Use these for debugging.
+    // console.log("New: " + newPassword);
+    // console.log("Confirm: " + confirmNewPassword);
   };
 
 
@@ -47,9 +61,6 @@ const ChangePassword = () => {
       <ScrollView style={styles.scrollView}>
       <View style={styles.inputContainer}>
         <Text style={styles.headerText}>Reset Password</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
-          </TouchableOpacity>
 
         <Text style={styles.inputLabel}>New Password</Text>
         <TextInput

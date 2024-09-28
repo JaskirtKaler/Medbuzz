@@ -1,4 +1,4 @@
- /* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React from 'react';
@@ -13,6 +13,7 @@ const { width, height } = Dimensions.get('window');
 const ResetPassword = () => {
   const [code, setCode] = React.useState('');
   const [codeError, setCodeError] = React.useState('');
+  const [codeEmpty, setCodeEmpty] = React.useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const emailValid = true;
@@ -21,9 +22,11 @@ const ResetPassword = () => {
 
   const handleContinue = () => {
     if (code == realCode) {
-      navigation.navigate('RegContinue');
+      navigation.navigate('ChangePassword');
+    } else if (code.length == 0) {
+      setCodeEmpty("You have not enter anything!");
     } else {
-      setCodeError("We can't find your email!");
+      setCodeError("Not a valid code!");
     }
   };
 
@@ -44,9 +47,6 @@ const ResetPassword = () => {
       <ScrollView style={styles.scrollView}>
       <View style={styles.inputContainer}>
         <Text style={styles.headerText}>Reset Password</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
-          </TouchableOpacity>
 
         <Text style={styles.inputLabel}>Enter the Code</Text>
         <TextInput
@@ -58,9 +58,10 @@ const ResetPassword = () => {
           }}
           value = {code}
         />
-               {codeError ? (
+
+        {codeError ? (
           <Text style={styles.errorText}>{codeError}</Text>
-        ) : null}
+        ) : (codeEmpty ? (<Text style={styles.errorText}>{codeEmpty}</Text>) : null)}
 
         <TouchableOpacity
           style={styles.submitButton}
@@ -69,7 +70,6 @@ const ResetPassword = () => {
         >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
-
 
       </View>
       </ScrollView>

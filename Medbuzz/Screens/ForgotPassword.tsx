@@ -1,4 +1,4 @@
- /* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React from 'react';
@@ -16,14 +16,17 @@ const { width, height } = Dimensions.get('window');
 const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
+  const [emailEmpty, setEmailEmptyError] = React.useState('');
   const navigation = useNavigation<NavigationProp<any>>();
 
   const emailValid = true;
 
 
   const handleContinue = () => {
-    if (validate(email)) {
-      navigation.navigate('RegContinue');
+    if (email.length <= 0) {
+      setEmailEmptyError("You did not enter an email!");
+    } else if (validate(email)) {
+      navigation.navigate('ResetPassword');
     } else {
       setEmailError("We can't find your email!");
     }
@@ -66,23 +69,20 @@ const ForgotPassword = () => {
           }}
           value = {email}
         />
+
         {emailError ? (
           <Text style={styles.errorText}>{emailError}</Text>
-        ) : null}
+        ) : (emailEmpty ? (<Text style={styles.errorText}>{emailEmpty}</Text>) : null)}
 
         <TouchableOpacity
           style={[styles.loginButton, !emailValid ? styles.disabledButton : {}]}
           //onPress={handleContinue} // Use the handleContinue function here
-          onPress={() => navigation.navigate('ResetPassword')}
+          // onPress={() => navigation.navigate('ResetPassword')}
+          onPress={() => {handleContinue()}}
           disabled={!emailValid}
         >
           <Text style={styles.loginButtonText}>Continue</Text>
         </TouchableOpacity>
-
-        {/* <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.returnToLogin}>&lt; Back to Login</Text>
-          </TouchableOpacity> */}
-
 
       </View>
     </View>
