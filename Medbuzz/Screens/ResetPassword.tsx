@@ -23,7 +23,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} testID="code-scroll-view">
       <View style={styles.headerContainer}>
         <View style={styles.backArrowContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -40,6 +40,7 @@ const ResetPassword = () => {
         <Text style={styles.inputLabel}>Enter the Code</Text>
         <TextInput
           style={styles.input}
+          placeholder="Enter the Code" //placeholder for test
           placeholderTextColor="#ddd"
           onChangeText={(text) => {
             setCode(text);

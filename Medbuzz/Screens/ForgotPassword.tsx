@@ -31,7 +31,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} testID="email-scroll-view">
       <View style={styles.headerContainer}>
         <View style={styles.backArrowContainer}>
           <TouchableOpacity onPress={handleBack}>
@@ -52,6 +52,7 @@ const ForgotPassword = () => {
         <Text style={styles.inputLabel}>Email</Text>
         <TextInput
           style={styles.input}
+          placeholder="Enter your email" //test placeholder
           placeholderTextColor="#ddd"
           onChangeText={(text) => {
             setEmail(text);
