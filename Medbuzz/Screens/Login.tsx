@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import { Dimensions } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Dimensions} from 'react-native';
 import {
   ScrollView,
   View,
@@ -12,22 +12,27 @@ import {
   Platform,
 } from 'react-native';
 
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
+import {useJobPostings} from '../API Fetch/JobPostings';
 
-
-
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const Login = () => {
   // const navigation = useNavigation();
   const navigation = useNavigation<any>();
+  const {jobPostings, fetchData, isLoading} = useJobPostings(); // Get the function to fetch job postings
+
+  const handleContinue = async () => {
+    await fetchData();
+    console.log(jobPostings.length)
+    navigation.navigate('Main')
+      
+  };
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}
-    >
-      
+      keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.headerContainer}>
           <View style={styles.curveOverlay} />
@@ -51,19 +56,20 @@ const Login = () => {
             placeholderTextColor="#ddd"
             secureTextEntry
           />
-          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
-      <View style={styles.signupTextContainer}>
-        <Text style={styles.signupPromptText}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupText}>Sign up</Text>
+        <TouchableOpacity style={styles.loginButton} onPress={handleContinue}>
+          <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
-      </View>
+        <View style={styles.signupTextContainer}>
+          <Text style={styles.signupPromptText}>Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.signupText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 20,
     color: 'black',
- 
+
     marginTop: 10,
   },
   input: {
@@ -143,7 +149,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.3,
     borderColor: 'grey',
     shadowColor: '#010',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
@@ -184,6 +190,5 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
 });
-
 
 export default Login;
