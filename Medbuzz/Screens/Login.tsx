@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import {
   ScrollView,
@@ -21,6 +21,48 @@ const { width, height } = Dimensions.get('window');
 const Login = () => {
   // const navigation = useNavigation();
   const navigation = useNavigation<any>();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleLogin = async () =>{
+    const tokenEndpoint = 'Token-Enpoint';
+
+    try {
+      const response = await fetch(tokenEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',  // Form-encoded data
+        },
+        body: new URLSearchParams({
+          client_id: 'client-id',  // Azure AD B2C application client ID
+          client_secret: 'client-secret',  // Client secret generated in Azure AD B2C
+          scope: 'openid profile offline_access',  // Scopes requested
+          grant_type: 'password',  // ROPC flow
+          username: email,  // User's email or username
+          password: password,  // User's password
+          response_type: 'code id_token token'
+        }).toString(),  // Form-encode the parameters
+      });
+
+     // Check if response is OK (status 200)
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Access token:', data.access_token);
+      // Navigate to Main screen if login is successful
+      navigation.navigate('Main')  
+    } else {
+      // Handle login error
+      const errorData = await response.json();
+      console.error('Login error:', errorData);
+    }
+
+      const data = await response.json();
+      console.log('Access token:', data.access_token);
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+  
+    // navigation.navigate('Main')
+  }
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -43,6 +85,8 @@ const Login = () => {
             style={styles.input}
             placeholder="Enter your name"
             placeholderTextColor="#ddd"
+            value={email}
+            onChangeText={setEmail}
           />
           <Text style={styles.inputLabel}>Password</Text>
           <TextInput
@@ -50,12 +94,14 @@ const Login = () => {
             placeholder="Enter your password"
             placeholderTextColor="#ddd"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
           <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
       <View style={styles.signupTextContainer}>
