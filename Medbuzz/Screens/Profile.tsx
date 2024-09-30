@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native'
 import UploadDoc from './UploadDoc.tsx';
 import CheckBox from '@react-native-community/checkbox';
 import { Dropdown } from 'react-native-element-dropdown';
+import DatePicker from 'react-native-date-picker'
+import Calendar from '../Components/Svg/Calender.tsx'
 
 // Interface for user's Staff Role Preferences
 interface StaffRoles {
@@ -37,6 +39,9 @@ interface TravelContracts {
 
 const Profile = () => {
 
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
+
     // Use State for user's Staff Role Preferences
     const [staffRolePrefs, setStaffRolePrefs] = useState<StaffRoles>(
         {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
@@ -48,7 +53,7 @@ const Profile = () => {
     );
 
     // Use State for user's Travel Contracts Preferences
-    const [travelContractsPrefs, setTravelContractsPrefs] = useState<StaffRoles>(
+    const [travelContractsPrefs, setTravelContractsPrefs] = useState<TravelContracts>(
         {startDate: "", preferredLocation: "", relocate: false, desiredPay: "", preferredHours:""}
     );
 
@@ -57,6 +62,7 @@ const Profile = () => {
     const [isAfternoonSelected, setAfternoonSelection] = useState(false);   // State for Afternoon Checkbox in Job Preferences
     const [isEveningSelected, setEveningSelection] = useState(false);   // State for Evening Checkbox in Job Preferences
     const [isFlexibleSelected, setFlexibleSelection] = useState(false); // State for Flexible Checkbox in Job Preferences
+
 
     // Temporary useSates to handle changes to the user's Staff Role Preferences. Updates staffRolePrefs after confirmation
     const [tmpStartDate, setTmpStartDate] = useState("");
@@ -128,6 +134,30 @@ const Profile = () => {
         else
             return "ERROR: cannot determine preferred hours"
     };       
+
+    const adjustPrefTimes = (time: string) => {
+        if (time === "morning"){
+            setAfternoonSelection(false)
+            setEveningSelection(false)
+            setFlexibleSelection(false)
+        }
+        else if (time === "afternoon") {
+            setMorningSelection(false)
+            setEveningSelection(false)
+            setFlexibleSelection(false)
+        }
+        else if (time === "evening") {
+            setMorningSelection(false)
+            setAfternoonSelection(false)
+            setFlexibleSelection(false)
+        }
+        else if (time === "flexible") {
+            setMorningSelection(false)
+            setAfternoonSelection(false)
+            setEveningSelection(false)
+        }
+        
+    }
     
 
     const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
@@ -241,7 +271,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
 
-        {/* Modal for editing Job Preferences */}
+        {/* Modal for editing Staff Role Preferences */}
         <Modal
             animationType='slide'
             transparent={true}
@@ -253,7 +283,11 @@ const Profile = () => {
             <View style={{flex: 1}}>
                 <View style={styles.modalStyle}>
                     <View style={{flexDirection: 'row'}}>
+
+                        {/* Modal Title */}
                         <Text style={styles.modalTitle}>Staff Role Preferences</Text>
+
+                        {/* Cancel Button */}
                         <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setStaffRoleModalVisible(!staffRoleModalVisible)}}>
                             <CancelX  width={20} height={20} color={"#000"}></CancelX>
                         </TouchableOpacity>
@@ -261,11 +295,26 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                    <TextInput 
-                        placeholder="Choose a start date" 
-                        onChangeText={newText => setTmpStartDate(newText)} 
-                        style={styles.textBoxStyle}>
-                    </TextInput>
+                    <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
+                        <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
+                            <Calendar height={30} width={30} color="#555"></Calendar>
+                            <DatePicker
+                                mode="date"
+                                modal={true}
+                                open={open}
+                                date={date}
+                                onConfirm={(date) => {
+                                    setOpen(false)
+                                    setDate(date)
+                                    setTmpStartDate(date.toLocaleDateString())
+                                    }}
+                                onCancel={() => {
+                                    setOpen(false)
+                                }}
+                            />
+                        </View>
+                    </TouchableOpacity>
 
                     {/* Preferred Location Selection */}
                     <Text style={styles.modalQuestion}>Choose preferred locations</Text>
@@ -275,7 +324,8 @@ const Profile = () => {
                         style={styles.textBoxStyle}>
                     </TextInput>
 
-                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    {/* Open to relocation selection */}
+                    <View style={{flexDirection:'row', alignItems: 'center', marginLeft: '2%'}}>
                         <CheckBox
                             value={isRelocateSelected}
                             onValueChange={setRelocateSelection}
@@ -283,6 +333,7 @@ const Profile = () => {
                         <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
 
+                    {/* Desired Pay dropdown menu selection */}
                     <View style={{marginTop: '2%'}}>
                         <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
                         <Dropdown
@@ -304,9 +355,11 @@ const Profile = () => {
                             }}
                         />
                     </View>
+
+
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <View style={styles.timeSelectionStyle}>
                             <CheckBox 
                                 value={isMorningSelected}
                                 onValueChange={setMorningSelection}
@@ -343,7 +396,7 @@ const Profile = () => {
         </Modal>
 
 
-        {/* Modal for editing Job Preferences */}
+        {/* Modal for editing Travel Contract Preferences */}
         <Modal
             animationType='slide'
             transparent={true}
@@ -363,11 +416,26 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                    <TextInput 
-                        placeholder="Choose a start date" 
-                        onChangeText={newText => setTmpStartDate(newText)} 
-                        style={styles.textBoxStyle}>
-                    </TextInput>
+                    <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
+                        <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
+                            <Calendar height={30} width={30} color="#555"></Calendar>
+                            <DatePicker
+                                mode="date"
+                                modal={true}
+                                open={open}
+                                date={date}
+                                onConfirm={(date) => {
+                                    setOpen(false)
+                                    setDate(date)
+                                    setTmpStartDate(date.toLocaleDateString())
+                                    }}
+                                onCancel={() => {
+                                    setOpen(false)
+                                }}
+                            />
+                        </View>
+                    </TouchableOpacity>
 
                     {/* Preferred Location Selection */}
                     <Text style={styles.modalQuestion}>Choose preferred locations</Text>
@@ -377,7 +445,7 @@ const Profile = () => {
                         style={styles.textBoxStyle}>
                     </TextInput>
 
-                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    <View style={{flexDirection:'row', alignItems: 'center', marginLeft: '2%'}}>
                         <CheckBox
                             value={isRelocateSelected}
                             onValueChange={setRelocateSelection}
@@ -408,7 +476,7 @@ const Profile = () => {
                     </View>
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <View style={styles.timeSelectionStyle}>
                             <CheckBox 
                                 value={isMorningSelected}
                                 onValueChange={setMorningSelection}
@@ -444,7 +512,7 @@ const Profile = () => {
             </View>
         </Modal>
 
-        {/* Modal for editing Job Preferences */}
+        {/* Modal for editing Local Contract Preferences */}
         <Modal
             animationType='slide'
             transparent={true}
@@ -464,11 +532,26 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
-                    <TextInput 
-                        placeholder="Choose a start date" 
-                        onChangeText={newText => setTmpStartDate(newText)} 
-                        style={styles.textBoxStyle}>
-                    </TextInput>
+                    <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
+                        <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
+                            <Calendar height={30} width={30} color="#555"></Calendar>
+                            <DatePicker
+                                mode="date"
+                                modal={true}
+                                open={open}
+                                date={date}
+                                onConfirm={(date) => {
+                                    setOpen(false)
+                                    setDate(date)
+                                    setTmpStartDate(date.toLocaleDateString())
+                                    }}
+                                onCancel={() => {
+                                    setOpen(false)
+                                }}
+                            />
+                        </View>
+                    </TouchableOpacity>
 
                     {/* Preferred Location Selection */}
                     <Text style={styles.modalQuestion}>Choose preferred locations</Text>
@@ -478,7 +561,7 @@ const Profile = () => {
                         style={styles.textBoxStyle}>
                     </TextInput>
 
-                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                    <View style={{flexDirection:'row', alignItems: 'center', marginLeft: '2%'}}>
                         <CheckBox
                             value={isRelocateSelected}
                             onValueChange={setRelocateSelection}
@@ -509,7 +592,7 @@ const Profile = () => {
                     </View>
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
-                        <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                        <View style={styles.timeSelectionStyle}>
                             <CheckBox 
                                 value={isMorningSelected}
                                 onValueChange={setMorningSelection}
@@ -1043,7 +1126,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 22, 
         color: 'black',
-        marginLeft: '2%',
+        marginLeft: '4%',
         marginTop: '2%',
         marginBottom: '3%'
     }, 
@@ -1052,16 +1135,30 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1, 
         borderRadius: 10,
-        marginLeft: '2%',
-        marginRight: '2%',
+        marginLeft: '4%',
+        marginRight: '4%',
         marginTop: '3%',
         marginBottom: '3%',
-        height: 40
+        height: 40,
+      },
+
+      calendarTextBoxStyle: {
+        borderColor: 'black',
+        borderWidth: 1, 
+        borderRadius: 10,
+        marginLeft: '4%',
+        marginRight: '4%',
+        marginTop: '3%',
+        marginBottom: '3%',
+        height: 40,
+        flexDirection: 'row',
+        alignItems: 'center'
+        
       },
 
       modalQuestion: {
         color: 'black', 
-        marginLeft: '2%',
+        marginLeft: '4%',
         fontSize: 18
       }, 
 
@@ -1069,8 +1166,8 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1, 
         borderRadius: 10,
-        marginLeft: '2%',
-        marginRight: '2%',
+        marginLeft: '4%',
+        marginRight: '4%',
         marginTop: '3%',
         marginBottom: '3%',
         height: 40
@@ -1112,6 +1209,13 @@ const styles = StyleSheet.create({
         color:'black', 
         fontSize: 17
       }, 
+
+      timeSelectionStyle: {
+        flexDirection: 'row',
+        justifyContent:'space-around',
+        marginLeft: '2%', 
+        marginRight: '4%'
+      },
 
       cancelModalButton: {
         flex: 1, 
