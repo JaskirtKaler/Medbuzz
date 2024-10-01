@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useState} from 'react';
 import { Dimensions } from 'react-native';
 import {
   ScrollView,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import validate from 'react-native-email-validator';
 import {RootStackParamList} from '../App';
 
 
@@ -20,7 +21,19 @@ import {RootStackParamList} from '../App';
 const { width, height } = Dimensions.get('window');
 const Login = () => {
   // const navigation = useNavigation();
+
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation<any>();
+
+  const handleContinue = () => {
+    if (validate(email)) {
+      navigation.navigate('Main');
+    } else {
+      setEmailError("We can't find your email!");
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -38,24 +51,34 @@ const Login = () => {
         <View style={styles.inputContainer}>
           <Text style={styles.headerText}>Login</Text>
           <Text style={styles.subHeaderText}>Sign in to Continue</Text>
-          <Text style={styles.inputLabel}>Name</Text>
+          <Text style={styles.inputLabel}>Email</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter your name"
+            placeholder="Enter your Email"
             placeholderTextColor="#ddd"
+            onChangeText={(text) => {setEmail(text)}}
           />
           <Text style={styles.inputLabel}>Password</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your password"
             placeholderTextColor="#ddd"
+            onChangeText={(text) => {setPassword(text)}}
             secureTextEntry
           />
+          <View>
+            {emailError ? (
+              <Text style={styles.errorText}>{emailError}</Text>
+            ) : null}
+          </View>
+          
           <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
+      <TouchableOpacity style={[styles.loginButton, (!email || !password) ? styles.disabledButton : {}]} 
+        onPress={handleContinue}
+        disabled={!email || !password}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
       <View style={styles.signupTextContainer}>
@@ -182,6 +205,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0EA68D',
     textDecorationLine: 'underline',
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc', // A greyed out color
+  },
+errorText: {
+    fontSize: 14,
+    color: 'red',
+    marginTop: 5,
   },
 });
 

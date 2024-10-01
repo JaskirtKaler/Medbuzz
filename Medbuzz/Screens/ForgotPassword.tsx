@@ -1,7 +1,7 @@
  /* eslint-disable prettier/prettier */
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -11,19 +11,17 @@ import Warning from '../SVG/Warning-Logo';
 import validate from 'react-native-email-validator';
 import Backarrow from '../Components/Svg/Backarrow';
 
+
 const { width, height } = Dimensions.get('window');
 
 const ForgotPassword = () => {
-  const [email, setEmail] = React.useState('');
-  const [emailError, setEmailError] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const navigation = useNavigation<NavigationProp<any>>();
-
-  const emailValid = true;
-
 
   const handleContinue = () => {
     if (validate(email)) {
-      navigation.navigate('RegContinue');
+      navigation.navigate('ResetPassword');
     } else {
       setEmailError("We can't find your email!");
     }
@@ -71,10 +69,10 @@ const ForgotPassword = () => {
         ) : null}
 
         <TouchableOpacity
-          style={[styles.loginButton, !emailValid ? styles.disabledButton : {}]}
-          //onPress={handleContinue} // Use the handleContinue function here
-          onPress={() => navigation.navigate('ResetPassword')}
-          disabled={!emailValid}
+          style={[styles.loginButton, !email ? styles.disabledButton : {}]}
+          onPress={handleContinue} // Use the handleContinue function here
+          //onPress={() => navigation.navigate('ResetPassword')}
+          disabled={!email}
         >
           <Text style={styles.loginButtonText}>Continue</Text>
         </TouchableOpacity>

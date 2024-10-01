@@ -39,6 +39,7 @@ interface TravelContracts {
 
 const Profile = () => {
 
+    // useStates for the Calendar Date Picker
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
@@ -71,6 +72,7 @@ const Profile = () => {
     const [tmpDesiredPay, setTmpDesiredPay] = useState("");
     // value for preffered hours is determined by the time checkboxe(s) values
 
+    // resets the temporary useState variables 
     const resetTmps = () => {
         setTmpStartDate("")
         setTmpPreferredLocation("")
@@ -295,6 +297,8 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
+
+                    {/* Calendar Date Picker */}
                     <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
                         <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
@@ -356,7 +360,7 @@ const Profile = () => {
                         />
                     </View>
 
-
+                    {/* Checkbox selection for preferred shift time */}
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
                         <View style={styles.timeSelectionStyle}>
@@ -408,7 +412,11 @@ const Profile = () => {
             <View style={{flex:1}}>
                 <View style={styles.modalStyle}>
                     <View style={{flexDirection: 'row'}}>
+
+                        {/* Modal Title */}
                         <Text style={styles.modalTitle}>Travel Contract Preferences</Text>
+
+                        {/* Cancel Button */}
                         <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setTravelContractsModalVisible(!travelContractsModalVisible)}}>
                             <CancelX width={20} height={20} color={"#000"}></CancelX>
                         </TouchableOpacity>
@@ -416,6 +424,8 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
+
+                    {/* Calendar Date Picker */}
                     <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
                         <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
@@ -445,6 +455,7 @@ const Profile = () => {
                         style={styles.textBoxStyle}>
                     </TextInput>
 
+                    {/* Open to relocation selection */}
                     <View style={{flexDirection:'row', alignItems: 'center', marginLeft: '2%'}}>
                         <CheckBox
                             value={isRelocateSelected}
@@ -453,6 +464,7 @@ const Profile = () => {
                         <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
 
+                    {/* Desired Pay dropdown menu selection */}
                     <View style={{marginTop: '2%'}}>
                         <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
                         <Dropdown
@@ -474,6 +486,8 @@ const Profile = () => {
                             }}
                         />
                     </View>
+
+                    {/* Checkbox selection for preferred shift time */}
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
                         <View style={styles.timeSelectionStyle}>
@@ -524,7 +538,11 @@ const Profile = () => {
             <View style={{flex: 1}}>
                 <View style={styles.modalStyle}>
                     <View style={{flexDirection: 'row'}}>
+
+                        {/* Modal Title */}
                         <Text style={styles.modalTitle}>Local Contract Preferences</Text>
+
+                        {/* Cancel Button */}
                         <TouchableOpacity style={styles.cancelModalButton} onPress={() => {setLocalContractsModalVisible(!localContractsModalVisible)}}>
                             <CancelX width={20} height={20} color={"#000"}></CancelX>
                         </TouchableOpacity>
@@ -532,6 +550,8 @@ const Profile = () => {
 
                     {/* Start Date selection */}
                     <Text style={styles.modalQuestion}>When would you like to start?</Text>
+
+                    {/* Calendar Date Picker */}
                     <TouchableOpacity style = {styles.calendarTextBoxStyle} onPress={() => setOpen(true)}>
                         <Text style={{marginLeft: 3}}>{tmpStartDate}</Text>
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 3}}>
@@ -561,6 +581,7 @@ const Profile = () => {
                         style={styles.textBoxStyle}>
                     </TextInput>
 
+                    {/* Open to relocation selection */}
                     <View style={{flexDirection:'row', alignItems: 'center', marginLeft: '2%'}}>
                         <CheckBox
                             value={isRelocateSelected}
@@ -569,6 +590,7 @@ const Profile = () => {
                         <Text style={styles.modalQuestion}>Open to relocation</Text>
                     </View>
 
+                    {/* Desired Pay dropdown menu selection */}
                     <View style={{marginTop: '2%'}}>
                         <Text style={styles.modalQuestion}>Desired Pay (Hourly)</Text>
                         <Dropdown
@@ -590,6 +612,8 @@ const Profile = () => {
                             }}
                         />
                     </View>
+
+                    {/* Checkbox selection for preferred shift time */}
                     <View>
                         <Text style={styles.modalQuestion}>Preferred Hours (select one)</Text>
                         <View style={styles.timeSelectionStyle}>
