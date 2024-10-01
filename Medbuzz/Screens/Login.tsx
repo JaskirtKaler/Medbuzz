@@ -12,9 +12,11 @@ import {
   Platform,
 } from 'react-native';
 
+
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
 import {useJobPostings} from '../API Fetch/JobPostings';
+// import {RootStackParamList} from '../App';
+
 
 const {width, height} = Dimensions.get('window');
 const Login = () => {

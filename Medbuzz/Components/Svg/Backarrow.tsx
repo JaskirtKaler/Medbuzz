@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as React from "react"
 import Svg, {SvgProps, Path } from "react-native-svg"
 interface SvgComponentProps extends SvgProps {
