@@ -58,6 +58,18 @@ const DisciplineScreen = () => {
     }
   }
 
+  // Formats phone number to (***)***-**** format and ensures it only contains numbers
+  const handlePhoneNumberInput = (text: string) => {
+
+    // Remove non-numeric characters
+    const numericValue = text.replace(/\D/g, '');
+
+    // A two digit number
+    let formattedNumber = numericValue;
+
+    return formattedNumber
+  };
+
   const options = [
     { label: 'Registered Nurse', value: 'Registered Nurse' },
     { label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse' },
@@ -129,8 +141,9 @@ return (
           placeholder="Enter years of experience"
           placeholderTextColor="#888"
           value={experience}
-          onChangeText={setExperience}
+          onChangeText={(text) =>{setExperience(handlePhoneNumberInput(text))}}
           keyboardType="numeric"
+          maxLength={2}
         />
 
 
