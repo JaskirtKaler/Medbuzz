@@ -11,6 +11,7 @@ const { width, height } = Dimensions.get('window');
 const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
+  const [emailEmpty, setEmailEmptyError] = React.useState('');
   const navigation = useNavigation<NavigationProp<any>>();
 
   const validateEmail = (inputEmail: string): boolean => {
@@ -60,10 +61,20 @@ const ForgotPassword = () => {
           }}
           value={email}
         />
-        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-        <TouchableOpacity style={styles.loginButton} onPress={handleContinue}>
+
+        {emailError ? (
+          <Text style={styles.errorText}>{emailError}</Text>
+        ) : (emailEmpty ? (<Text style={styles.errorText}>{emailEmpty}</Text>) : null)}
+
+        <TouchableOpacity
+          style={[styles.loginButton, !email ? styles.disabledButton : {}]}
+          onPress={handleContinue} // Use the handleContinue function here
+          //onPress={() => navigation.navigate('ResetPassword')}
+          disabled={!email}
+        >
           <Text style={styles.loginButtonText}>Continue</Text>
         </TouchableOpacity>
+
       </View>
     </ScrollView>
   );

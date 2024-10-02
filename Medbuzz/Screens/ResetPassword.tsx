@@ -10,13 +10,16 @@ const { width, height } = Dimensions.get('window');
 const ResetPassword = () => {
   const [code, setCode] = React.useState('');
   const [codeError, setCodeError] = React.useState('');
+  const [codeEmpty, setCodeEmpty] = React.useState('');
   const navigation = useNavigation<NavigationProp<any>>();
 
   const realCode = '1111';
 
   const handleContinue = () => {
-    if (code === realCode) {
-      navigation.navigate('RegContinue');
+    if (code == realCode) {
+      navigation.navigate('ChangePassword');
+    } else if (code.length == 0) {
+      setCodeEmpty("You have not enter anything!");
     } else {
       setCodeError('Invalid code. Please try again.');
     }
@@ -48,7 +51,9 @@ const ResetPassword = () => {
           }}
           value={code}
         />
-        {codeError ? <Text style={styles.errorText}>{codeError}</Text> : null}
+        {codeError ? (
+          <Text style={styles.errorText}>{codeError}</Text>
+        ) : (codeEmpty ? (<Text style={styles.errorText}>{codeEmpty}</Text>) : null)}
         <TouchableOpacity style={styles.submitButton} onPress={handleContinue}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
