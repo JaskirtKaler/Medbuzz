@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Warning from '../SVG/Warning-Logo';
 import Backarrow from '../Components/Svg/Backarrow';
+import validate from 'react-native-email-validator';
 
 
 const { width, height } = Dimensions.get('window');
@@ -59,7 +60,7 @@ const ForgotPassword = () => {
 
         {emailError ? (
           <Text style={styles.errorText}>{emailError}</Text>
-        ) : (emailEmpty ? (<Text style={styles.errorText}>{emailEmpty}</Text>) : null)}
+        ) : (email ? (<Text style={styles.errorText}>{emailError}</Text>) : null)}
 
         <TouchableOpacity
           style={[styles.loginButton, !email ? styles.disabledButton : {}]}
