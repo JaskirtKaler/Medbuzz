@@ -82,6 +82,30 @@ const RegContinue = () => {
       );
     }
   };
+
+  // Ensures that only numbers are entered and limits the input to 2 digits
+  const handleExperienceInput = (text: string) => {
+
+    // Remove non-numeric characters
+    const numericValue = text.replace(/\D/g, '');
+
+    // Format the value to (***)***-****
+    let formattedNumber = numericValue;
+
+    if (numericValue.length === 3) {
+      // Add first '('  and ')' after first 3 numbers
+      formattedNumber = '(' + numericValue.slice(0, 3) + ')';
+    } else if (numericValue.length > 3 && numericValue.length <= 6) {
+      // Add next 3 numbers after parentheses
+      formattedNumber = '(' + numericValue.slice(0, 3) + ')' + numericValue.slice(3, 6)
+    } else if (numericValue.length > 6) {
+      // Add '-' between the last 4 numers and the previous numbers
+      formattedNumber = '(' + numericValue.slice(0, 3) + ')' + numericValue.slice(3, 6) + '-' + numericValue.slice(6)
+    }
+
+    return formattedNumber
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -107,9 +131,11 @@ const RegContinue = () => {
           <Text style={styles.label}>Phone Number</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setPhoneNumber}
+            value={phoneNumber}
+            onChangeText={(text) => {setPhoneNumber(handleExperienceInput(text))}}
             placeholderTextColor="#ddd"
             keyboardType="phone-pad"
+            maxLength={13}
           />
           <Text style={styles.label}>How did you hear about us?</Text>
           <TextInput

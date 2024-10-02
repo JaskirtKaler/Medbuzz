@@ -1,27 +1,22 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Warning from '../SVG/Warning-Logo';
 import Backarrow from '../Components/Svg/Backarrow';
 
+
 const { width, height } = Dimensions.get('window');
 
 const ForgotPassword = () => {
-  const [email, setEmail] = React.useState('');
-  const [emailError, setEmailError] = React.useState('');
-  const [emailEmpty, setEmailEmptyError] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const navigation = useNavigation<NavigationProp<any>>();
 
-  const validateEmail = (inputEmail: string): boolean => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(inputEmail);
-  };
-
   const handleContinue = () => {
-    if (validateEmail(email)) {
-      navigation.navigate('ResetPassword'); // Go to Enter Code Screen
+    if (validate(email)) {
+      navigation.navigate('ResetPassword');
     } else {
       setEmailError('Please enter a valid email address');
     }

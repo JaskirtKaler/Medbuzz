@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -16,18 +16,20 @@ import {KeyboardAvoidingView, ScrollView, Platform, Alert} from 'react-native';
 import Backarrow from '../Components/Svg/Backarrow';
 const {width, height} = Dimensions.get('window');
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import validate from 'react-native-email-validator';
 
 const Register = () => {
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const navigation = useNavigation<any>();
 
   const allInputsFilled = firstName && lastName && email; // Check if all inputs are filled
 
   //create a new user object here with the firstname, lastname and email as attributes and save that to the local storage
   const handleContinue = async () => {
-    if (allInputsFilled) {
+    if (validate(email)) {
       try {
         const user = {
           firstName,
@@ -46,6 +48,8 @@ const Register = () => {
         console.error('There was a problem saving user info' + error);
       }
     } else {
+
+      setEmailError("We can't find your email!");
       // Show an alert if not all inputs are filled
       Alert.alert(
         'Incomplete Form',
@@ -103,6 +107,9 @@ const Register = () => {
             placeholderTextColor="#ddd"
             onChangeText={setEmail}
           />
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
           <TouchableOpacity
             style={[
               styles.loginButton,
@@ -250,6 +257,11 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: 'white',
     fontSize: 50,
+  },
+  errorText: {
+    fontSize: 14,
+    color: 'red',
+    marginTop: 5,
   },
 });
 
