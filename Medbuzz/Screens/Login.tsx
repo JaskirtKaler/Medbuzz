@@ -61,7 +61,7 @@ const Login = () => {
       console.error('Error during login:', error);
     }
   
-    // navigation.navigate('Main')
+    navigation.navigate('Main')
   }
   return (
     <KeyboardAvoidingView

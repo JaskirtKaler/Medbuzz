@@ -4,14 +4,18 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
 import { useNavigation } from '@react-navigation/native';
-
+import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
   add test to ensure that all required fields were actually entered and if they weren't reprompt
   the user, possibly add US territories: US virgin islands, Guam, Puerto Rico, etc to State options, 
   add cancel button functionality, add upload photo button functionality
 */
-
+type CategoryType = keyof typeof certificationMap; // Create a union type from the certificationMap keys
+interface OptionType { // Option type is for Certificaion mapping
+  label: string;
+  value: string;
+}
 
 // States for use with school state selector and home state selector
 const states = [
@@ -90,27 +94,6 @@ const years = [
   {label: '2027', value: '2027'}, {label: '2028', value: '2028'},
 ];
 
-// Disciplines for use with discipline Dropdown selector
-const disciplines = [
-  {label: 'Registered Nurse', value: 'Registered Nurse'},
-  {label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse'},
-  {label: 'CMA', value: 'CMA'},
-  {label: 'Faculty Staff', value: 'Faculty Staff'},
-  {label: '---', value: '---'}
-];
-
-// Certifications for use with certification Dropdown selector
-// Added in by Richard Varela for SCRUM - 106
-const certificates = [
-  { label: 'ACLS', value: 'ACLS' },
-  { label: 'BLS', value: 'BLS' },
-  { label: 'Cert3', value: 'Cert3' },
-  { label: 'Cert4', value: 'Cert4' },
-  { label: 'Cert5', value: 'Cert5' },
-  { label: 'Bla', value: 'Bla' },
-  { label: 'Duende', value: 'Duende' },
-  { label: '---', value: '---' }
-];
 
 // Screen - Edit Basic Details
 const EditBasicDetails = () => {
@@ -135,12 +118,40 @@ const EditBasicDetails = () => {
   const [homeCity, setHomeCity] = useState("");
   const [homeState, setHomeState] = useState("");
   const [yearsOfSpecialty, setYearsOfSpecialty] = useState("");
-  const[certificate, setCertificate] = useState("");
   const[zipCode, setZipCode] = useState("");
   const[ssn, setSSN] = useState("");
   const[legalFirstName, setLegalFirstName] = useState("");
   const[legalLastName, setLegalLastName] = useState("");
   const [isValidZipCode, setIsValidZipCode] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
+  const [certificationOptions, setCertificationOptions] = useState<OptionType[]>(categoryOptions); // Initially, it holds categories
+  const [selectedCertification, setSelectedCertification] = useState<string | null>(null);
+  const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
+
+  // Handle the dropdown change
+  const handleDropdownChange = (value: string) => {
+    if (value === 'back') {
+      // Handle the case where the user wants to go back to category selection
+      resetDropdown();
+    } else if (!isCategorySelected) {
+      // User selected a category, now we show certifications
+      setSelectedCategory(value as CategoryType);
+      const certifications = certificationMap[value as CategoryType] || [];
+      setCertificationOptions([{ label: 'Back to Category', value: 'back' }, ...certifications]); // Add the back option to certifications
+      setIsCategorySelected(true); // Indicate that category is selected
+    } else {
+      // User selected a certification
+      setSelectedCertification(value);
+    }
+  };
+
+  // Reset the dropdown to category selection
+  const resetDropdown = () => {
+    setSelectedCategory(null);
+    setCertificationOptions(categoryOptions); // Reset options to categories
+    setIsCategorySelected(false); // Reset category selection
+    setSelectedCertification(null); // Reset selected certification
+  };
 
   // prints all inputs when 'Save' button is pressed
   // Temporary function. Later this information will be saved to the database.
@@ -164,7 +175,7 @@ const EditBasicDetails = () => {
     console.log("Home state: " + homeState);
     console.log("Discipline: " + discipline);
     console.log("Years of specialty: " + yearsOfSpecialty);
-    console.log("Certificate: " + certificate);
+    console.log("Certificate: " + selectedCertification);
     console.log("ZIP Code: " + zipCode);
     console.log("SSN: " + ssn)
     console.log("Legal first name: " + legalFirstName);
@@ -394,7 +405,7 @@ const EditBasicDetails = () => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={disciplines}
+        data={disciplineOptions}
         search
         maxHeight={300}
         labelField="label"
@@ -418,17 +429,17 @@ const EditBasicDetails = () => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={certificates}
+        data={certificationOptions}
         search
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder="Select item"
         searchPlaceholder="Search..."
-        value={certificate}
-        onChange={item => {
-          setCertificate(item.value);
-        }}
+        value={isCategorySelected ? 'Select Certification' : 'Select Category'}
+        onChange={
+          (item) => handleDropdownChange(item.value)
+        }
       />
 
       {/* Years of specialty experience field and TextBox */}

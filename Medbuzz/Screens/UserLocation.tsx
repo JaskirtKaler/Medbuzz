@@ -125,7 +125,7 @@ export default UserLocation;
 
 const stylesLocal = StyleSheet.create({
   input: {
-    width: '72%',
+    width: '80%',
     borderRadius: 25,
     backgroundColor: 'white',
     paddingHorizontal: 20,

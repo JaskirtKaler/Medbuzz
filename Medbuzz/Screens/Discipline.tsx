@@ -14,7 +14,7 @@ import Backarrow from '../Components/Svg/Backarrow';
 import {useNavigation} from '@react-navigation/native';
 import {styles} from './ParentPage';
 import {loadUser, saveUser, User} from '../Utility/userStorage';
-
+import { disciplineOptions } from '../mapVariables/optionsData.tsx';
 const DisciplineScreen = () => {
   const progress = 20; // Example progress percentage
   const [discipline, setDiscipline] = useState('');
@@ -58,17 +58,21 @@ const DisciplineScreen = () => {
     }
   }
 
-  const options = [
-    { label: 'Registered Nurse', value: 'Registered Nurse' },
-    { label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse' },
-    { label: 'CMA', value: 'CMA' },
-    { label: 'Faculty Staff', value: 'Faculty Staff' },
-    { label: 'blah', value: 'blah' },
-    { label: 'blahblah', value: 'blahblah' },
-    { label: 'blahblahblah', value: 'blahblahblah' },
-    { label: '---', value: '---' },
-  ];
-
+  // const options = [
+  //   { label: 'Registered Nurse', value: 'Registered Nurse' },
+  //   { label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse' },
+  //   { label: 'CMA', value: 'CMA' },
+  //   { label: 'Faculty Staff', value: 'Faculty Staff' },
+  //   { label: 'blah', value: 'blah' },
+  //   { label: 'blahblah', value: 'blahblah' },
+  //   { label: 'blahblahblah', value: 'blahblahblah' },
+  //   { label: '---', value: '---' },
+  // ];
+const handleExperience = (text: any) => {
+  // Use regex to allow only integer values
+  const numericValue = text.replace(/[^0-9]/g, '');
+  setExperience(numericValue);
+}
  
 return (
   <ScrollView
@@ -112,7 +116,7 @@ return (
         style={stylesLocal.dropdown}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
-        data={options}
+        data={disciplineOptions}
         search
         maxHeight={Dimensions.get('window').height * 0.3}
         labelField="label"
@@ -129,7 +133,7 @@ return (
           placeholder="Enter years of experience"
           placeholderTextColor="#888"
           value={experience}
-          onChangeText={setExperience}
+          onChangeText={handleExperience}
           keyboardType="numeric"
         />
 
@@ -164,7 +168,7 @@ const stylesLocal = StyleSheet.create({
   },
   
   input: {
-    width: '72%',
+    width: '80%',
     borderRadius: 25,
     backgroundColor: 'white',
     paddingHorizontal: 20,
