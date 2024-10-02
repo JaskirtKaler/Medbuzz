@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
@@ -33,6 +33,46 @@ const MessagePage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
 
+  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [activeMessage, setActiveMessage] = useState<Message | null>(null);
+
+  // Function to show notification
+  const showNotification = (message: Message) => {
+    setActiveMessage(message);
+    setNotificationVisible(true);
+  };
+
+    // Effect to simulate receiving a new message
+    useEffect(() => {
+      // Simulating a new message received after 3-5 minutes
+      const interval = Math.floor(Math.random() * (300000 - 180000 + 1)) + 180000; // Random interval between 3-5 minutes
+      const timeoutId = setTimeout(() => {
+        const newMessage = {
+          id: '4',
+          senderId: '1', // Assuming senderId corresponds to Radixsol HR
+          content: 'You have a new message!',
+          timestamp: Date.now(),
+          isDeletable: false,
+        };
+        showNotification(newMessage);
+      }, interval);
+  
+      return () => clearTimeout(timeoutId); // Cleanup on unmount
+    }, []);
+
+  // Handler for reading the message
+  const handleReadMessage = () => {
+    if (activeMessage) {
+      // Mark message as read (you may want to update state to reflect this)
+      setNotificationVisible(false);
+      console.log('Message read:', activeMessage);
+      setActiveMessage(null);
+    }
+  };
+
+
+
+
   // Handler for the back arrow button
   const handleBack = () => {
     navigation.goBack();
@@ -43,7 +83,7 @@ const MessagePage = () => {
   const [senders, setSenders] = useState<Sender[]>([
     { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 2 },
     { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 1 },
-    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 }
+    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 },
   ]);
 
   // Sample state for messages
@@ -172,6 +212,25 @@ const MessagePage = () => {
       </View>
       <Text style={styles.header}>Messages</Text>
 
+            {/* Notification Modal */}
+            {notificationVisible && (
+        <Modal
+          transparent={true}
+          visible={notificationVisible}
+          animationType="slide"
+          onRequestClose={handleReadMessage}
+        >
+          <View style={styles.notificationContainer}>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationText}>{activeMessage?.content}</Text>
+              <TouchableOpacity style={styles.readButton} onPress={handleReadMessage}>
+                <Text style={styles.buttonText}>Mark as Read</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
+
       {/* FlatList to render list of senders */}
       <FlatList
         data={senders}
@@ -207,6 +266,30 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#fff',
+  },
+  notificationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
+  },
+  notificationContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  notificationText: {
+    fontSize: 18,
+    color: 'black',
+    marginBottom: 20,
+  },
+  readButton: {
+    backgroundColor: '#0EA68D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   header: {
     fontSize: 32,
