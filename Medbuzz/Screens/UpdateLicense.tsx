@@ -8,7 +8,7 @@ import Calender from '../Components/Svg/Calender.tsx';
 import Plus from '../Components/Svg/Plusarrow.tsx';
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 import Download from '../Components/Svg/Download';
-
+import { licenseType as licsenseOptions } from '../mapVariables/optionsData.tsx';
 interface License{
   licenseType: string;
   licenseState: string;
@@ -18,11 +18,15 @@ interface License{
   lastName: string;
  
 }
-
+interface DropdownItem {
+  label: string;
+  value: string;
+}
 function UpdateLicense() {
     const navigation = useNavigation<any>(); // Stack Navigation
     // License for the selected license type in the dropdown
-    const [licenseType, setLicenseType] = useState<string>("");
+    // const [licenseType, setLicenseType] = useState<string>("");
+    const [selectedLicenseType, setSelectedLicenseType] = useState<string>(''); // Changed name to selectedLicenseType
     // State for the selected state in the dropdown
     const [selectedState, setSelectedState] = useState<string>("");
     const [licenseNumber, setLicenseNumber] = useState<string>('');
@@ -33,24 +37,7 @@ function UpdateLicense() {
 
 
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
-     //  Label is what is displayed
-    //  value is what is passed
-    const lisenceType = [
-      { label: 'Registered Nurse (RN)', value: 'rn' },
-      { label: 'Licensed Practical Nurse (LPN)', value: 'lpn' },
-      { label: 'Certified Nursing Assistant (CNA)', value: 'cna' },
-      { label: 'Nurse Practitioner (NP)', value: 'np' },
-      { label: 'Clinical Nurse Specialist (CNS)', value: 'cns' },
-      { label: 'Certified Nurse Midwife (CNM)', value: 'cnm' },
-      { label: 'Certified Registered Nurse Anesthetist (CRNA)', value: 'crna' },
-      { label: 'Travel Nurse - Registered Nurse (Travel RN)', value: 'travel_rn' },
-      { label: 'Travel Nurse - Licensed Practical Nurse (Travel LPN)', value: 'travel_lpn' },
-      { label: 'Travel Nurse - Certified Nursing Assistant (Travel CNA)', value: 'travel_cna' },
-      { label: 'Travel Nurse - Nurse Practitioner (Travel NP)', value: 'travel_np' },
-      { label: 'Travel Nurse - Clinical Nurse Specialist (Travel CNS)', value: 'travel_cns' },
-      { label: 'Travel Nurse - Certified Nurse Midwife (Travel CNM)', value: 'travel_cnm' },
-      { label: 'Travel Nurse - Certified Registered Nurse Anesthetist (Travel CRNA)', value: 'travel_crna' },
-  ];
+  
   const usaStates = [
       { label: "Alabama", value: "Alabama" },
       { label: "Alaska", value: "Alaska" },
@@ -150,7 +137,7 @@ function UpdateLicense() {
     
     const handleSave = () => {
       const licenseData: License = {
-        licenseType,
+        licenseType: selectedLicenseType,
         licenseState: selectedState,
         licenseNumber,
         expirationDate,
@@ -165,6 +152,8 @@ function UpdateLicense() {
     const handleDownload = () =>{
       console.log('Download document')
     }
+
+
 
   return (
         <View style={styles.main}>
@@ -193,17 +182,17 @@ function UpdateLicense() {
                         selectedTextStyle={styles.selectedTextStyle}
                         inputSearchStyle={styles.inputSearchStyle}
                         iconStyle={styles.iconStyle}
-                        data={lisenceType} // map data
+                        data={licsenseOptions} // map data
                         search
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
                         placeholder="Select"
                         searchPlaceholder="Search..."
-                        value={licenseType}
-                        onChange={item => {
-                            setLicenseType(item.value);
-                            console.log(licenseType);
+                        value={selectedLicenseType}
+                        onChange={(item: DropdownItem) => {
+                          setSelectedLicenseType(item.value);
+                          console.log(item.value);
                         }}
                         />
 

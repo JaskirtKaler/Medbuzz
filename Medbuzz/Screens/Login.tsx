@@ -23,7 +23,8 @@ const Login = () => {
   // const navigation = useNavigation();
   const navigation = useNavigation<any>();
   const {jobPostings, fetchData, isLoading} = useJobPostings(); // Get the function to fetch job postings
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const handleContinue = async () => {
     await fetchData();
     console.log(jobPostings.length)
@@ -50,6 +51,8 @@ const Login = () => {
             style={styles.input}
             placeholder="Enter your name"
             placeholderTextColor="#ddd"
+            value={email}
+            onChangeText={setEmail}
           />
           <Text style={styles.inputLabel}>Password</Text>
           <TextInput
@@ -57,6 +60,8 @@ const Login = () => {
             placeholder="Enter your password"
             placeholderTextColor="#ddd"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
           <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPassword')}>
