@@ -20,14 +20,17 @@ import {useJobPostings} from '../API Fetch/JobPostings';
 
 const {width, height} = Dimensions.get('window');
 const Login = () => {
-  // const navigation = useNavigation();
   const navigation = useNavigation<any>();
-  const {jobPostings, fetchData, isLoading} = useJobPostings(); // Get the function to fetch job postings
+  // Currently causing errors
+  // const {jobPostings, fetchData, isLoading} = useJobPostings(); // Get the function to fetch job postings
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const handleContinue = async () => {
-    await fetchData();
-    console.log(jobPostings.length)
+  const [password, setPassword] = useState(''); 
+
+  // Logic to handle the login button press
+  const handleLogin = async () => {
+    // Currently causing errors
+    // await fetchData();
+    // console.log(jobPostings.length)
     navigation.navigate('Main')
       
   };
@@ -37,12 +40,14 @@ const Login = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* View to contain the curve overlay and logo */}
         <View style={styles.headerContainer}>
           <View style={styles.curveOverlay} />
           <View style={styles.logoBox}>
             <Text style={styles.logoText}>M</Text>
           </View>
         </View>
+        {/* View to contain Center Text, login inputs, and redirects */}
         <View style={styles.inputContainer}>
           <Text style={styles.headerText}>Login</Text>
           <Text style={styles.subHeaderText}>Sign in to Continue</Text>
@@ -63,14 +68,17 @@ const Login = () => {
             value={password}
             onChangeText={setPassword}
           />
+          {/* Forgot Password Button */}
           <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.loginButton} onPress={handleContinue}>
+        {/* Login Button */}
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
+        {/* Signup Text and Button */}
         <View style={styles.signupTextContainer}>
           <Text style={styles.signupPromptText}>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -81,8 +89,6 @@ const Login = () => {
     </KeyboardAvoidingView>
   );
 };
-
-// const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   scrollViewContent: {
@@ -121,14 +127,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: '8.5%',
   },
 
   inputContainer: {
     flex: 0.5, // This will allow the container to fill the rest of the screen
     justifyContent: 'center', // This centers the children vertically
-    paddingHorizontal: 40,
-    marginTop: 20,
+    paddingHorizontal: '5%',
+    marginTop: '5%',
   },
   curveOverlay: {
     position: 'absolute',
@@ -143,15 +149,14 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 20,
     color: 'black',
-
-    marginTop: 10,
+    marginTop: '1.5%',
   },
   input: {
     backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: '3.75%',
+    paddingVertical: '3.5%',
     borderRadius: 30,
-    marginTop: 5,
+    marginTop: '1.5%',
     fontSize: 18,
     borderWidth: 0.3,
     borderColor: 'grey',
@@ -165,15 +170,15 @@ const styles = StyleSheet.create({
     color: '#0EA68D',
     fontSize: 18,
     alignSelf: 'flex-end',
-    marginTop: 15,
+    marginTop: '4%',
     marginBottom: 5,
   },
   loginButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 6,
     marginHorizontal: 40,
-    marginTop: 25,
-    paddingVertical: 12,
+    marginTop: '5.5%',
+    paddingVertical: '3.25%',
     alignItems: 'center',
   },
   loginButtonText: {
@@ -185,7 +190,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
-    paddingHorizontal: 40,
+    paddingHorizontal: '5%',
   },
   signupPromptText: {
     fontSize: 15,
