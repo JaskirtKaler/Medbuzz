@@ -69,7 +69,8 @@ export const useJobPostings = () => {
 
       var myHeaders = new Headers();
       myHeaders.append('Content-Type', 'application/json');
-      myHeaders.append('Authorization', `Bearer ${API_TOKEN} `); // Use the token from the .env file
+      // REMOVED. Update the API token in the .env file so no errors are thrown during bundling
+      // myHeaders.append('Authorization', `Bearer ${API_TOKEN} `); // Use the token from the .env file
 
       var requestOptions = {
         method: 'GET',
