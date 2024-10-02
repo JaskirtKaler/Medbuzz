@@ -1,5 +1,5 @@
-import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions} from 'react-native'
-import React, {useState} from 'react'
+import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions, Alert} from 'react-native'
+import React, {useState, useEffect} from 'react'
 import Backarrow from '../Components/Svg/Backarrow'
 import CancelX from '../Components/Svg/CancelX.tsx'
 import Editbutton from '../Components/Svg/Editbutton'
@@ -160,15 +160,6 @@ const Profile = () => {
         }
         
     }
-    
-
-    const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
-    const [localContracts, setLocalContracts] = useState(false); // State for actively looking switch (Local Contracts)
-    const [travelContracts, setTravelContracts] = useState(false); // State for actively looking switch (Travel Contracts)
-    const [showStaffDetails, setShowStaffDetails] = useState(false); // State for staff roles details
-    const [showTravelDetails, setShowTravelDetails] = useState(false); // State for travel contracts details
-    const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
-    const navigation = useNavigation<any>(); // Stack Navigation
 
     // Modals
     const [staffRoleModalVisible, setStaffRoleModalVisible] = useState(false); // State for edit Modal
@@ -177,15 +168,74 @@ const Profile = () => {
 
     const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
 
-    const firstName = "First";
-    const lastName = "Last";
-    const specialty = "Specialty";
-    const firstInitial = firstName.charAt(0).toUpperCase(); // Get first letter of first name
-    const lastInitial = lastName.charAt(0).toUpperCase(); // Get last letter of first name
+    const [profileData, setProfileData] = useState({
+        personalInfo: {
+            firstName: "First",
+            lastName: "Last",
+            specialty: "Specialty",
+            contactInfo: {
+                phoneNumber: "(123) 456-7890",
+                email: "example@example.com",
+            },
+        },
+        profileStrength: 33,
+        jobPreferences: {
+            staffRoles: {
+                activelyLooking: false,
+                details: {
+                    startDate: "",
+                    preferredLocation: "",
+                    relocate: false,
+                    desiredPay: "",
+                    preferredHours: "",
+                }
+            },
+            travelContracts: {
+                activelyLooking: false,
+                details: {
+                    startDate: "",
+                    preferredLocation: "",
+                    relocate: false,
+                    desiredPay: "",
+                    preferredHours: "",
+                }
+            },
+            localContracts: {
+                activelyLooking: false,
+                details: {
+                    startDate: "",
+                    preferredLocation: "",
+                    relocate: false,
+                    desiredPay: "",
+                    preferredHours: "",
+                }
+            },
+        },
+        licenses: {
+            textInputs: {
+                licenseNumber: '',
+                state: '',
+                expirationDate: '',
+            },
+            documents: {
+                uploadedFiles: [],
+            },
+        },
+    });
 
-    const profileStrength = 33;
-    const phoneNumber = "(123) 456-7890"; 
-    const email = "example@example.com"; 
+    // Destructure personal info
+    const { personalInfo, jobPreferences, licenses } = profileData;
+    const { firstName, lastName, specialty, contactInfo } = personalInfo;
+    const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
+    const [localContracts, setLocalContracts] = useState(false); // State for actively looking switch (Local Contracts)
+    const [travelContracts, setTravelContracts] = useState(false); // State for actively looking switch (Travel Contracts)
+    const [showStaffDetails, setShowStaffDetails] = useState(false); // State for staff roles details
+    const [showTravelDetails, setShowTravelDetails] = useState(false); // State for travel contracts details
+    const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
+    const navigation = useNavigation<any>(); // Stack Navigation
+    const { profileStrength } = profileData;
+    const { phoneNumber, email } = contactInfo;
+
 
     // hourly pay for dropdown menu in Job Preference edits
     const hourlyPay = [
@@ -264,10 +314,76 @@ const Profile = () => {
         }
         console.log(stringProp);
     };
+
+    // For now it takes upto two updates for the console log to refresh, please don't ask me why idk.
+    const updateUserObject = () => {
+        setProfileData({
+                personalInfo: { 
+                    firstName: "First",
+                    lastName: "Last",
+                    specialty: "Specialty",
+                        contactInfo: {
+                        phoneNumber: "(123) 456-7890",
+                        email: "example@example.com",
+                    },
+                },
+                profileStrength: 33,
+                jobPreferences: {
+                    staffRoles: {
+                        activelyLooking: false,
+                        details: {
+                            startDate: staffRolePrefs.startDate,
+                            preferredLocation: staffRolePrefs.preferredLocation,
+                            relocate: staffRolePrefs.relocate,
+                            desiredPay: staffRolePrefs.desiredPay,
+                            preferredHours: staffRolePrefs.preferredHours,
+                        }
+                    },
+                    travelContracts: {
+                        activelyLooking: false,
+                        details: {
+                            startDate: travelContractsPrefs.startDate,
+                            preferredLocation: travelContractsPrefs.preferredLocation,
+                            relocate: travelContractsPrefs.relocate,
+                            desiredPay: travelContractsPrefs.desiredPay,
+                            preferredHours: travelContractsPrefs.preferredHours,
+                        },
+                    },
+                    localContracts: {
+                        activelyLooking: false,
+                        details: {
+                            startDate: localContractsPrefs.startDate,
+                            preferredLocation: localContractsPrefs.preferredLocation,
+                            relocate: localContractsPrefs.relocate,
+                            desiredPay: localContractsPrefs.desiredPay,
+                            preferredHours: localContractsPrefs.preferredHours,
+                        }
+                    },
+                },
+                licenses: {
+                    textInputs: {
+                        licenseNumber: '',
+                        state: '',
+                        expirationDate: '',
+                    },
+                    documents: {
+                        uploadedFiles: [],
+                    },
+                },
+            }        
+        );
+        console.log('Start Date:', jobPreferences.staffRoles.details.startDate);
+        console.log('Location:', jobPreferences.staffRoles.details.preferredLocation);
+        console.log('Relocation:', jobPreferences.staffRoles.details.relocate);
+        console.log('Pay:', jobPreferences.staffRoles.details.desiredPay);
+        console.log('Hours:', jobPreferences.staffRoles.details.preferredHours);
+    };
+
+
     // When License btn is clicked
     const handleLicense = () =>{
         navigation.navigate('UpdateLicense');
-        console.log('Lisence')
+        console.log('License')
     };
 
   return (
@@ -391,6 +507,7 @@ const Profile = () => {
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <TouchableOpacity style={styles.exitModalButton} onPress={() => {
                             updateStaffRolePrefs();
+                            updateUserObject();
                             setStaffRoleModalVisible(!staffRoleModalVisible);}}>
                             <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                         </TouchableOpacity>
@@ -670,8 +787,8 @@ const Profile = () => {
             {/* Profile Picture section */}
             <View style={styles.profilePictureContainer}>
                 {/* While user does not have a profile picture uploaded, their initials are their profile picture */}
-                <Text style={styles.profilePictureFirstInitial}>{firstInitial}</Text>
-                <Text style={styles.profilePictureFirstInitial}>{lastInitial}</Text>
+                <Text style={styles.profilePictureFirstInitial}>{profileData.personalInfo.firstName.charAt(0).toUpperCase()}</Text>
+                <Text style={styles.profilePictureFirstInitial}>{profileData.personalInfo.lastName.charAt(0).toUpperCase()}</Text>
             </View>
 
             {/* Name section */}
