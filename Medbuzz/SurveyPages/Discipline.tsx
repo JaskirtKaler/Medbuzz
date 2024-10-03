@@ -13,7 +13,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
 import {useNavigation} from '@react-navigation/native';
 import {styles} from './ParentPage';
-import {loadUser, saveUser, User} from '../Utility/userStorage';
+import {loadUser, saveUser, User} from '../Components/Utility/userStorage.tsx';
 import { disciplineOptions } from '../mapVariables/optionsData.tsx';
 const DisciplineScreen = () => {
   const progress = 20; // Example progress percentage

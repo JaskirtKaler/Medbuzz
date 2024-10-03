@@ -14,7 +14,7 @@ import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
 import {useNavigation} from '@react-navigation/native';
-import {loadUser, saveUser, User} from '../Utility/userStorage';
+import {loadUser, saveUser, User} from '../Components/Utility/userStorage';
 
 // Define the prop types for the ParentPage component, make the ones which wont be used in every page optional by (?)
 interface ParentPageProps {

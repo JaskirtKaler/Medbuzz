@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import Warning from '../SVG/Warning-Logo';
+import Warning from '../Components/Svg/Warning';
 import Backarrow from '../Components/Svg/Backarrow';
 import validate from 'react-native-email-validator';
 

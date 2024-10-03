@@ -14,8 +14,6 @@ import {
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import validate from 'react-native-email-validator';
-import {RootStackParamList} from '../App';
-import {useJobPostings} from '../API Fetch/JobPostings';
 // import {RootStackParamList} from '../App';
 
 
@@ -36,15 +34,6 @@ const Login = () => {
     }
   };
   
-
-  // Logic to handle the login button press
-  const handleLogin = async () => {
-    // Currently causing errors
-    // await fetchData();
-    // console.log(jobPostings.length)
-    navigation.navigate('Main')
-      
-  };
   return (
     <KeyboardAvoidingView
       style={styles.container}

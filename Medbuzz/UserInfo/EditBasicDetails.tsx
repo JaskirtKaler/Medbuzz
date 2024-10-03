@@ -5,6 +5,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
 import { useNavigation } from '@react-navigation/native';
 import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
+import { usaStates } from '../mapVariables/optionsData.tsx';
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
   add test to ensure that all required fields were actually entered and if they weren't reprompt
@@ -16,35 +17,6 @@ interface OptionType { // Option type is for Certificaion mapping
   label: string;
   value: string;
 }
-
-// States for use with school state selector and home state selector
-const states = [
-  { label: 'AL', value: 'al' }, { label: 'AK', value: 'ak' },
-  { label: 'AZ', value: 'az' }, { label: 'AR', value: 'ar' },
-  { label: 'CA', value: 'ca' }, { label: 'CO', value: 'co' },
-  { label: 'CT', value: 'ct' }, { label: 'DE', value: 'de' },
-  { label: 'FL', value: 'fl' }, { label: 'GA', value: 'ga' },
-  { label: 'HI', value: 'hi' }, { label: 'ID', value: 'id' },
-  { label: 'IL', value: 'il' }, { label: 'IN', value: 'in' },
-  { label: 'IA', value: 'ia' }, { label: 'KS', value: 'ks' },
-  { label: 'KY', value: 'ky' }, { label: 'LA', value: 'la' },
-  { label: 'ME', value: 'me' }, { label: 'MD', value: 'md' },
-  { label: 'MA', value: 'ma' }, { label: 'MI', value: 'mi' },
-  { label: 'MN', value: 'mn' }, { label: 'MS', value: 'ms' },
-  { label: 'MO', value: 'mo' }, { label: 'MT', value: 'mt' },
-  { label: 'NE', value: 'ne' }, { label: 'NV', value: 'nv' },
-  { label: 'NH', value: 'nh' }, { label: 'NJ', value: 'nj' },
-  { label: 'NM', value: 'nm' }, { label: 'NY', value: 'ny' },
-  { label: 'NC', value: 'nc' }, { label: 'ND', value: 'nd' },
-  { label: 'OH', value: 'oh' }, { label: 'OK', value: 'ok' },
-  { label: 'OR', value: 'or' }, { label: 'PA', value: 'pa' },
-  { label: 'RI', value: 'ri' }, { label: 'SC', value: 'sc' },
-  { label: 'SD', value: 'sd' }, { label: 'TN', value: 'tn' },
-  { label: 'TX', value: 'tx' }, { label: 'UT', value: 'ut' },
-  { label: 'VT', value: 'vt' }, { label: 'VA', value: 'va' },
-  { label: 'WA', value: 'wa' }, { label: 'WV', value: 'wv' },
-  { label: 'WI', value: 'wi' }, { label: 'WY', value: 'wy' }
-];
 
 // Degrees for use with degree Dropdown selector
 const degrees = [
@@ -274,7 +246,7 @@ const EditBasicDetails = () => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={states}
+        data={usaStates}
         search
         maxHeight={300}
         labelField="label"

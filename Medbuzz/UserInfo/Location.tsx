@@ -17,6 +17,7 @@ import Citylocation from '../Components/Svg/Citylocation';
 import ZipCodeLocation from '../Components/Svg/Zipcodelocation';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usaStates } from '../mapVariables/optionsData';
 
 const {width, height} = Dimensions.get('window'); // screen max width and height
 
@@ -27,59 +28,6 @@ const Location = ({header = 'Locations'}) => {
     navigation.goBack();
     console.log('backarrow clicked');
   };
-
-  const usaStates = [
-    {label: 'Alabama', value: 'Alabama'},
-    {label: 'Alaska', value: 'Alaska'},
-    {label: 'Arizona', value: 'Arizona'},
-    {label: 'Arkansas', value: 'Arkansas'},
-    {label: 'California', value: 'California'},
-    {label: 'Colorado', value: 'Colorado'},
-    {label: 'Connecticut', value: 'Connecticut'},
-    {label: 'Delaware', value: 'Delaware'},
-    {label: 'Florida', value: 'Florida'},
-    {label: 'Georgia', value: 'Georgia'},
-    {label: 'Hawaii', value: 'Hawaii'},
-    {label: 'Idaho', value: 'Idaho'},
-    {label: 'Illinois', value: 'Illinois'},
-    {label: 'Indiana', value: 'Indiana'},
-    {label: 'Iowa', value: 'Iowa'},
-    {label: 'Kansas', value: 'Kansas'},
-    {label: 'Kentucky', value: 'Kentucky'},
-    {label: 'Louisiana', value: 'Louisiana'},
-    {label: 'Maine', value: 'Maine'},
-    {label: 'Maryland', value: 'Maryland'},
-    {label: 'Massachusetts', value: 'Massachusetts'},
-    {label: 'Michigan', value: 'Michigan'},
-    {label: 'Minnesota', value: 'Minnesota'},
-    {label: 'Mississippi', value: 'Mississippi'},
-    {label: 'Missouri', value: 'Missouri'},
-    {label: 'Montana', value: 'Montana'},
-    {label: 'Nebraska', value: 'Nebraska'},
-    {label: 'Nevada', value: 'Nevada'},
-    {label: 'New Hampshire', value: 'New Hampshire'},
-    {label: 'New Jersey', value: 'New Jersey'},
-    {label: 'New Mexico', value: 'New Mexico'},
-    {label: 'New York', value: 'New York'},
-    {label: 'North Carolina', value: 'North Carolina'},
-    {label: 'North Dakota', value: 'North Dakota'},
-    {label: 'Ohio', value: 'Ohio'},
-    {label: 'Oklahoma', value: 'Oklahoma'},
-    {label: 'Oregon', value: 'Oregon'},
-    {label: 'Pennsylvania', value: 'Pennsylvania'},
-    {label: 'Rhode Island', value: 'Rhode Island'},
-    {label: 'South Carolina', value: 'South Carolina'},
-    {label: 'South Dakota', value: 'South Dakota'},
-    {label: 'Tennessee', value: 'Tennessee'},
-    {label: 'Texas', value: 'Texas'},
-    {label: 'Utah', value: 'Utah'},
-    {label: 'Vermont', value: 'Vermont'},
-    {label: 'Virginia', value: 'Virginia'},
-    {label: 'Washington', value: 'Washington'},
-    {label: 'West Virginia', value: 'West Virginia'},
-    {label: 'Wisconsin', value: 'Wisconsin'},
-    {label: 'Wyoming', value: 'Wyoming'},
-  ];
 
   // State for the selected state in the dropdown
   const [selectedState, setSelectedState] = useState('');
@@ -169,27 +117,7 @@ const Location = ({header = 'Locations'}) => {
         </View>
       </View>
 
-      {/* Zip Code container */}
-      <View style={styles.zipCodeContainer}>
-        <View style={styles.inputLabelTextAlign}>
-          <Text style={styles.inputLabelText}>Zip Code</Text>
-          <View style={styles.rowContainer}>
-            {/* ZipCode Location SVG */}
-            <ZipCodeLocation width={40} height={40} color={'#000'} />
-            {/* ZipCode Box Container */}
-            <View style={styles.zipCodeBoxContainer}>
-              {/* ZipCode Text Input*/}
-              <TextInput
-                value={zipcode}
-                onChangeText={text => setZipCode(text)}
-                keyboardType="numeric" // Allow only numeric input
-                maxLength={5} // Limit the input to 5 characters (assuming a 5-digit Zip Code)
-                style={styles.textInput}
-              />
-            </View>
-          </View>
-        </View>
-      </View>
+    
 
       {/* Save button */}
       <View style={styles.saveButtonContainer}>

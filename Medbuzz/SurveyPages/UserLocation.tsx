@@ -13,7 +13,7 @@ import {Bar} from 'react-native-progress';
 import Backarrow from '../Components/Svg/Backarrow';
 import {useNavigation} from '@react-navigation/native';
 import {styles} from './ParentPage';
-import {loadUser, saveUser, User} from '../Utility/userStorage';
+import {loadUser, saveUser, User} from '../Components/Utility/userStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserLocation = () => {

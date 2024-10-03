@@ -50,17 +50,19 @@ const Register = () => {
     } else {
 
       setEmailError("We can't find your email!");
+      //Commented this out because it displays this alert when the inputs are filled but the email is not valid
+      //Also this is uneeded because the button would be disabled when all inputs are not filled.
       // Show an alert if not all inputs are filled
-      Alert.alert(
-        'Incomplete Form',
-        'Please fill all the inputs to continue.',
-        [
-          {
-            text: 'OK',
-            style: 'cancel',
-          },
-        ],
-      );
+      // Alert.alert(
+      //   'Incomplete Form',
+      //   'Please fill all the inputs to continue.',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       style: 'cancel',
+      //     },
+      //   ],
+      // );
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ParentPage from './ParentPage'
+import ParentPage from './ParentPage.tsx'
 import { licenseType } from '../mapVariables/optionsData.tsx';
 const LicensesScreen = () => {
   const [selectedOption, setSelectedOption] = useState('');

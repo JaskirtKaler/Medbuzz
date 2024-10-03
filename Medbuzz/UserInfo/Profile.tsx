@@ -1,10 +1,10 @@
 import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions, Alert} from 'react-native'
 import React, {useState, useEffect} from 'react'
-import Backarrow from '../Components/Svg/Backarrow'
+import Backarrow from '../Components/Svg/Backarrow.tsx'
 import CancelX from '../Components/Svg/CancelX.tsx'
-import Editbutton from '../Components/Svg/Editbutton'
+import Editbutton from '../Components/Svg/Editbutton.tsx'
 import { useNavigation } from '@react-navigation/native'
-import UploadDoc from './UploadDoc.tsx';
+import UploadDoc from '../Screens/UploadDoc.tsx';
 import CheckBox from '@react-native-community/checkbox';
 import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker'

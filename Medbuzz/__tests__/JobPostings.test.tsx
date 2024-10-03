@@ -1,5 +1,6 @@
 // This will no longer work since I incorporated async storage in the JobPosting fetch because of location parameters being involved in the fetch.
 //This passed the 4 test cases when there was no local storage involved, with local storage involved, jest config needs to be updated to account and recognize async storage as a module
+//React hook also needed to be deleted since it was causing errors for others on the team
 
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useJobPostings } from '../API Fetch/JobPostings'; // Adjust the path to the JobPostings file

@@ -36,16 +36,6 @@ const CertificatesScreen = () => {
     setIsCategorySelected(false); // Reset category selection
     setSelectedCertification(null); // Reset selected certification
   };
-  const options = [
-    { label: 'ACLS', value: 'ACLS' },
-    { label: 'BLS', value: 'BLS' },
-    { label: 'Cert3', value: 'Cert3' },
-    { label: 'Cert4', value: 'Cert4' },
-    { label: 'Cert5', value: 'Cert5' },
-    { label: 'Bla', value: 'Bla' },
-    { label: 'Duende', value: 'Duende' },
-    { label: 'None', value: 'Select Certificates ▼' },
-  ];
 
   return (
     <ParentPage
