@@ -6,7 +6,17 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, Dimensions } from 'react-native';
+import { Button,
+ StyleSheet,
+ View,
+ Text,
+ ScrollView,
+ TextInput,
+ Touchable,
+ TouchableOpacity,
+ Dimensions,
+ Platform, 
+} from 'react-native';
 import React, {useState} from 'react';
 import NavigationBar from '../Components/Svg/NavigationBar.tsx';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
@@ -53,7 +63,7 @@ const Homepage = () => {
 
             {/* Header with search bar*/ }
             <View style={styles.headerStyle}>
-                <View style={{flex: 1, alignItems: 'center'}}>
+                <View style={{flex: 1, alignItems: 'center',}}>
                     <TextInput placeholder="Search" placeholderTextColor='gray' style={styles.searchStyle}></TextInput>
                 </View>
                 <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -86,7 +96,7 @@ const styles = StyleSheet.create({
     },
 
     jobStyle: {
-        backgroundColor: 'white',
+        backgroundColor: '#FFF',
         width: '85%', 
         height: 200, 
         justifyContent: 'space-around', 
@@ -127,7 +137,7 @@ const styles = StyleSheet.create({
 
     headerStyle: {
         width: '100%',
-        height: height * 0.1,
+        height: height * 0.12,
         backgroundColor: '#FFF',
         elevation: 5, // This will add a box shadow for Android
         shadowColor: "#000",  // this will add a box shadow for IOS
@@ -141,6 +151,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         padding: 10,
         flexDirection: 'row',
+        paddingTop: Platform.OS === 'ios' ? 40 : 0,
+        borderBottomWidth: 0,
     },
 
     searchStyle: {
@@ -156,7 +168,9 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        width: '70%',  
+        width: '80%', // Adjusted width for iOS
+        height: '60%', // Larger search bar on iOS
+        padding: 10,
     }
  });
 

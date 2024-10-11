@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
+import { View,
+ Text,
+ FlatList,
+ StyleSheet,
+ TouchableOpacity,
+ Animated,
+ Modal,
+ Platform, 
+} from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
 import Backarrow from '../Components/Svg/Backarrow';
@@ -303,7 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingBottom: 10,
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'ios' ? 45 : 10,
   },
   backArrow: {
     justifyContent: 'flex-start',
