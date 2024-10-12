@@ -3,7 +3,9 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import {useJobPostings} from '../API Fetch/JobPostings';
+//import {useJobPostings} from '../API Fetch/JobPostings';
+
+import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock job data
 
 // Define the type for job properties
 type JobProps = {
@@ -14,23 +16,39 @@ type JobProps = {
   dateApplied: string;
 };
 
+// Function to truncate long descriptions
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 // Component to display each job
-const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps) => (
-  <View style={styles.jobStyle}>
-    <View style={styles.jobHeader}>
-      <Text style={styles.jobHeaderText}>{jobType}</Text>
-      <View style={styles.locationDateContainer}>
-        <Text style={styles.jobHeaderText}>{location}</Text>
-        <Text style={styles.dateApplied}>{dateApplied}</Text>
+const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps) => {
+  // Handle long descriptions and empty descriptions
+  const descriptionText = jobText ? truncateText(jobText, 100) : "No description available";
+
+  return (
+    <View style={styles.jobStyle}>
+      <View style={styles.jobHeader}>
+        <Text style={styles.jobHeaderText}>{jobType}</Text>
+        <View style={styles.locationDateContainer}>
+          <Text style={styles.jobHeaderText}>{location}</Text>
+          <Text style={styles.dateApplied}>{dateApplied}</Text>
+        </View>
       </View>
+      <Text style={styles.companyName}>{companyName}</Text>
+
+      {/* Job description with truncation and fallback for empty description */}
+      <Text style={styles.jobTextStyle}>{descriptionText}</Text>
+
+      <TouchableOpacity style={styles.detailsButton}>
+        <Text style={{ color: 'black' }}>Click for more details</Text>
+      </TouchableOpacity>
     </View>
-    <Text style={styles.companyName}>{companyName}</Text>
-    <Text style={styles.jobTextStyle}>{jobText}</Text>
-    <TouchableOpacity style={styles.detailsButton}>
-      <Text style={{ color: 'black' }}>Click for more details</Text>
-    </TouchableOpacity>
-  </View>
-);
+  );
+};
 
 // Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
@@ -39,16 +57,14 @@ const MyJobsPage: React.FC = () => {
   const jobsPerPage: number = 20; // Number of jobs to display per page
   const scrollViewRef = useRef<ScrollView | null>(null); // Reference to the ScrollView for scrolling back to top on page change
 
-  // Sample jobs data, replace with data fetched from ATS API
-  const jobsData: JobProps[] = Array.from({ length: 75 }, (_) => ({
-    jobType: 'Job Type',
-    companyName: 'Company',
-    jobText: 'Some Text about said job',
-    location: 'Location',
-    dateApplied: 'Date Applied',
-  }));
+  // Use mock job postings
+  const jobsData: JobProps[] = mockJobPostings; // Using mock data from mockJobsData.ts
 
-  // Calculate the current set of jobs to display based on the page number
+  // Calculate the total number of jobs and pages
+  const totalJobs = jobsData.length; 
+  const totalPages = Math.ceil(totalJobs / jobsPerPage); 
+
+  // Get the jobs for the current page
   const currentJobs: JobProps[] = jobsData.slice(
     (currentPage - 1) * jobsPerPage,
     currentPage * jobsPerPage
@@ -64,8 +80,7 @@ const MyJobsPage: React.FC = () => {
     <View style={styles.container}>
       {/* Job Listings */}
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
-        {/* This is where the job types are rendered */}
-        {/* Replace this with the API call to fetch jobs from ATS and map over the data */}
+        {/* Render the jobs for the current page */}
         {currentJobs.map((job, index) => (
           <Job key={index} {...job} />
         ))}
@@ -73,14 +88,18 @@ const MyJobsPage: React.FC = () => {
 
       {/* Pagination Navigation Bar */}
       <View style={styles.pagination}>
-        {/* Dynamically create pagination buttons */}
-        {[1, 2, 3].map((page) => (
-          <TouchableOpacity key={page} onPress={() => handlePageChange(page)} style={styles.pageNumber}>
-            {/* Highlight the current page in blue */}
-            <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+    <TouchableOpacity 
+      key={page} 
+      onPress={() => handlePageChange(page)} 
+      style={styles.pageNumber}
+      accessible={true} // Mark as accessible
+      accessibilityRole="button" // Explicitly set the role to button
+    >
+      <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
+    </TouchableOpacity>
+  ))}
+</View>
     </View>
   );
 };
@@ -108,7 +127,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0,
+    shadowOpacity: 0.2, // Reduced shadow for subtle effect
     shadowRadius: 3.84,
     elevation: 5,
   },
@@ -137,7 +156,7 @@ const styles = StyleSheet.create({
   },
   jobTextStyle: {
     color: 'black',
-    backgroundColor: '#D9D9D9',
+    backgroundColor: '#FFF', // Changed background color to white
     padding: 25,
     textAlign: 'center',
     marginVertical: 5,
