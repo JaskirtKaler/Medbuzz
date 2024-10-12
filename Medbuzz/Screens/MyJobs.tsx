@@ -9,12 +9,16 @@ import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock j
 
 // Define the type for job properties
 type JobProps = {
-  jobType: string;
-  companyName: string;
-  jobText: string;
-  location: string;
+  jobId: string;
+  title: string;
+  company: {
+    name: string;
+    location: string;
+  };
+  description: string;
   dateApplied: string;
 };
+
 
 // Function to truncate long descriptions
 const truncateText = (text: string, maxLength: number) => {
@@ -25,30 +29,31 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 // Component to display each job
-const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps) => {
-  // Handle long descriptions and empty descriptions
-  const descriptionText = jobText ? truncateText(jobText, 100) : "No description available";
+const Job = ({ title, company, description, dateApplied }: JobProps) => {
+  const descriptionText = description ? truncateText(description, 100) : "No description available";
 
   return (
     <View style={styles.jobStyle}>
-      <View style={styles.jobHeader}>
-        <Text style={styles.jobHeaderText}>{jobType}</Text>
-        <View style={styles.locationDateContainer}>
-          <Text style={styles.jobHeaderText}>{location}</Text>
-          <Text style={styles.dateApplied}>{dateApplied}</Text>
-        </View>
+    <View style={styles.jobHeader}>
+      <View>
+        <Text style={styles.jobHeaderText}>{title}</Text>
+        <Text style={styles.companyName}>{company.name}</Text>
       </View>
-      <Text style={styles.companyName}>{companyName}</Text>
-
-      {/* Job description with truncation and fallback for empty description */}
-      <Text style={styles.jobTextStyle}>{descriptionText}</Text>
-
-      <TouchableOpacity style={styles.detailsButton}>
-        <Text style={{ color: 'black' }}>Click for more details</Text>
-      </TouchableOpacity>
+      <View style={styles.locationDateContainer}>
+        <Text style={styles.jobHeaderText}>{company.location}</Text>
+        <Text style={styles.dateApplied}>{dateApplied}</Text>
+      </View>
     </View>
+    <Text style={styles.jobTextStyle}>{descriptionText}</Text>
+    <TouchableOpacity style={styles.detailsButton}>
+      <Text style={{ color: 'black' }}>Click for more details</Text>
+    </TouchableOpacity>
+  </View>
+  
   );
 };
+
+
 
 // Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
@@ -117,56 +122,57 @@ const styles = StyleSheet.create({
   },
   jobStyle: {
     backgroundColor: 'white',
-    width: '85%',
+    width: '90%', // Increase width slightly
     alignSelf: 'center',
-    marginBottom: 20,
-    padding: 15,
+    marginBottom: 15, // Reduce gap between jobs
+    padding: 12, // Adjust padding for better alignment
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2, // Reduced shadow for subtle effect
+    shadowOpacity: 0.2,
     shadowRadius: 3.84,
     elevation: 5,
   },
   jobHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 5, // Reduced gap between title and company
   },
   locationDateContainer: {
-    flexDirection: 'column', // Stack 'Location' and 'Date Applied' vertically
+    flexDirection: 'column', // Stack location and date vertically
     alignItems: 'flex-end',  // Align to the right
   },
   jobHeaderText: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16, // Slightly reduce font size for consistency
     fontWeight: 'bold',
   },
   dateApplied: {
     color: 'black',
     fontSize: 12,
-    marginTop: 5,
+    marginTop: 2, // Add slight margin between location and date
   },
   companyName: {
     color: 'black',
-    marginVertical: 5,
-    fontSize: 16,
+    marginVertical: 1, // Reduced margin for closer alignment with job title
+    fontSize: 14, // Slightly smaller font for company name
   },
   jobTextStyle: {
     color: 'black',
-    backgroundColor: '#FFF', // Changed background color to white
-    padding: 25,
+    backgroundColor: '#FFF', // Light grey background like the job description in the feed
+    padding: 15, // Reduce padding to match other card designs
     textAlign: 'center',
     marginVertical: 5,
   },
   detailsButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 6, // Slightly smaller padding for better fit
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 8,
   },
   pagination: {
     flexDirection: 'row',
