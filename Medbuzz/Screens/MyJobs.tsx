@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import {useJobPostings} from '../API Fetch/JobPostings';
+import {useJobPostings} from '../API Fetch/UseJobPostings';
 
 // Define the type for job properties
 type JobProps = {
