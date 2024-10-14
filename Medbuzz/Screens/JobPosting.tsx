@@ -12,6 +12,7 @@ import Time from "../Components/Svg/Time";
 import BuildingUser from "../Components/Svg/BuildingUser";
 import CheckBox from '@react-native-community/checkbox';
 import CancelX from '../Components/Svg/CancelX.tsx'
+import {WebView} from "react-native-webview";
 
 const { width, height } = Dimensions.get('window');
 const JobPosting = () => {
@@ -36,14 +37,13 @@ const JobPosting = () => {
         navigation.goBack()
     }
     
+    // Show modal when user clicks the "Apply" button
     const onApplyPress = () => {
         setApplyModalVisible(!applyModalVisible)
     }
 
+    // If user cancels their Application ensure all checkboxes reset to unchecked 
     const onCancelPress = () => {
-
-        setApplyModalVisible(!applyModalVisible)
-
         setSendResumeSelection(false)
         setSendLicensesSelection(false)
         setSendDegreeSelection(false)
@@ -52,6 +52,8 @@ const JobPosting = () => {
         setSendVaccinationSelection(false)
     }
 
+    // If the user confirms the application ensure that all checkboxes reset to unchecked
+    // and display an alert that their application was successful, close the modal
     const onConfirmPress = () => {
         if(sendResumeSelected) {
             console.log("Resume sent")
@@ -90,6 +92,8 @@ const JobPosting = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+
+            {/* Modal for Application */}
             <Modal
                 animationType='slide'
                 transparent={true}
@@ -101,19 +105,29 @@ const JobPosting = () => {
                 <View style={{flex: 1, /*justifyContent: 'center', alignItems: 'center'*/}}>
                     <View style={styles.applyModalStyle}>
                         <View style={{flexDirection: 'row', margin: 10}}>
+
+                            {/* Modal Header */}
                             <Text style={{color: 'black', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>Select files to include in application</Text>
-                            <TouchableOpacity style={styles.cancelModalButton} onPress={() => {onCancelPress}}>
+
+                            {/* Cancel Button */}
+                            <TouchableOpacity style={styles.cancelModalButton} onPress={() => {onCancelPress(), setApplyModalVisible(!applyModalVisible)}}>
                                 <CancelX  width={15} height={15} color={"#000"}></CancelX>
                             </TouchableOpacity>
+
                         </View>
                         <View style={{marginLeft: 10}}>
+
+                            {/* Checkboxes */}
                             <View style={{flexDirection: 'row'}}>
+                                {/* Resume */}
                                 <CheckBox
                                     value={sendResumeSelected}
                                     onValueChange={setSendResumeSelection}
                                 />
                                 <Text style={styles.checkBoxTextStyle}>Resume</Text>
                             </View>
+
+                            {/* Licenses */}
                             <View style={{flexDirection: 'row'}}>
                                 <CheckBox 
                                     value={sendLicensesSelected}
@@ -121,6 +135,8 @@ const JobPosting = () => {
                                 />
                                 <Text style={styles.checkBoxTextStyle}>Licenses</Text>
                             </View>
+
+                            {/* Degree */}
                             <View style={{flexDirection: 'row'}}>
                                 <CheckBox 
                                     value={sendDegreeSelected}
@@ -128,6 +144,8 @@ const JobPosting = () => {
                                 />
                                 <Text style={styles.checkBoxTextStyle}>Degree</Text>
                             </View>
+
+                            {/* Certifications */}
                             <View style={{flexDirection: 'row'}}>
                                 <CheckBox 
                                     value={sendCertificationsSelected}
@@ -135,6 +153,8 @@ const JobPosting = () => {
                                 />
                                 <Text style={styles.checkBoxTextStyle}>Certifications</Text>
                             </View>
+
+                            {/* References */}
                             <View style={{flexDirection: 'row'}}>
                                 <CheckBox 
                                     value={sendReferencesSelected}
@@ -142,6 +162,8 @@ const JobPosting = () => {
                                 />
                                 <Text style={styles.checkBoxTextStyle}>References</Text>
                             </View>
+
+                            {/* Vaccination */}
                             <View style={{flexDirection: 'row'}}>
                                 <CheckBox 
                                     value={sendVaccinationSelected}
@@ -151,12 +173,15 @@ const JobPosting = () => {
                             </View>
                         </View>
                         <View style={{flex: 1, alignItems: 'center'}}>
-                        <TouchableOpacity style={styles.confirmButton} onPress={() => {
-                            onConfirmPress();
-                            /*setLocalContractsModalVisible(!localContractsModalVisible);*/}}>
+
+                            {/* Confirm Choices Button */}
+                            <TouchableOpacity style={styles.confirmButton} onPress={() => {
+                                onConfirmPress();
+                            }}>
                             <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>Confirm Choices</Text>
-                        </TouchableOpacity>
-                    </View>
+                            </TouchableOpacity>
+
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -184,7 +209,7 @@ const JobPosting = () => {
                         <Text style={styles.upperRowItemBody}>{job.created || testDate}</Text>
                     </View>
                 </View>
-                <Text style={styles.upperRowItemTitle}>{job.city/* + ", " + testJob.state*/ || 'California'}</Text>
+                <Text style={styles.upperRowItemTitle}>{job.city + ", " + job.state || 'California'}</Text>
                 {/* Space Gap */}
                 <View style={{ width: '100%', height: height * 0.1 }}></View>
 
@@ -230,8 +255,6 @@ const JobPosting = () => {
 
                         </View>
                     </View>
-
-                    {/* <View style= {{width: 100, height: 100, backgroundColor: 'black'}}></View> */}
                 </View>
 
                 {/* Space Gap */}
@@ -255,11 +278,15 @@ const JobPosting = () => {
                 <View style={{ width: '100%', height: height * 0.05 }}></View>
 
                 {/* Description Container */}
-                
                 <View>
                     <Text style = {styles.overviewHeaderText}>Description</Text>
-                    <View style = {styles.descriptionBody}>
-                    <Text style = {{color: 'black'}}>{job.public_job_desc || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}</Text>
+                    <View /*style = {styles.descriptionBody}*/>
+                        <WebView
+                            originWhitelist={['*']}
+                            source={{html: job.public_job_desc}} 
+                            scrollEnabled={false}
+                            style={{height: 800, width: '100%', color: 'black'}}
+                        />
                     </View>
                 </View>
 
@@ -435,15 +462,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#C9C9C9',
         borderRadius: 9,
-        
-
     },
     buttonContainer: {
-        //flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-        //paddingLeft: '50%',
         backgroundColor: '#0EA68D',
         height: 50, 
         width: 320,
@@ -491,7 +514,6 @@ const styles = StyleSheet.create({
         flex: 1, 
         marginRight: 2,
         marginTop: 2,
-        //marginLeft: 10,
         alignItems: 'flex-end', 
         alignSelf: 'center'
     }, 
@@ -504,7 +526,6 @@ const styles = StyleSheet.create({
     }, 
 
     confirmButton: {
-        //flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
