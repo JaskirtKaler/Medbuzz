@@ -1,16 +1,19 @@
 import {authorize, revoke, AuthConfiguration} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} from '@env';
   const config: AuthConfiguration = {
-    clientId: 'your-client-id',
-    redirectUrl: 'graph-sample://react-native-auth/',
+    issuer: ISSUER,
+    clientId: CLIENT_ID,
+    redirectUrl: 'DemoAPPV1://auth/',
     scopes: ['openid', 'offline_access', 'profile',],
     additionalParameters: {prompt: 'select_account'},
     serviceConfiguration: {
       authorizationEndpoint:
-        'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-      tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+        AUTHORIZATION_ENDPOINT,
+      tokenEndpoint: TOKEN_ENDPOINT,
     },
+    useNonce: true, 
+    usePKCE: true, //For iOS, we have added the useNonce and usePKCE parameters, which are recommended for security reasons.
   };
 class Auth {
 //   static config = {
@@ -29,8 +32,9 @@ class Auth {
   // Sign In or Sign Up function
   static async signIn() {
     try {
+      console.log('Made it to SigIn()')
       const authState = await authorize(config);
-
+      console.log('Made it passed authState')
       // Store tokens in AsyncStorage
       await AsyncStorage.setItem('accessToken', authState.accessToken);
       await AsyncStorage.setItem('idToken', authState.idToken);
