@@ -13,6 +13,7 @@ import BuildingUser from "../Components/Svg/BuildingUser";
 import CheckBox from '@react-native-community/checkbox';
 import CancelX from '../Components/Svg/CancelX.tsx'
 import {WebView} from "react-native-webview";
+import StateLocation from "../Components/Svg/Statelocation.tsx"
 
 const { width, height } = Dimensions.get('window');
 const JobPosting = () => {
@@ -102,7 +103,7 @@ const JobPosting = () => {
                     setApplyModalVisible
                 }}
             >
-                <View style={{flex: 1, /*justifyContent: 'center', alignItems: 'center'*/}}>
+                <View style={{flex: 1}}>
                     <View style={styles.applyModalStyle}>
                         <View style={{flexDirection: 'row', margin: 10}}>
 
@@ -119,6 +120,7 @@ const JobPosting = () => {
 
                             {/* Checkboxes */}
                             <View style={{flexDirection: 'row'}}>
+
                                 {/* Resume */}
                                 <CheckBox
                                     value={sendResumeSelected}
@@ -189,29 +191,18 @@ const JobPosting = () => {
             <View style={styles.header}>
                 {/* Back Arrow */}
                 <TouchableOpacity onPress={handleBack}>
-                    <Backarrow width={width * .1} height={height * .05} stroke={'black'} strokeWidth={1} color={'black'} />
+                    <Backarrow width={40} height={40} stroke={'black'} strokeWidth={1} color={'black'} />
                 </TouchableOpacity>
                 {/* Job Title */}
-                <Text style={styles.headerTitle}>{job.position_title || 'Job Title'}</Text>
-                    <View style={{width: width * 0.1, height: height * .05}} />
+                <View style={{width: '85%', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={styles.headerTitle}>{job.position_title || 'Job Title'}</Text>
+                    {/*<View style={{width: width * 0.1, height: height * .05}} />*/} 
+                </View>
             </View>
             <ScrollView style={styles.scrollContainer}>
-                {/* Upper Row */}
-                <View style={styles.upperRow}>
-                    {/* Job Type */}
-                    <View style={styles.upperRowItem}>
-                        <Text style={styles.upperRowItemTitle}>Job Type</Text>
-                        <Text style={styles.upperRowItemBody}>{job.industry || 'NA'}</Text>
-                    </View>
-                    {/* Job Date Posted */}
-                    <View style={styles.upperRowItem}>
-                        <Text style={styles.upperRowItemTitle}>Date Posted</Text>
-                        <Text style={styles.upperRowItemBody}>{job.created || testDate}</Text>
-                    </View>
-                </View>
-                <Text style={styles.upperRowItemTitle}>{job.city + ", " + job.state || 'California'}</Text>
+                
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.1 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
 
                 {/* Overview Title */}
                 <View style={styles.overviewHeader}>
@@ -219,6 +210,25 @@ const JobPosting = () => {
                 </View>
                 {/* Overview */}
                 <View style={styles.overviewContainer}>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Job Title */}
+                    <View>
+                        <Text style={styles.upperRowItemTitle}>Job Title</Text>
+                        <Text style={styles.upperRowItemBody}>{job.position_title || 'NA'}</Text>
+                    </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Location */}
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <StateLocation></StateLocation>
+                        <View>
+                            <Text style={styles.upperRowItemTitle}>Location</Text>
+                            <Text style={styles.upperRowItemBody}>{job.city + ", " + job.state || 'California'}</Text>
+                        </View>
+                    </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
                     <View style={styles.overviewDates}>
                         {/* Start Date */}
                         <View style={styles.overviewDatesBlock}>
@@ -237,50 +247,36 @@ const JobPosting = () => {
                             </View>
                         </View>
                     </View>
-                    {/* Duration */}
-                    <View style={styles.overviewDuration}>
-                        <Time></Time>
-                        <View>
-                            <Text style={styles.iconTextUpper}>Duration</Text>
-                            <Text style={styles.iconTextLower}>{job.employment_type || 'NA'}</Text>
-
-                        </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    <View>
+                        <Text style={styles.upperRowItemTitle}>Closing Date</Text>
+                        <Text style={styles.upperRowItemBody}>{job.closing_date || 'NA'}</Text>
                     </View>
-                    {/* Experience */}
-                    <View style={styles.overviewExperience}>
-                        <BuildingUser />
-                        <View>
-                            <Text style={styles.iconTextUpper}>Experience</Text>
-                            <Text style={styles.iconTextLower}>{job.skills || 'NA'}</Text>
-
-                        </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Pay */}
+                    <View>
+                        <Text style={styles.overviewHeaderText}>Pay</Text>
                     </View>
-                </View>
-
-                {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.1 }}></View>
-
-                <View>
-                    <Text style={styles.overviewHeaderText}>Pay</Text>
-                </View>
-                <View style={styles.payContainer}>
-                    {/* Pay Body Container */}
+                    <View style={styles.payContainer}>
+                        {/* Pay Body Container */}
                         <View style = {styles.payLeftItem}>
-                            <Text style = {styles.payUpperText}>Estimated Pay</Text>
-                            <Text style = {styles.payLowerText}>{job.pay_rates || 'Hourly Rate'}</Text>
+                            <Text style = {styles.payLowerText}>{job.pay_rates[0] || 'NA'}</Text>
                         </View>
                         <View style = {styles.payRightItem}>
-                            <Text style = {styles.payRangeText}>{job.pay_rates || '$25-35'}</Text>
+                            <Text style = {styles.payRangeText}>{job.pay_rates[0] || 'NA'}</Text>
                         </View>
+                    </View>
                 </View>
 
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.05 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
 
                 {/* Description Container */}
                 <View>
                     <Text style = {styles.overviewHeaderText}>Description</Text>
-                    <View /*style = {styles.descriptionBody}*/>
+                    <View style = {styles.descriptionBody}>
                         <WebView
                             originWhitelist={['*']}
                             source={{html: job.public_job_desc}} 
@@ -291,7 +287,23 @@ const JobPosting = () => {
                 </View>
 
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.075 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
+                {/* Date osted and Date last modified */}
+                <View style={styles.upperRow}>
+                    {/* Date Posted */}
+                    <View style={styles.upperRowItem}>
+                        <Text style={styles.upperRowItemTitle}>Date Posted</Text>
+                        <Text style={styles.upperRowItemBody}>{job.created || 'NA'}</Text>
+                    </View>
+                    {/* Modified Date */}
+                    <View style={styles.upperRowItem}>
+                        <Text style={styles.upperRowItemTitle}>Last Modified</Text>
+                        <Text style={styles.upperRowItemBody}>{job.modified || 'NA'}</Text>
+                    </View>
+                </View>
+
+                {/* Space Gap */}
+                <View style={{ width: '100%', height: 20 }}></View>
 
                 {/* Apply Button */}
                 <TouchableOpacity style = {styles.buttonContainer} onPress={onApplyPress}>
@@ -312,7 +324,7 @@ const styles = StyleSheet.create({
         width: width,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
         height: height * 0.075,
         backgroundColor: '#FFF',
@@ -327,9 +339,10 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         display: 'flex',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         color: 'black',
+        marginRight: 10
 
     },
     container: {
@@ -387,7 +400,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: height * 0.25,
+        //height: height * 0.25,
     },
     overviewDates: {
         display: 'flex',
