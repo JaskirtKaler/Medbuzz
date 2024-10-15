@@ -25,19 +25,20 @@ describe('MyJobsPage Component', () => {
       // Modify a job description to be longer than 100 characters
       const longDescriptionJob = {
         ...mockJobPostings[0],
-        jobText: 'A'.repeat(150), // A long string of 150 characters
+        description: 'A'.repeat(150), // A long string of 150 characters
       };
-  
+    
       // Use modified job data for the test
       mockJobPostings[0] = longDescriptionJob;
-  
+    
       // Render the MyJobsPage component
       render(<MyJobsPage />);
-  
+    
       // Expect the job description to be truncated
-      expect(screen.getByText('A'.repeat(100) + '...')).toBeTruthy();
+      const truncatedText = 'A'.repeat(100) + '...';
+      expect(screen.getByText(truncatedText)).toBeTruthy();
     });
-  
+    
     test('renders default text for missing job description', () => {
         // Modify a job to have no description
         const jobWithoutDescription = {
