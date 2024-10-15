@@ -8,12 +8,11 @@ import {
     useRoute,
   } from '@react-navigation/native';import CalendarTime from "../Components/Svg/CalendarTime";
 import CalendarSuccess from "../Components/Svg/CalendarSuccess";
-import Time from "../Components/Svg/Time";
-import BuildingUser from "../Components/Svg/BuildingUser";
 import CheckBox from '@react-native-community/checkbox';
 import CancelX from '../Components/Svg/CancelX.tsx'
 import {WebView} from "react-native-webview";
 import StateLocation from "../Components/Svg/Statelocation.tsx"
+import RNFetchBlob from 'rn-fetch-blob'
 
 const { width, height } = Dimensions.get('window');
 const JobPosting = () => {
@@ -21,7 +20,17 @@ const JobPosting = () => {
     const route = useRoute<RouteProp<{params: {job: any}}, 'params'>>();
     const {job} = route.params;
     console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
-    console.log(job);
+    //console.log(job);
+
+    // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
+    // These files exist on my emulator only and will need to be renames on other systems.
+    // This is for testing error checking only
+    let resumePath = "/storage/emulated/0/Pictures/IMG_20241014_183209.jpg";
+    let licensePath = "/storage/emulated/0/Pictures/IMG_20241014_183208.jpg";
+    let degreePath = "/storage/emulated/0/Pictures/IMG_20241014_183206.jpg";
+    let certificationPath = "/storage/emulated/0/Pictures/IMG_20241014_183205.jpg";
+    let referencePath = "/storage/emulated/0/Pictures/IMG_20241014_182941.jpg";
+    let vaccinationPath = "/storage/emulated/0/Pictures/IMG_20241014_175006.jpg";
 
     const navigation = useNavigation<NavigationProp<any>>();
 
@@ -33,6 +42,7 @@ const JobPosting = () => {
     const [sendCertificationsSelected, setSendCertificationsSelection] = useState(false);   // State for checkbox regarding certifications for application
     const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
     const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
+
 
     const handleBack = () => {
         navigation.goBack()
@@ -53,41 +63,142 @@ const JobPosting = () => {
         setSendVaccinationSelection(false)
     }
 
-    // If the user confirms the application ensure that all checkboxes reset to unchecked
-    // and display an alert that their application was successful, close the modal
-    const onConfirmPress = () => {
+    // If the user confirms the application ensure that all checked files exist. If they
+    // don't log it in console. If they do inform the user they've been sent. Reset checkboxes
+    // to unchecked and display an alert if their application was successful or not, close the modal
+    const onConfirmPress = async () => {
+
+        let alertTitle = "Congratulations!";
+        let alertMessage = "Your application has been sent.";
+
+        let alertIssueTitle = "Something Went Wrong.";
+        let alertIssueMessage = "One or more of your files does not exist.";
+
+        let problems = false;
+
+        // Check if resume image file exists and reset the checkbox use state to false
         if(sendResumeSelected) {
-            console.log("Resume sent")
+            await RNFetchBlob.fs.exists(resumePath)
+            .then((resumeExists) => {
+                if(resumeExists)
+                    console.log("File exists.\nResume sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendResumeSelection(false)
         }
+
+        // Check if license image file exists and reset the checkbox use state to false
         if(sendLicensesSelected){
-            console.log("Licenses sent")
+            await RNFetchBlob.fs.exists(licensePath)
+            .then((licenseExists) => {
+                if(licenseExists)
+                    console.log("File exists.\nLicense sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendLicensesSelection(false)
         }
+
+        // Check if degree image file exists and reset the checkbox use state to false
         if(sendDegreeSelected){
-            console.log("Degree sent")
+            await RNFetchBlob.fs.exists(degreePath)
+            .then((degreeExists) => {
+                if(degreeExists)
+                    console.log("File exists.\nDegree sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendDegreeSelection(false)
         }
+
+        // Check if certification image file exists and reset the checkbox use state to false
         if(sendCertificationsSelected) {
-            console.log("Certifications sent")
+            await RNFetchBlob.fs.exists(certificationPath)
+            .then((certificationExists) => {
+                if(certificationExists)
+                    console.log("File exists.\nCertification sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendCertificationsSelection(false)
         }   
+
+        // Check if reference image file exists and reset the checkbox use state to false
         if(sendReferencesSelected) {
-            console.log("References sent")
+            await RNFetchBlob.fs.exists(referencePath)
+            .then((referenceExists) => {
+                if(referenceExists)
+                    console.log("File exists.\nReference sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendReferencesSelection(false)
         }
+
+        // Check if vaccination image file exists and reset the checkbox use state to false
         if(sendVaccinationSelected){
-            console.log("Vaccination sent")
+            await RNFetchBlob.fs.exists(vaccinationPath)
+            .then((vaccinationExists) => {
+                if(vaccinationExists)
+                    console.log("File exists.\nVaccination sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
             setSendVaccinationSelection(false)
         }  
 
-        Alert.alert('Congratulations', 'Your application has been sent', [
+        // if there was a problem, change the default alert title and message to the "Issue" variants
+        if(problems){
+            alertTitle = alertIssueTitle;
+            alertMessage = alertIssueMessage;
+        }
+
+        // display the alert
+        Alert.alert(alertTitle, alertMessage, [
             {
                 text: 'OK',
                 onPress: () => console.log("OK Pressed"),
             }
         ]);
 
+        // close the modal
         setApplyModalVisible(!applyModalVisible)
     }
 
