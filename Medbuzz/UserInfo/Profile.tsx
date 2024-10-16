@@ -1,5 +1,6 @@
 import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions, Alert} from 'react-native'
 import React, {useState, useEffect} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import Backarrow from '../Components/Svg/Backarrow.tsx'
 import CancelX from '../Components/Svg/CancelX.tsx'
 import Editbutton from '../Components/Svg/Editbutton.tsx'
@@ -236,7 +237,6 @@ const Profile = () => {
     const { profileStrength } = profileData;
     const { phoneNumber, email } = contactInfo;
 
-
     // hourly pay for dropdown menu in Job Preference edits
     const hourlyPay = [
         {label: '$20.00 - $25.00', value: '$20.00 - $25.00'},
@@ -269,7 +269,7 @@ const Profile = () => {
 
 
     const handleEdit = () => {
-        navigation.navigate('EditProfile')
+        navigation.navigate('EditBasicDetails')
         console.log("edit clicked")
 
     }
@@ -315,68 +315,71 @@ const Profile = () => {
         console.log(stringProp);
     };
 
-    // For now it takes upto two updates for the console log to refresh, please don't ask me why idk.
-    const updateUserObject = () => {
-        setProfileData({
-                personalInfo: { 
-                    firstName: "First",
-                    lastName: "Last",
-                    specialty: "Specialty",
-                        contactInfo: {
-                        phoneNumber: "(123) 456-7890",
-                        email: "example@example.com",
+    const updateUserObject = async () => {
+        const updatedProfile = {
+            personalInfo: { 
+                firstName: "First",
+                lastName: "Last",
+                specialty: "Specialty",
+                contactInfo: {
+                    phoneNumber: "(123) 456-7890",
+                    email: "example@example.com",
+                },
+            },
+            profileStrength: 33,
+            jobPreferences: {
+                staffRoles: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: staffRolePrefs.startDate,
+                        preferredLocation: staffRolePrefs.preferredLocation,
+                        relocate: staffRolePrefs.relocate,
+                        desiredPay: staffRolePrefs.desiredPay,
+                        preferredHours: staffRolePrefs.preferredHours,
+                    }
+                },
+                travelContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: travelContractsPrefs.startDate,
+                        preferredLocation: travelContractsPrefs.preferredLocation,
+                        relocate: travelContractsPrefs.relocate,
+                        desiredPay: travelContractsPrefs.desiredPay,
+                        preferredHours: travelContractsPrefs.preferredHours,
                     },
                 },
-                profileStrength: 33,
-                jobPreferences: {
-                    staffRoles: {
-                        activelyLooking: false,
-                        details: {
-                            startDate: staffRolePrefs.startDate,
-                            preferredLocation: staffRolePrefs.preferredLocation,
-                            relocate: staffRolePrefs.relocate,
-                            desiredPay: staffRolePrefs.desiredPay,
-                            preferredHours: staffRolePrefs.preferredHours,
-                        }
-                    },
-                    travelContracts: {
-                        activelyLooking: false,
-                        details: {
-                            startDate: travelContractsPrefs.startDate,
-                            preferredLocation: travelContractsPrefs.preferredLocation,
-                            relocate: travelContractsPrefs.relocate,
-                            desiredPay: travelContractsPrefs.desiredPay,
-                            preferredHours: travelContractsPrefs.preferredHours,
-                        },
-                    },
-                    localContracts: {
-                        activelyLooking: false,
-                        details: {
-                            startDate: localContractsPrefs.startDate,
-                            preferredLocation: localContractsPrefs.preferredLocation,
-                            relocate: localContractsPrefs.relocate,
-                            desiredPay: localContractsPrefs.desiredPay,
-                            preferredHours: localContractsPrefs.preferredHours,
-                        }
-                    },
+                localContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: localContractsPrefs.startDate,
+                        preferredLocation: localContractsPrefs.preferredLocation,
+                        relocate: localContractsPrefs.relocate,
+                        desiredPay: localContractsPrefs.desiredPay,
+                        preferredHours: localContractsPrefs.preferredHours,
+                    }
                 },
-                licenses: {
-                    textInputs: {
-                        licenseNumber: '',
-                        state: '',
-                        expirationDate: '',
-                    },
-                    documents: {
-                        uploadedFiles: [],
-                    },
+            },
+            licenses: {
+                textInputs: {
+                    licenseNumber: '',
+                    state: '',
+                    expirationDate: '',
                 },
-            }        
-        );
-        console.log('Start Date:', jobPreferences.staffRoles.details.startDate);
-        console.log('Location:', jobPreferences.staffRoles.details.preferredLocation);
-        console.log('Relocation:', jobPreferences.staffRoles.details.relocate);
-        console.log('Pay:', jobPreferences.staffRoles.details.desiredPay);
-        console.log('Hours:', jobPreferences.staffRoles.details.preferredHours);
+                documents: {
+                    uploadedFiles: [],
+                },
+            },
+        };
+    
+        // Update the profile data in state
+        await setProfileData(updatedProfile);
+    
+        // Log the updated details from the updated profile object
+        console.log('Start Date:', updatedProfile.jobPreferences.staffRoles.details.startDate);
+        console.log('Location:', updatedProfile.jobPreferences.staffRoles.details.preferredLocation);
+        console.log('Relocation:', updatedProfile.jobPreferences.staffRoles.details.relocate);
+        console.log('Pay:', updatedProfile.jobPreferences.staffRoles.details.desiredPay);
+        console.log('Hours:', updatedProfile.jobPreferences.staffRoles.details.preferredHours);
     };
 
 
