@@ -1,4 +1,5 @@
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert,} from 'react-native';
+
+import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert, Platform} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -272,7 +273,7 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
 
   
   return(
-    <ScrollView style={{backgroundColor:'white'}}>
+    <ScrollView style={{backgroundColor:'white', marginVertical: Platform.OS === 'ios' ? '8%' : 0}}>
       
       {/* About you header */}
       <Text style={styles.headerTextStyle}>About You</Text>

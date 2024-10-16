@@ -2,9 +2,11 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import {useJobPostings} from '../API Fetch/JobPostings';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-
 import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock job data
+
 
 // Define the type for job properties
 type JobProps = {
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 15 : 0,
     width: '100%',
     backgroundColor: '#FFF',
   },

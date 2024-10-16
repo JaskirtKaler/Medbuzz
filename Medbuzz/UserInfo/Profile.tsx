@@ -1,4 +1,7 @@
-import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions, Alert} from 'react-native'
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable prettier/prettier */
+import { Image, ScrollView, View, Text, TouchableOpacity, StyleSheet, Switch, Modal, TextInput, Dimensions, Alert, Platform} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import Backarrow from '../Components/Svg/Backarrow.tsx'
@@ -1034,8 +1037,11 @@ const styles = StyleSheet.create({
         width: '100%',     
     },
     topThird: {
-        height: '22%',
+        height: Platform.OS === 'ios' ? '28%' : '22%',
         width: '100%',
+        // paddingHorizontal: '5%',
+        paddingHorizontal: Platform.OS === 'ios' ? '5%' : 0,
+        paddingTop: Platform.OS === 'ios' ? '6%' : 0,
         backgroundColor: '#0EA68D',
         justifyContent: 'center',
         alignItems: 'center',
@@ -1356,7 +1362,7 @@ const styles = StyleSheet.create({
 
       timeSelectionStyle: {
         flexDirection: 'row',
-        justifyContent:'space-around',
+        justifyContent: Platform.OS === 'ios' ? 'space-between' : 'space-around',
         marginLeft: '2%', 
         marginRight: '4%'
       },
