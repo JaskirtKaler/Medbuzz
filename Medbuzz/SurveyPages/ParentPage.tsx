@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -106,7 +107,7 @@ const ParentPage: React.FC<ParentPageProps> = ({
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <View style={{position: 'absolute', top: 10, left: 0}}>
+      <View style={{position: 'absolute', top: Platform.OS === 'ios' ? 60 : 10, left: 0}}>
         <TouchableOpacity onPress={handleBack}>
           <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>

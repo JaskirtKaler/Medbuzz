@@ -8,11 +8,16 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Dimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  SafeAreaView,
 } from 'react-native';
-import {Dimensions} from 'react-native';
+// import {Dimensions} from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
-import {KeyboardAvoidingView, ScrollView, Platform, Alert} from 'react-native';
+// import {KeyboardAvoidingView, ScrollView, Platform, Alert, SafeAreaView} from 'react-native';
 import Backarrow from '../Components/Svg/Backarrow';
 const {width, height} = Dimensions.get('window');
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -254,7 +259,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 3,
-    top: 10,
+    top: Platform.OS === 'ios' ? 60 : 10,
   },
   backButtonText: {
     color: 'white',

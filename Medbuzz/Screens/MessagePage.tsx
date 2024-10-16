@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingBottom: 10,
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'ios' ? 45 : 10,
   },
   backArrow: {
     justifyContent: 'flex-start',

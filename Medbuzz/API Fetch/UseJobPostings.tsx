@@ -70,15 +70,20 @@ export const useJobPostings = () => {
       var myHeaders = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       // REMOVED. Update the API token in the .env file so no errors are thrown during bundling
-      // myHeaders.append('Authorization', `Bearer ${API_TOKEN} `); // Use the token from the .env file
+      myHeaders.append('Authorization', `Bearer ${API_TOKEN} `); // Use the token from the .env file
 
       var requestOptions = {
         method: 'GET',
         headers: myHeaders,
       };
+      
+      let offset = 0;
+      const limit = 50; // Set the limit to the maximum the API allows
 
       const response = await fetch(
-        `https://api.ceipal.com/v1/getJobPostingsList${locationParams}`,
+        `https://api.ceipal.com/v1/getJobPostingsList${locationParams}${
+          locationParams ? '&' : '?'
+        }limit=${limit}&offset=${offset}`,
         requestOptions,
       );
 
@@ -101,13 +106,13 @@ export const useJobPostings = () => {
           requisition_description: posting.requisition_description,
           public_job_desc: posting.public_job_desc,
           job_code: posting.job_code,
-          modified: new Date(posting.modified), // Ensure proper Date formatting
+          modified: posting.modified, // Ensure proper Date formatting
           post_on_careerportal: posting.post_on_careerportal,
           closing_date: posting.closing_date,
-          job_start_date: new Date(posting.job_start_date),
-          job_end_date: new Date(posting.job_end_date),
+          job_start_date: posting.job_start_date,
+          job_end_date: posting.job_end_date,
           job_status: posting.job_status,
-          created: new Date(posting.created),
+          created: posting.created,
           pay_rates:
             posting.pay_rates && posting.pay_rates.length > 0
               ? posting.pay_rates.map((rate: any) => ({
@@ -130,11 +135,15 @@ export const useJobPostings = () => {
           updated: posting.updated,
           apply_job: posting.apply_job,
           apply_job_without_registration:
-            posting.apply_job_without_registration,
+
+          posting.apply_job_without_registration,
+
+           
           skills: posting.skills,
           postal_code: posting.postal_code,
         })),
       );
+
     } catch (error: any) {
       console.error('Fetch error:', error);
       setJobPostings([]); // Ensure state is cleared on error
