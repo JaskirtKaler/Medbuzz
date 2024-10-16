@@ -3,34 +3,57 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import {useJobPostings} from '../API Fetch/JobPostings';
+//import {useJobPostings} from '../API Fetch/JobPostings';
+
+import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock job data
 
 // Define the type for job properties
 type JobProps = {
-  jobType: string;
-  companyName: string;
-  jobText: string;
-  location: string;
+  jobId: string;
+  title: string;
+  company: {
+    name: string;
+    location: string;
+  };
+  description: string;
   dateApplied: string;
 };
 
+
+// Function to truncate long descriptions
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 // Component to display each job
-const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps) => (
-  <View style={styles.jobStyle}>
+const Job = ({ title, company, description, dateApplied }: JobProps) => {
+  const descriptionText = description ? truncateText(description, 100) : "No description available";
+
+  return (
+    <View style={styles.jobStyle}>
     <View style={styles.jobHeader}>
-      <Text style={styles.jobHeaderText}>{jobType}</Text>
+      <View>
+        <Text style={styles.jobHeaderText}>{title}</Text>
+        <Text style={styles.companyName}>{company.name}</Text>
+      </View>
       <View style={styles.locationDateContainer}>
-        <Text style={styles.jobHeaderText}>{location}</Text>
+        <Text style={styles.jobHeaderText}>{company.location}</Text>
         <Text style={styles.dateApplied}>{dateApplied}</Text>
       </View>
     </View>
-    <Text style={styles.companyName}>{companyName}</Text>
-    <Text style={styles.jobTextStyle}>{jobText}</Text>
+    <Text style={styles.jobTextStyle}>{descriptionText}</Text>
     <TouchableOpacity style={styles.detailsButton}>
       <Text style={{ color: 'black' }}>Click for more details</Text>
     </TouchableOpacity>
   </View>
-);
+  
+  );
+};
+
+
 
 // Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
@@ -39,16 +62,14 @@ const MyJobsPage: React.FC = () => {
   const jobsPerPage: number = 20; // Number of jobs to display per page
   const scrollViewRef = useRef<ScrollView | null>(null); // Reference to the ScrollView for scrolling back to top on page change
 
-  // Sample jobs data, replace with data fetched from ATS API
-  const jobsData: JobProps[] = Array.from({ length: 75 }, (_) => ({
-    jobType: 'Job Type',
-    companyName: 'Company',
-    jobText: 'Some Text about said job',
-    location: 'Location',
-    dateApplied: 'Date Applied',
-  }));
+  // Use mock job postings
+  const jobsData: JobProps[] = mockJobPostings; // Using mock data from mockJobsData.ts
 
-  // Calculate the current set of jobs to display based on the page number
+  // Calculate the total number of jobs and pages
+  const totalJobs = jobsData.length; 
+  const totalPages = Math.ceil(totalJobs / jobsPerPage); 
+
+  // Get the jobs for the current page
   const currentJobs: JobProps[] = jobsData.slice(
     (currentPage - 1) * jobsPerPage,
     currentPage * jobsPerPage
@@ -64,8 +85,7 @@ const MyJobsPage: React.FC = () => {
     <View style={styles.container}>
       {/* Job Listings */}
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
-        {/* This is where the job types are rendered */}
-        {/* Replace this with the API call to fetch jobs from ATS and map over the data */}
+        {/* Render the jobs for the current page */}
         {currentJobs.map((job, index) => (
           <Job key={index} {...job} />
         ))}
@@ -73,14 +93,18 @@ const MyJobsPage: React.FC = () => {
 
       {/* Pagination Navigation Bar */}
       <View style={styles.pagination}>
-        {/* Dynamically create pagination buttons */}
-        {[1, 2, 3].map((page) => (
-          <TouchableOpacity key={page} onPress={() => handlePageChange(page)} style={styles.pageNumber}>
-            {/* Highlight the current page in blue */}
-            <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+    <TouchableOpacity 
+      key={page} 
+      onPress={() => handlePageChange(page)} 
+      style={styles.pageNumber}
+      accessible={true} // Mark as accessible
+      accessibilityRole="button" // Explicitly set the role to button
+    >
+      <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
+    </TouchableOpacity>
+  ))}
+</View>
     </View>
   );
 };
@@ -98,56 +122,57 @@ const styles = StyleSheet.create({
   },
   jobStyle: {
     backgroundColor: 'white',
-    width: '85%',
+    width: '90%', // Increase width slightly
     alignSelf: 'center',
-    marginBottom: 20,
-    padding: 15,
+    marginBottom: 15, // Reduce gap between jobs
+    padding: 12, // Adjust padding for better alignment
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0,
+    shadowOpacity: 0.2,
     shadowRadius: 3.84,
     elevation: 5,
   },
   jobHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 5, // Reduced gap between title and company
   },
   locationDateContainer: {
-    flexDirection: 'column', // Stack 'Location' and 'Date Applied' vertically
+    flexDirection: 'column', // Stack location and date vertically
     alignItems: 'flex-end',  // Align to the right
   },
   jobHeaderText: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16, // Slightly reduce font size for consistency
     fontWeight: 'bold',
   },
   dateApplied: {
     color: 'black',
     fontSize: 12,
-    marginTop: 5,
+    marginTop: 2, // Add slight margin between location and date
   },
   companyName: {
     color: 'black',
-    marginVertical: 5,
-    fontSize: 16,
+    marginVertical: 1, // Reduced margin for closer alignment with job title
+    fontSize: 14, // Slightly smaller font for company name
   },
   jobTextStyle: {
     color: 'black',
-    backgroundColor: '#D9D9D9',
-    padding: 25,
+    backgroundColor: '#FFF', // Light grey background like the job description in the feed
+    padding: 15, // Reduce padding to match other card designs
     textAlign: 'center',
     marginVertical: 5,
   },
   detailsButton: {
     backgroundColor: '#0EA68D',
     borderRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 6, // Slightly smaller padding for better fit
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 8,
   },
   pagination: {
     flexDirection: 'row',
