@@ -27,7 +27,7 @@ const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps)
     <Text style={styles.companyName}>{companyName}</Text>
     <Text style={styles.jobTextStyle}>{jobText}</Text>
     <TouchableOpacity style={styles.detailsButton}>
-      <Text style={{color: 'black'}}>Click for more details</Text>
+      <Text style={{ color: 'black' }}>Click for more details</Text>
     </TouchableOpacity>
   </View>
 );
