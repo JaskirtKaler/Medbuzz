@@ -1,9 +1,11 @@
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, Platform } from 'react-native';
-import React, {useState} from 'react';
+
+import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert, Platform} from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
-import { useNavigation } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
 import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
 import { usaStates } from '../mapVariables/optionsData.tsx';
 /*
@@ -12,6 +14,11 @@ import { usaStates } from '../mapVariables/optionsData.tsx';
   the user, possibly add US territories: US virgin islands, Guam, Puerto Rico, etc to State options, 
   add cancel button functionality, add upload photo button functionality
 */
+
+interface EditBasicDetailsProps {
+  navigation: NavigationProp<any>; // Replace 'any' with your specific navigation parameter type if available
+}
+
 type CategoryType = keyof typeof certificationMap; // Create a union type from the certificationMap keys
 interface OptionType { // Option type is for Certificaion mapping
   label: string;
@@ -68,8 +75,8 @@ const years = [
 
 
 // Screen - Edit Basic Details
-const EditBasicDetails = () => {
-  const navigation = useNavigation<any>(); // Stack Navigation
+const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
+  const [loading, setLoading] = useState(true);
   const [discipline, setDiscipline] = useState("");
   const [schoolState, setSchoolState] = useState("");
   const [month, setMonth] = useState("");
@@ -99,6 +106,47 @@ const EditBasicDetails = () => {
   const [certificationOptions, setCertificationOptions] = useState<OptionType[]>(categoryOptions); // Initially, it holds categories
   const [selectedCertification, setSelectedCertification] = useState<string | null>(null);
   const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
+
+  useEffect(() => {
+    // Fetch existing user data when the component mounts
+    const fetchData = async () => {
+      try {
+        // Simulating an API call
+        const response = await fetch('https://api.example.com/user'); // Replace with your API endpoint
+        const data = await response.json();
+        
+        // Set state with the fetched data
+        setFirstName(data.firstName);
+        setMiddleName(data.middleName);
+        setLastName(data.lastName);
+        setPhoneNumber(data.phoneNumber);
+        setEmail(data.email);
+        setDob(data.dob);
+        setSchoolName(data.schoolName);
+        setSchoolCountry(data.schoolCountry);
+        setSchoolCity(data.schoolCity);
+        setFieldOfStudy(data.fieldOfStudy);
+        setHomeAddress(data.homeAddress);
+        setHomeCity(data.homeCity);
+        setHomeState(data.homeState);
+        setZipCode(data.zipCode);
+        setSSN(data.ssn);
+        setLegalFirstName(data.legalFirstName);
+        setLegalLastName(data.legalLastName);
+        setDiscipline(data.discipline);
+        setSchoolState(data.schoolState);
+        setDegreeType(data.degreeType);
+        setYearsOfSpecialty(data.yearsOfSpecialty);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        Alert.alert("Error", "Could not fetch user data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Handle the dropdown change
   const handleDropdownChange = (value: string) => {
@@ -155,6 +203,62 @@ const EditBasicDetails = () => {
     console.log("Valid ZIP code: " + isValidZipCode);
   }
 
+  const handleSave = async () => {
+    try {
+      // Add validation checks here if needed
+      if (!isValidZipCode) {
+        Alert.alert("Error", "Please enter a valid zip code.");
+        return;
+      }
+
+      // Simulating API call to save updated data
+      setLoading(true);
+      const response = await fetch('https://api.example.com/user/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          middleName,
+          lastName,
+          phoneNumber,
+          email,
+          profesionalSummary,
+          dob,
+          schoolName,
+          schoolCountry,
+          schoolCity,
+          discipline,
+          schoolState,
+          degreeType,
+          yearsOfSpecialty,
+          homeAddress,
+          homeCity,
+          homeState,
+          zipCode,
+          ssn,
+          legalFirstName,
+          legalLastName,
+          selectedCertification
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", "Profile updated successfully.");
+        navigation.goBack(); // Navigate back on successful save
+      } else {
+        console.error("Update failed:", result);
+        Alert.alert("Error", "Could not update profile.");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      Alert.alert("Error", "Could not update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Created by Ashar from the UserLocation.tsx file
   const validateZipCode = (text: string) => {
     const zipCodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
@@ -163,8 +267,12 @@ const EditBasicDetails = () => {
     setZipCode(text); // Update zip code state
   };
   
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  
   return(
-    
     <ScrollView style={{backgroundColor:'white', marginVertical: Platform.OS === 'ios' ? '8%' : 0}}>
       
       {/* About you header */}
@@ -183,36 +291,36 @@ const EditBasicDetails = () => {
         <Text>First name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setFirstName} style={styles.textBoxStyle}></TextInput> 
+      <TextInput testID="firstNameInput" value={firstName} onChangeText={setFirstName} style={styles.textBoxStyle}></TextInput> 
 
       {/* Middle name field and TextBox */}
       <Text style={styles.fieldTextStyle}>Middle name</Text>
-      <TextInput onChangeText={setMiddleName}style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="middleNameInput" value={middleName} onChangeText={setMiddleName}style={styles.textBoxStyle}></TextInput>
 
       {/* Last name field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Last name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setLastName} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="lastNameInput" value={lastName} onChangeText={setLastName} style={styles.textBoxStyle}></TextInput>
 
       {/* Phone number field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Phone number</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setPhoneNumber} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="phoneNumberInput" value={phoneNumber} onChangeText={setPhoneNumber} style={styles.textBoxStyle}></TextInput>
 
       {/* Email field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Email</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setEmail} style={styles.textBoxStyle}></TextInput> 
+      <TextInput testID="emailInput" value={email} onChangeText={setEmail} style={styles.textBoxStyle}></TextInput> 
 
       {/* Professional summary field and TextBox */}
       <Text style={styles.fieldTextStyle}>Professional summary</Text>
-      <TextInput onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
+      <TextInput testID="professionalSummaryInput" value={profesionalSummary} onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
 
       {/* Education header */}
       <Text style={styles.headerTextStyle}>Education</Text>
@@ -222,18 +330,18 @@ const EditBasicDetails = () => {
         <Text>School name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setSchoolName} style={styles.textBoxStyle}></TextInput> 
+      <TextInput testID="schoolNameInput" value={schoolName} onChangeText={setSchoolName} style={styles.textBoxStyle}></TextInput> 
 
       {/* School country field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Country</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setSchoolCountry} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="countryInput" value={schoolCountry} onChangeText={setSchoolCountry} style={styles.textBoxStyle}></TextInput>
 
       {/* School city field and TextBox */}
       <Text style={styles.fieldTextStyle}>City</Text>
-      <TextInput onChangeText={setSchoolCity} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="cityInput" value={schoolCity} onChangeText={setSchoolCity} style={styles.textBoxStyle}></TextInput>
 
       {/* School state field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
@@ -329,7 +437,7 @@ const EditBasicDetails = () => {
 
       {/* Field of study field and TextBox, along with example*/}
       <Text style={styles.fieldTextStyle}>Field of study</Text>
-      <TextInput onChangeText={setFieldOfStudy} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="fieldOfStudyInput" value={fieldOfStudy} onChangeText={setFieldOfStudy} style={styles.textBoxStyle}></TextInput>
       <Text style={{color: 'grey', marginLeft: 15}}>Ex. Health Science, Biology, Public Health, etc.</Text>
 
       {/* Home address header */}
@@ -340,28 +448,32 @@ const EditBasicDetails = () => {
         <Text>Home street address</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setHomeAddress} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="homeStreetAddressInput"
+      value={homeAddress} onChangeText={setHomeAddress} style={styles.textBoxStyle}></TextInput>
 
       {/* Home city field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>City</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setHomeCity} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="homeCityInput"
+        value={homeCity} onChangeText={setHomeCity} style={styles.textBoxStyle}></TextInput>
 
       {/* Home state field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>State</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="homeStateInput"
+        value={homeState} onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
 
       {/* Zip code field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>ZIP Code</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={validateZipCode} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="zipCodeInput"
+        value={zipCode} onChangeText={validateZipCode} style={styles.textBoxStyle}></TextInput>
 
       {/* Your Expertise header */}
       <Text style={styles.headerTextStyle}>Your expertise</Text>
@@ -419,7 +531,8 @@ const EditBasicDetails = () => {
         <Text>Years of experience</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="yearsOfExperienceInput"
+        value={yearsOfSpecialty} onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
 
       {/* IDENTITY VERIFICATION SECTION */}
       {/* Richard Varela add the identity verification section related to SCRUM - 106 */}
@@ -430,28 +543,32 @@ const EditBasicDetails = () => {
         <Text>Date of birth</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
+      <TextInput testID="dateOfBirthInput"
+        value={dob} onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
 
       {/* Input field for last four of SSN */}
       <Text style={styles.fieldTextStyle}>
         <Text>Last four of SSN</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setSSN} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="ssnLastFourInput"
+        value={ssn} onChangeText={setSSN} style={styles.textBoxStyle}></TextInput>
 
       {/* Input field for legal first name */}
       <Text style={styles.fieldTextStyle}>
         <Text>Legal First Name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setLegalFirstName} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="legalFirstNameInput"
+        value={legalFirstName} onChangeText={setLegalFirstName} style={styles.textBoxStyle}></TextInput>
 
       {/* Input field for legal last name */}
       <Text style={styles.fieldTextStyle}>
         <Text>Legal Last Name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput onChangeText={setLegalLastName} style={styles.textBoxStyle}></TextInput>
+      <TextInput testID="legalLastNameInput"
+        value={legalLastName} onChangeText={setLegalLastName} style={styles.textBoxStyle}></TextInput>
 
       {/* Save button */}
       <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
@@ -589,5 +706,4 @@ const styles = StyleSheet.create({
   }
 });
 
-  
 export default EditBasicDetails

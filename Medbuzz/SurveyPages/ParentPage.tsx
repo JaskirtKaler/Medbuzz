@@ -138,6 +138,7 @@ const ParentPage: React.FC<ParentPageProps> = ({
 
       {/* Dropdown */}
       <Dropdown
+        testID="dropDownTest"
         style={styles.dropdown}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}

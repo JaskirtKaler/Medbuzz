@@ -1,64 +1,319 @@
-import { Button, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal, Alert} from "react-native";
+import { useState } from "react";
 import Backarrow from "../Components/Svg/Backarrow";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import CalendarTime from "../Components/Svg/CalendarTime";
+import {
+    NavigationProp,
+    useNavigation,
+    RouteProp,
+    useRoute,
+  } from '@react-navigation/native';import CalendarTime from "../Components/Svg/CalendarTime";
 import CalendarSuccess from "../Components/Svg/CalendarSuccess";
-import Time from "../Components/Svg/Time";
-import BuildingUser from "../Components/Svg/BuildingUser";
+import CheckBox from '@react-native-community/checkbox';
+import CancelX from '../Components/Svg/CancelX.tsx'
+import {WebView} from "react-native-webview";
+import StateLocation from "../Components/Svg/Statelocation.tsx"
+import RNFetchBlob from 'rn-fetch-blob'
 
 const { width, height } = Dimensions.get('window');
 const JobPosting = () => {
     const testDate = new Date().toLocaleDateString('en-US');
+    const route = useRoute<RouteProp<{params: {job: any}}, 'params'>>();
+    const {job} = route.params;
+    console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
+    //console.log(job);
 
-    let jobTitle: string;
-    let jobType: string;
-    let jobLocation: string;
-    let jobPostDate: Date;
-    let jobStartDate: Date;
-    let jobEndDate: Date;
-    let jobDuration: string;
-    let jobExperience: string;
-    let jobPay: string;
-    let jobDescription: string;
+    // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
+    // These files exist on my emulator only and will need to be renames on other systems.
+    // This is for testing error checking only
+    let resumePath = "/storage/emulated/0/Pictures/IMG_20241014_183209.jpg";
+    let licensePath = "/storage/emulated/0/Pictures/IMG_20241014_183208.jpg";
+    let degreePath = "/storage/emulated/0/Pictures/IMG_20241014_183206.jpg";
+    let certificationPath = "/storage/emulated/0/Pictures/IMG_20241014_183205.jpg";
+    let referencePath = "/storage/emulated/0/Pictures/IMG_20241014_182941.jpg";
+    let vaccinationPath = "/storage/emulated/0/Pictures/IMG_20241014_175006.jpg";
+
     const navigation = useNavigation<NavigationProp<any>>();
+
+    const [applyModalVisible, setApplyModalVisible] = useState(false); // State for edit Modal
+
+    const [sendResumeSelected, setSendResumeSelection] = useState(false); // State for checkbox regarding resume for application
+    const [sendLicensesSelected, setSendLicensesSelection] = useState(false);   // State for checkbox regarding licenses for application
+    const [sendDegreeSelected, setSendDegreeSelection] = useState(false);   // State for checkbox regarding degree for application
+    const [sendCertificationsSelected, setSendCertificationsSelection] = useState(false);   // State for checkbox regarding certifications for application
+    const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
+    const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
+
 
     const handleBack = () => {
         navigation.goBack()
     }
     
-    const onApplyPress = (event: PressEvent) => {
+    // Show modal when user clicks the "Apply" button
+    const onApplyPress = () => {
+        setApplyModalVisible(!applyModalVisible)
+    }
 
+    // If user cancels their Application ensure all checkboxes reset to unchecked 
+    const onCancelPress = () => {
+        setSendResumeSelection(false)
+        setSendLicensesSelection(false)
+        setSendDegreeSelection(false)
+        setSendCertificationsSelection(false)
+        setSendReferencesSelection(false)
+        setSendVaccinationSelection(false)
+    }
+
+    // If the user confirms the application ensure that all checked files exist. If they
+    // don't log it in console. If they do inform the user they've been sent. Reset checkboxes
+    // to unchecked and display an alert if their application was successful or not, close the modal
+    const onConfirmPress = async () => {
+
+        let alertTitle = "Congratulations!";
+        let alertMessage = "Your application has been sent.";
+
+        let alertIssueTitle = "Something Went Wrong.";
+        let alertIssueMessage = "One or more of your files does not exist.";
+
+        let problems = false;
+
+        // Check if resume image file exists and reset the checkbox use state to false
+        if(sendResumeSelected) {
+            await RNFetchBlob.fs.exists(resumePath)
+            .then((resumeExists) => {
+                if(resumeExists)
+                    console.log("File exists.\nResume sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendResumeSelection(false)
+        }
+
+        // Check if license image file exists and reset the checkbox use state to false
+        if(sendLicensesSelected){
+            await RNFetchBlob.fs.exists(licensePath)
+            .then((licenseExists) => {
+                if(licenseExists)
+                    console.log("File exists.\nLicense sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendLicensesSelection(false)
+        }
+
+        // Check if degree image file exists and reset the checkbox use state to false
+        if(sendDegreeSelected){
+            await RNFetchBlob.fs.exists(degreePath)
+            .then((degreeExists) => {
+                if(degreeExists)
+                    console.log("File exists.\nDegree sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendDegreeSelection(false)
+        }
+
+        // Check if certification image file exists and reset the checkbox use state to false
+        if(sendCertificationsSelected) {
+            await RNFetchBlob.fs.exists(certificationPath)
+            .then((certificationExists) => {
+                if(certificationExists)
+                    console.log("File exists.\nCertification sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendCertificationsSelection(false)
+        }   
+
+        // Check if reference image file exists and reset the checkbox use state to false
+        if(sendReferencesSelected) {
+            await RNFetchBlob.fs.exists(referencePath)
+            .then((referenceExists) => {
+                if(referenceExists)
+                    console.log("File exists.\nReference sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendReferencesSelection(false)
+        }
+
+        // Check if vaccination image file exists and reset the checkbox use state to false
+        if(sendVaccinationSelected){
+            await RNFetchBlob.fs.exists(vaccinationPath)
+            .then((vaccinationExists) => {
+                if(vaccinationExists)
+                    console.log("File exists.\nVaccination sent.")
+                else{
+                    console.log("File does not exist.") 
+                    problems = true
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        
+            setSendVaccinationSelection(false)
+        }  
+
+        // if there was a problem, change the default alert title and message to the "Issue" variants
+        if(problems){
+            alertTitle = alertIssueTitle;
+            alertMessage = alertIssueMessage;
+        }
+
+        // display the alert
+        Alert.alert(alertTitle, alertMessage, [
+            {
+                text: 'OK',
+                onPress: () => console.log("OK Pressed"),
+            }
+        ]);
+
+        // close the modal
+        setApplyModalVisible(!applyModalVisible)
     }
 
     return (
         <SafeAreaView style={styles.container}>
+
+            {/* Modal for Application */}
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={applyModalVisible}
+                onRequestClose={() => {
+                    setApplyModalVisible
+                }}
+            >
+                <View style={{flex: 1}}>
+                    <View style={styles.applyModalStyle}>
+                        <View style={{flexDirection: 'row', margin: 10}}>
+
+                            {/* Modal Header */}
+                            <Text style={{color: 'black', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>Select files to include in application</Text>
+
+                            {/* Cancel Button */}
+                            <TouchableOpacity style={styles.cancelModalButton} onPress={() => {onCancelPress(), setApplyModalVisible(!applyModalVisible)}}>
+                                <CancelX  width={15} height={15} color={"#000"}></CancelX>
+                            </TouchableOpacity>
+
+                        </View>
+                        <View style={{marginLeft: 10}}>
+
+                            {/* Checkboxes */}
+                            <View style={{flexDirection: 'row'}}>
+
+                                {/* Resume */}
+                                <CheckBox
+                                    value={sendResumeSelected}
+                                    onValueChange={setSendResumeSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>Resume</Text>
+                            </View>
+
+                            {/* Licenses */}
+                            <View style={{flexDirection: 'row'}}>
+                                <CheckBox 
+                                    value={sendLicensesSelected}
+                                    onValueChange={setSendLicensesSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>Licenses</Text>
+                            </View>
+
+                            {/* Degree */}
+                            <View style={{flexDirection: 'row'}}>
+                                <CheckBox 
+                                    value={sendDegreeSelected}
+                                    onValueChange={setSendDegreeSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>Degree</Text>
+                            </View>
+
+                            {/* Certifications */}
+                            <View style={{flexDirection: 'row'}}>
+                                <CheckBox 
+                                    value={sendCertificationsSelected}
+                                    onValueChange={setSendCertificationsSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>Certifications</Text>
+                            </View>
+
+                            {/* References */}
+                            <View style={{flexDirection: 'row'}}>
+                                <CheckBox 
+                                    value={sendReferencesSelected}
+                                    onValueChange={setSendReferencesSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>References</Text>
+                            </View>
+
+                            {/* Vaccination */}
+                            <View style={{flexDirection: 'row'}}>
+                                <CheckBox 
+                                    value={sendVaccinationSelected}
+                                    onValueChange={setSendVaccinationSelection}
+                                />
+                                <Text style={styles.checkBoxTextStyle}>Vaccination</Text> 
+                            </View>
+                        </View>
+                        <View style={{flex: 1, alignItems: 'center'}}>
+
+                            {/* Confirm Choices Button */}
+                            <TouchableOpacity style={styles.confirmButton} onPress={() => {
+                                onConfirmPress();
+                            }}>
+                            <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>Confirm Choices</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             {/* Header */}
             <View style={styles.header}>
                 {/* Back Arrow */}
                 <TouchableOpacity onPress={handleBack}>
-                    <Backarrow width={width * .1} height={height * .05} stroke={'black'} strokeWidth={1} color={'black'} />
+                    <Backarrow width={40} height={40} stroke={'black'} strokeWidth={1} color={'black'} />
                 </TouchableOpacity>
                 {/* Job Title */}
-                <Text style={styles.headerTitle}>{jobTitle || 'Job Title'}</Text>
-                <View width={width * .1} height={height * .05} />
+                <View style={{width: '85%', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={styles.headerTitle}>{job.position_title || 'Job Title'}</Text>
+                    {/*<View style={{width: width * 0.1, height: height * .05}} />*/} 
+                </View>
             </View>
             <ScrollView style={styles.scrollContainer}>
-                {/* Upper Row */}
-                <View style={styles.upperRow}>
-                    {/* Job Type */}
-                    <View style={styles.upperRowItem}>
-                        <Text style={styles.upperRowItemTitle}>Job Type</Text>
-                        <Text style={styles.upperRowItemBody}>{jobType || 'Unknown Type'}</Text>
-                    </View>
-                    {/* Job Date Posted */}
-                    <View style={styles.upperRowItem}>
-                        <Text style={styles.upperRowItemTitle}>Date Posted</Text>
-                        <Text style={styles.upperRowItemBody}>{jobPostDate || testDate}</Text>
-                    </View>
-                </View>
-                <Text style={styles.upperRowItemTitle}>{jobLocation || 'California'}</Text>
+                
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.1 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
 
                 {/* Overview Title */}
                 <View style={styles.overviewHeader}>
@@ -66,13 +321,32 @@ const JobPosting = () => {
                 </View>
                 {/* Overview */}
                 <View style={styles.overviewContainer}>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Job Title */}
+                    <View>
+                        <Text style={styles.upperRowItemTitle}>Job Title</Text>
+                        <Text style={styles.upperRowItemBody}>{job.position_title || 'NA'}</Text>
+                    </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Location */}
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <StateLocation></StateLocation>
+                        <View>
+                            <Text style={styles.upperRowItemTitle}>Location</Text>
+                            <Text style={styles.upperRowItemBody}>{job.city + ", " + job.state || 'California'}</Text>
+                        </View>
+                    </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
                     <View style={styles.overviewDates}>
                         {/* Start Date */}
                         <View style={styles.overviewDatesBlock}>
                             <CalendarTime />
                             <View style={styles.overviewDatesText}>
                                 <Text style={styles.iconTextUpper}>Start Date</Text>
-                                <Text style={styles.iconTextLower}>{jobStartDate || testDate}</Text>
+                                <Text style={styles.iconTextLower}>{job.job_start_date || 'NA'}</Text>
                             </View>
                         </View>
                         {/* End Date */}
@@ -80,71 +354,75 @@ const JobPosting = () => {
                             <CalendarSuccess />
                             <View style={styles.overviewDatesText}>
                                 <Text style={styles.iconTextUpper}>End Date</Text>
-                                <Text style={styles.iconTextLower}>{jobEndDate || testDate}</Text>
+                                <Text style={styles.iconTextLower}>{job.job_end_date || 'NA'}</Text>
                             </View>
                         </View>
                     </View>
-                    {/* Duration */}
-                    <View style={styles.overviewDuration}>
-                        <Time></Time>
-                        <View>
-                            <Text style={styles.iconTextUpper}>Duration</Text>
-                            <Text style={styles.iconTextLower}>{jobDuration || 'Job Duration Value'}</Text>
-
-                        </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    <View>
+                        <Text style={styles.upperRowItemTitle}>Closing Date</Text>
+                        <Text style={styles.upperRowItemBody}>{job.closing_date || 'NA'}</Text>
                     </View>
-                    {/* Experience */}
-                    <View style={styles.overviewExperience}>
-                        <BuildingUser />
-                        <View>
-                            <Text style={styles.iconTextUpper}>Experience</Text>
-                            <Text style={styles.iconTextLower}>{jobExperience || 'Job Experience Value'}</Text>
-
-                        </View>
+                    {/* Space Gap */}
+                    <View style={{ width: '100%', height: 20 }}></View>
+                    {/* Pay */}
+                    <View>
+                        <Text style={styles.overviewHeaderText}>Pay</Text>
                     </View>
-
-                    {/* <View style= {{width: 100, height: 100, backgroundColor: 'black'}}></View> */}
-                </View>
-
-                {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.1 }}></View>
-
-                <View>
-                    <Text style={styles.overviewHeaderText}>Pay</Text>
-                </View>
-                <View style={styles.payContainer}>
-                    {/* Pay Body Container */}
+                    <View style={styles.payContainer}>
+                        {/* Pay Body Container */}
                         <View style = {styles.payLeftItem}>
-                            <Text style = {styles.payUpperText}>Estimated Pay</Text>
-                            <Text style = {styles.payLowerText}>{jobPay || 'Hourly Rate'}</Text>
+                            <Text style = {styles.payLowerText}>{job.pay_rates[0] || 'NA'}</Text>
                         </View>
                         <View style = {styles.payRightItem}>
-                            <Text style = {styles.payRangeText}>{jobPay || '$25-35'}</Text>
+                            <Text style = {styles.payRangeText}>{job.pay_rates[0] || 'NA'}</Text>
                         </View>
+                    </View>
                 </View>
 
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.05 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
 
                 {/* Description Container */}
-                
                 <View>
                     <Text style = {styles.overviewHeaderText}>Description</Text>
                     <View style = {styles.descriptionBody}>
-                    <Text style = {{color: 'black'}}>{jobDescription || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}</Text>
+                        <WebView
+                            originWhitelist={['*']}
+                            source={{html: job.public_job_desc}} 
+                            scrollEnabled={false}
+                            style={{height: 800, width: '100%', color: 'black'}}
+                        />
                     </View>
                 </View>
 
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.075 }}></View>
-
-                {/* Apply Button */}
-                <View style = {styles.buttonContainer}>
-                    <Button style = {styles.button} color={'#0EA68D'} title='Apply'></Button>
+                <View style={{ width: '100%', height: 20 }}></View>
+                {/* Date osted and Date last modified */}
+                <View style={styles.upperRow}>
+                    {/* Date Posted */}
+                    <View style={styles.upperRowItem}>
+                        <Text style={styles.upperRowItemTitle}>Date Posted</Text>
+                        <Text style={styles.upperRowItemBody}>{job.created || 'NA'}</Text>
+                    </View>
+                    {/* Modified Date */}
+                    <View style={styles.upperRowItem}>
+                        <Text style={styles.upperRowItemTitle}>Last Modified</Text>
+                        <Text style={styles.upperRowItemBody}>{job.modified || 'NA'}</Text>
+                    </View>
                 </View>
 
                 {/* Space Gap */}
-                <View style={{ width: '100%', height: height * 0.5 }}></View>
+                <View style={{ width: '100%', height: 20 }}></View>
+
+                {/* Apply Button */}
+                <TouchableOpacity style = {styles.buttonContainer} onPress={onApplyPress}>
+                    <Text style={{justifyContent: 'center', color: 'white', fontSize: 20, fontWeight: 'bold'}}>Apply</Text>
+                </TouchableOpacity>
+
+                {/* Space Gap */}
+                <View style={{ width: '100%', height: height * 0.1 }}></View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -157,7 +435,7 @@ const styles = StyleSheet.create({
         width: width,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
         height: height * 0.075,
         backgroundColor: '#FFF',
@@ -172,9 +450,10 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         display: 'flex',
-        fontSize: 24,
+        fontSize: 16,
         fontWeight: 'bold',
         color: 'black',
+        marginRight: 10
 
     },
     container: {
@@ -232,7 +511,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: height * 0.25,
+        //height: height * 0.25,
     },
     overviewDates: {
         display: 'flex',
@@ -307,13 +586,25 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#C9C9C9',
         borderRadius: 9,
-        
-
     },
     buttonContainer: {
-        flex: 1,
-        paddingLeft: '50%',
-        
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        backgroundColor: '#0EA68D',
+        height: 50, 
+        width: 320,
+        borderRadius: 6,
+        elevation: 5, // This will add a box shadow for Android
+        shadowColor: "#000",  // this will add a box shadow for IOS
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        borderColor: 'black',
+        borderWidth: 0.5
+    }, 
+
     button: {
         color: '#0EA68D',
         backgroundColor: '#FFF',
@@ -325,7 +616,49 @@ const styles = StyleSheet.create({
         },
     },
 
-    }
+    applyModalStyle: {
+        flex: 1,
+        backgroundColor: 'white',
+        marginHorizontal: 30,
+        marginVertical: 250,
+        borderRadius: 15,
+        borderColor: 'black',
+        borderWidth: 1.5,
+        elevation: 5, // This will add a box shadow for Android
+        shadowColor: "#000",  // this will add a box shadow for IOS
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    }, 
+
+    cancelModalButton: {
+        flex: 1, 
+        marginRight: 2,
+        marginTop: 2,
+        alignItems: 'flex-end', 
+        alignSelf: 'center'
+    }, 
+
+    checkBoxTextStyle: {
+        alignSelf: 'center', 
+        color: 'black', 
+        fontSize: 18, 
+        fontWeight: 'bold',
+    }, 
+
+    confirmButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        backgroundColor: '#0EA68D',
+        height: 40, 
+        width: 250,
+        borderRadius: 6,
+        margin: 22
+    }, 
 });
 
-export default JobPosting;
+export default JobPosting; 

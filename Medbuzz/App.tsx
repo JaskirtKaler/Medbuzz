@@ -55,11 +55,12 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SignInSignUp"
+        initialRouteName="Login"
         screenOptions={{headerShown: false}}>
-          <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
+        {/* <Stack.Screen name="SignInSignUp" component={SignInSignUp} /> */}
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Navigation} />
-        <Stack.Screen name="EditProfile" component={EditBasicDetails} />
+        <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="RegContinue" component={RegContinue} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />

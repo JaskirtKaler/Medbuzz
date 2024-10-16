@@ -6,33 +6,57 @@ anytime the user has to wait, especially when the app has to communicate
 with the backend.
 */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Dimensions, StyleSheet, View, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import profileData from '../UserInfo/Profile.tsx';
 
-import {
-    ActivityIndicator,
-    Dimensions,
-    StyleSheet,
-    View,
-    Text
- } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
-import { useNavigation, NavigationProp, useFocusEffect } from '@react-navigation/native';
-import {RootStackParamList} from '../App';
-import Navigation from '../Components/Navigation';
-
-const {width, height} = Dimensions.get('window');
 const LoadingScreen = () => {
     const navigation = useNavigation<any>();
+    const [profile, setProfile] = useState(profileData);
+
+    // Save profile to AsyncStorage
+    const saveProfileToStorage = async (profile: typeof profileData) => {
+        try {
+            await AsyncStorage.setItem('userProfile', JSON.stringify(profile));
+            console.log('Profile saved to local storage');
+        } catch (error) {
+            console.error('Error saving profile to local storage', error);
+        }
+    };
+
+    // Load profile from AsyncStorage
+    const loadProfileFromStorage = async () => {
+        try {
+            const storedProfile = await AsyncStorage.getItem('userProfile');
+            if (storedProfile !== null) {
+                setProfile(JSON.parse(storedProfile)); // Load existing profile
+                console.log('Profile loaded from local storage');
+            } else {
+                await saveProfileToStorage(profileData); // Save default profile if no data exists
+                console.log('Default profile saved to local storage');
+            }
+        } catch (error) {
+            console.error('Error loading profile from local storage', error);
+        }
+    };
+
+    useEffect(() => {
+        loadProfileFromStorage();
+    }, []);
 
     const handleContinue = () => {
-        console.log('Continued was hit, now waiting to simulate network traffic for 5 seconds.')
-        setTimeout(()=> {
+        console.log('Continued was hit, now waiting to simulate network traffic for 5 seconds.');
+        setTimeout(() => {
             console.log("done");
             navigation.navigate('Main');
         }, 5000);
-    }
+    };
 
-    useFocusEffect(handleContinue)
+    useFocusEffect(handleContinue);
 
     return (
         <View style={styles.background_style}>
