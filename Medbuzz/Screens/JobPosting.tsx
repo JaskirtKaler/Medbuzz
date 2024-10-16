@@ -1,3 +1,4 @@
+
 import { Button, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal, Alert} from "react-native";
 import { useState } from "react";
 import Backarrow from "../Components/Svg/Backarrow";
@@ -14,7 +15,7 @@ import {WebView} from "react-native-webview";
 import StateLocation from "../Components/Svg/Statelocation.tsx"
 import RNFetchBlob from 'rn-fetch-blob'
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const JobPosting = () => {
     const testDate = new Date().toLocaleDateString('en-US');
     const route = useRoute<RouteProp<{params: {job: any}}, 'params'>>();
@@ -427,7 +428,22 @@ const JobPosting = () => {
         </SafeAreaView>
     );
 
-}
+
+        <View>
+          <Text style={styles.overviewHeaderText}>Pay</Text>
+        </View>
+        <View style={styles.payContainer}>
+          {/* Pay Body Container */}
+          <View style={styles.payLeftItem}>
+            <Text style={styles.payUpperText}>Estimated Pay</Text>
+            <Text style={styles.payLowerText}>
+              {job.pay_rates || 'Hourly Rate'}
+            </Text>
+          </View>
+          <View style={styles.payRightItem}>
+            <Text style={styles.payRangeText}>{job.pay_rates || '$25-35'}</Text>
+          </View>
+        </View>
 
 const styles = StyleSheet.create({
     header: {
@@ -455,49 +471,18 @@ const styles = StyleSheet.create({
         color: 'black',
         marginRight: 10
 
-    },
-    container: {
-        backgroundColor: 'white',
-        width: width,
-        height: height,
-        flex: 1,
-        flexGrow: 1,
-    },
-    scrollContainer: {
-        display: 'flex',
-        flex: 1,
-        flexGrow: 1,
-        paddingHorizontal: '3%',
-    },
-    upperRow: {
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'flex-start',
-        paddingTop: '2%',
-        alignItems: 'flex-start',
-    },
-    upperRowItem: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '50%',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
 
-    },
-    upperRowItemTitle: {
-        fontSize: 16,
-        color: 'black',
-        fontWeight: 'bold',
-    },
-    upperRowItemBody: {
-        fontSize: 16,
-        color: 'black',
-    },
-    middleRow: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        {/* Description Container */}
+
+        <View>
+          <Text style={styles.overviewHeaderText}>Description</Text>
+          <View style={styles.descriptionBody}>
+            <Text style={{color: 'black'}}>
+              {job.public_job_desc ||
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
+            </Text>
+          </View>
+        </View>
 
     },
     overviewHeader: {
@@ -518,65 +503,221 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: width * .05,
 
-    },
-    overviewDatesBlock: {
-        display: 'flex',
-        flexDirection: 'row',
-    },
-    overviewDatesText: {
-        paddingLeft: width * .02,
-    },
-    overviewDuration: {
-        display: 'flex',
-        flexDirection: 'row',
-    },
-    overviewExperience: {
-        display: 'flex',
-        flexDirection: 'row',
-    },
-    iconTextUpper: {
-        color: 'black',
-    },
-    iconTextLower: {
-        color: 'black',
-        fontWeight: 'bold',
-    },
-    payContainer: {
-        maxWidth: width * 0.6,
-        display: 'flex',
-        flexGrow: 1,
-        flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: '#C9C9C9',
-        borderRadius: 9,
 
-    },
-    payLeftItem: {
-        paddingLeft: width * 0.02,
-        paddingTop: '1%',
-        paddingBottom: '2%',
+        {/* Apply Button */}
+        <TouchableOpacity style={styles.buttonContainer} onPress={onApplyPress}>
+          <Text
+            style={{
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            Apply
+          </Text>
+        </TouchableOpacity>
 
-    },
-    payRightItem: {
-        paddingLeft: width * 0.075,
-        justifyContent: 'center',
+        {/* Space Gap */}
+        <View style={{width: '100%', height: height * 0.1}}></View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: '2%',
+    width: width,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: height * 0.075,
+    backgroundColor: '#FFF',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    payUpperText: {
-        color: '#A1A1A1',
-        fontSize: 12,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  headerTitle: {
+    display: 'flex',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  container: {
+    backgroundColor: 'white',
+    width: width,
+    height: height,
+    flex: 1,
+    flexGrow: 1,
+  },
+  scrollContainer: {
+    display: 'flex',
+    flex: 1,
+    flexGrow: 1,
+    paddingHorizontal: '3%',
+  },
+  upperRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'flex-start',
+    paddingTop: '2%',
+    alignItems: 'flex-start',
+  },
+  upperRowItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '50%',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  upperRowItemTitle: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  upperRowItemBody: {
+    fontSize: 16,
+    color: 'black',
+  },
+  middleRow: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  overviewHeader: {},
+  overviewHeaderText: {
+    fontSize: 24,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  overviewContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: height * 0.25,
+  },
+  overviewDates: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: width * 0.05,
+  },
+  overviewDatesBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  overviewDatesText: {
+    paddingLeft: width * 0.02,
+  },
+  overviewDuration: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  overviewExperience: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  iconTextUpper: {
+    color: 'black',
+  },
+  iconTextLower: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  payContainer: {
+    maxWidth: width * 0.6,
+    display: 'flex',
+    flexGrow: 1,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#C9C9C9',
+    borderRadius: 9,
+  },
+  payLeftItem: {
+    paddingLeft: width * 0.02,
+    paddingTop: '1%',
+    paddingBottom: '2%',
+  },
+  payRightItem: {
+    paddingLeft: width * 0.075,
+    justifyContent: 'center',
+  },
+  payUpperText: {
+    color: '#A1A1A1',
+    fontSize: 12,
+  },
+  payLowerText: {
+    color: '#2CAC5F',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  payRangeText: {
+    color: '#2CAC5F',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  descriptionBody: {
+    paddingTop: '1%',
+    paddingBottom: '2%',
+    paddingHorizontal: '2%',
+    borderWidth: 1,
+    borderColor: '#C9C9C9',
+    borderRadius: 9,
+  },
+  buttonContainer: {
+    //flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    //paddingLeft: '50%',
+    backgroundColor: '#0EA68D',
+    height: 50,
+    width: 320,
+    borderRadius: 6,
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    borderColor: 'black',
+    borderWidth: 0.5,
+  },
 
+  button: {
+    color: '#0EA68D',
+    backgroundColor: '#FFF',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    payLowerText: {
-        color: '#2CAC5F',
-        fontSize: 20,
-        fontWeight: 'bold',
+  },
 
+  applyModalStyle: {
+    flex: 1,
+    backgroundColor: 'white',
+    marginHorizontal: 30,
+    marginVertical: 250,
+    borderRadius: 15,
+    borderColor: 'black',
+    borderWidth: 1.5,
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    payRangeText: {
-        color: '#2CAC5F',
-        fontSize: 20,
-        fontWeight: 'bold',
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
 
     },
     descriptionBody: {
@@ -659,6 +800,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         margin: 22
     }, 
+
 });
 
 export default JobPosting;

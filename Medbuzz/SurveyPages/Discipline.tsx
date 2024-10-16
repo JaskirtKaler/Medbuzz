@@ -70,17 +70,6 @@ const DisciplineScreen = () => {
     return formattedNumber
   };
 
-  // const options = [
-  //   { label: 'Registered Nurse', value: 'Registered Nurse' },
-  //   { label: 'Licensed Practical Nurse', value: 'Licensed Practical Nurse' },
-  //   { label: 'CMA', value: 'CMA' },
-  //   { label: 'Faculty Staff', value: 'Faculty Staff' },
-  //   { label: 'blah', value: 'blah' },
-  //   { label: 'blahblah', value: 'blahblah' },
-  //   { label: 'blahblahblah', value: 'blahblahblah' },
-  //   { label: '---', value: '---' },
-  // ];
-
  
 return (
   <ScrollView
