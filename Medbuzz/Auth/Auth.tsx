@@ -5,7 +5,7 @@ import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} fr
     issuer: ISSUER,
     clientId: CLIENT_ID,
     redirectUrl: 'DemoAPPV1://auth/',
-    scopes: ['openid', 'offline_access', 'profile',],
+    scopes: ['openid', 'offline_access', 'Profile',],
     additionalParameters: {prompt: 'select_account'},
     serviceConfiguration: {
       authorizationEndpoint:
@@ -16,18 +16,6 @@ import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} fr
     usePKCE: true, //For iOS, we have added the useNonce and usePKCE parameters, which are recommended for security reasons.
   };
 class Auth {
-//   static config = {
-//     issuer: 'https://your-tenant-name.b2clogin.com/tfp/your-tenant-name.onmicrosoft.com/B2C_1A_signup_signin',
-//     clientId: 'your-client-id',
-//     redirectUrl: 'yourapp://auth',
-//     scopes: ['openid', 'offline_access', 'profile',],
-//     additionalParameters: {prompt: 'select_account'},
-//     serviceConfiguration: {
-//       authorizationEndpoint: 'https://your-tenant-name.b2clogin.com/your-tenant-name.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1A_signup_signin',
-//       tokenEndpoint: 'https://your-tenant-name.b2clogin.com/your-tenant-name.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1A_signup_signin',
-//       revocationEndpoint: 'https://your-tenant-name.b2clogin.com/your-tenant-name.onmicrosoft.com/oauth2/v2.0/logout?p=B2C_1A_signup_signin',
-//     },
-//   };
 
   // Sign In or Sign Up function
   static async signIn() {
