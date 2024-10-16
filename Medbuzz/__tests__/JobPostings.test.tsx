@@ -3,7 +3,7 @@
 //React hook also needed to be deleted since it was causing errors for others on the team
 
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useJobPostings } from '../API Fetch/JobPostings'; // Adjust the path to the JobPostings file
+import { useJobPostings } from '../API Fetch/UseJobPostings'; // Adjust the path to the JobPostings file
 
 // Mock the fetch API globally
 global.fetch = jest.fn();
