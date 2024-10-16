@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal, Alert } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
 import Backarrow from '../Components/Svg/Backarrow';
 import { useNavigation } from '@react-navigation/native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Trashcan from '../Components/Svg/Trashcan';
+import messaging from '@react-native-firebase/messaging'; // Import Firebase messaging
+import notifee, { AndroidStyle, AndroidImportance } from '@notifee/react-native';
+import { v4 as uuidv4 } from 'uuid';
+import { Button } from 'react-native'; // Import Button
+
+
 
 // Define the structure of a message
 interface Message {
@@ -33,44 +39,31 @@ const MessagePage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
 
-  const [notificationVisible, setNotificationVisible] = useState(false);
-  const [activeMessage, setActiveMessage] = useState<Message | null>(null);
+  // Inactivity timer reference
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
 
-  // Function to show notification
-  const showNotification = (message: Message) => {
-    setActiveMessage(message);
-    setNotificationVisible(true);
-  };
-
-    // Effect to simulate receiving a new message
-    useEffect(() => {
-      // Simulating a new message received after 3-5 minutes
-      const interval = Math.floor(Math.random() * (300000 - 180000 + 1)) + 180000; // Random interval between 3-5 minutes
-      const timeoutId = setTimeout(() => {
-        const newMessage = {
-          id: '4',
-          senderId: '1', // Assuming senderId corresponds to Radixsol HR
-          content: 'You have a new message!',
-          timestamp: Date.now(),
-          isDeletable: false,
-        };
-        showNotification(newMessage);
-      }, interval);
-  
-      return () => clearTimeout(timeoutId); // Cleanup on unmount
-    }, []);
-
-  // Handler for reading the message
-  const handleReadMessage = () => {
-    if (activeMessage) {
-      // Mark message as read (you may want to update state to reflect this)
-      setNotificationVisible(false);
-      console.log('Message read:', activeMessage);
-      setActiveMessage(null);
+  // Reset inactivity timer
+  const resetTimer = () => {
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current);
     }
+    
+    inactivityTimer.current = setTimeout(() => {
+      sendInactivityNotification();
+    }, INACTIVITY_TIMEOUT);
   };
 
-
+  // Function to send inactivity notification
+  const sendInactivityNotification = async () => {
+    const title = 'You have unread messages!';
+    const body = 'Check your messages to see what you missed.';
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH,
+    });
+  };
 
 
   // Handler for the back arrow button
@@ -81,9 +74,11 @@ const MessagePage = () => {
 
   // Sample state for senders
   const [senders, setSenders] = useState<Sender[]>([
-    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 2 },
-    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 1 },
-    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 },
+    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 1 },
+    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 3 },
+    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 2 },
+    { id: '5', name: 'Person 3', companyName: 'Company Name', profilePicture: '', unreadCount: 0 },
+    { id: '7', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 1 }
   ]);
 
   // Sample state for messages
@@ -91,7 +86,117 @@ const MessagePage = () => {
     { id: '1', senderId: '1', content: 'Welcome to Medbuzz!', timestamp: Date.now(), isDeletable: false },
     { id: '2', senderId: '2', content: 'Hello there!', timestamp: Date.now() - 3600 * 1000, isDeletable: true },
     { id: '3', senderId: '3', content: 'How are you?', timestamp: Date.now() - 7200 * 1000, isDeletable: true },
+    { id: '7', senderId: '5', content: 'How are you?', timestamp: Date.now() - 7200 * 1000, isDeletable: true },
   ]);
+
+
+  // Firebase setup and notification listener
+  useEffect(() => {
+    // Request permission for notifications
+    const requestUserPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Notification permission granted.');
+      }
+    };
+
+    // Get FCM token
+    const getToken = async () => {
+      const token = await messaging().getToken();
+      console.log('FCM Token:', token);
+    };
+
+
+    
+    // Listen for foreground messages
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('A new message arrived!', JSON.stringify(remoteMessage));
+      // Show an alert when a new message comes in
+      Alert.alert('New message!', remoteMessage.notification?.title ?? 'You have a new message');
+
+      const newMessage: Message = {
+        id: remoteMessage.data?.messageId || uuidv4(),  // Replace with a unique ID
+        senderId: remoteMessage.data?.senderId || 'unknown_sender', // Replace with senderId from remoteMessage
+        content: remoteMessage.notification?.body || 'New message content',
+        timestamp: Date.now(),
+        isDeletable: true,
+      };
+      addMessage(newMessage);
+
+    });
+
+    requestUserPermission();
+    getToken();
+
+    return unsubscribe;
+  }, []);
+
+  
+
+    // Function to add a new message
+    const addMessage = (newMessage: Message) => {
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+      const senderExists = senders.find(sender => sender.id === newMessage.senderId);
+  
+      if (senderExists) {
+        // If sender already exists, update unread count
+        const updatedSenders = senders.map(sender => {
+          if (sender.id === newMessage.senderId) {
+            const updatedUnreadCount = sender.unreadCount + 1;
+            sendNotification(sender.name, updatedUnreadCount);
+            return { ...sender, unreadCount: updatedUnreadCount };
+          }
+          return sender;
+        });
+        setSenders(updatedSenders);
+      } else {
+        // If sender does not exist, add sender to senders state
+        const newSender: Sender = {
+          id: newMessage.senderId,
+          name: `Sender ${newMessage.senderId}`, // Placeholder name
+          companyName: 'Unknown Company', // Placeholder company
+          profilePicture: '', // Placeholder profile picture
+          unreadCount: 1,
+        };
+        setSenders(prevSenders => [...prevSenders, newSender]);
+        sendNotification(newSender.name, 1);
+      }
+    };
+
+    const sendNotification = async (senderName: string, unreadCount: number) => {
+      // This is where you can customize your notification
+      const title = `New message from ${senderName}`;
+      const body = `You have ${unreadCount} unread messages from ${senderName}`;
+    
+      
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+        sound: 'default',
+        importance: AndroidImportance.HIGH,
+      });
+  
+      // Display the notification
+      await notifee.displayNotification({
+        title: title,
+        body: body,
+        android: {
+          channelId: 'default',
+          smallIcon: 'ic_launcher', // Add your small icon here
+          pressAction: {
+            id: 'default',
+          },
+        },
+      });
+
+            // Assuming you're in the foreground, use an alert for demo purposes
+            Alert.alert(title, body);
+    };
+  
 
   // Handler for pressing a sender item
   const handlePress = (senderId: string) => {
@@ -171,6 +276,7 @@ const MessagePage = () => {
               </View>
             </View>
           </TouchableOpacity>
+          
         ) : (
           // Render with swipe for other users
           <Swipeable
@@ -211,25 +317,7 @@ const MessagePage = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.header}>Messages</Text>
-
-            {/* Notification Modal */}
-            {notificationVisible && (
-        <Modal
-          transparent={true}
-          visible={notificationVisible}
-          animationType="slide"
-          onRequestClose={handleReadMessage}
-        >
-          <View style={styles.notificationContainer}>
-            <View style={styles.notificationContent}>
-              <Text style={styles.notificationText}>{activeMessage?.content}</Text>
-              <TouchableOpacity style={styles.readButton} onPress={handleReadMessage}>
-                <Text style={styles.buttonText}>Mark as Read</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
+      <Button title="Test Notification" onPress={() => sendNotification('Radixsol HR', 1)} />
 
       {/* FlatList to render list of senders */}
       <FlatList
@@ -266,30 +354,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#fff',
-  },
-  notificationContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
-  },
-  notificationContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
-  notificationText: {
-    fontSize: 18,
-    color: 'black',
-    marginBottom: 20,
-  },
-  readButton: {
-    backgroundColor: '#0EA68D',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
   },
   header: {
     fontSize: 32,
