@@ -40,7 +40,7 @@ const Location = ({header = 'Locations'}) => {
   const saveInfoEventHandler = async () => {
     const userLocInfo = {
       state: selectedState,
-      city: city.trim(),
+      city,
       zipcode,
     };
 
