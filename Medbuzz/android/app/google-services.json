@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "660097620924",
+    "project_id": "medbuzz-7e177",
+    "storage_bucket": "medbuzz-7e177.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660097620924:android:154e72aa8ee5f8fb6aa9b9",
+        "android_client_info": {
+          "package_name": "com.medbuzz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYvCYO5eglc6R54ELDCnKc3Tvgr4x3pq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
