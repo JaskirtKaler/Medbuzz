@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import {useJobPostings} from '../API Fetch/JobPostings';
 
 // Define the type for job properties
@@ -27,7 +27,7 @@ const Job = ({ jobType, companyName, jobText, location, dateApplied }: JobProps)
     <Text style={styles.companyName}>{companyName}</Text>
     <Text style={styles.jobTextStyle}>{jobText}</Text>
     <TouchableOpacity style={styles.detailsButton}>
-      <Text style={{ color: 'black' }}>Click for more details</Text>
+      <Text style={{color: 'black'}}>Click for more details</Text>
     </TouchableOpacity>
   </View>
 );
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 15 : 0,
     width: '100%',
     backgroundColor: '#FFF',
   },

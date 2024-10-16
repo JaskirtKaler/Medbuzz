@@ -1,4 +1,4 @@
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, Platform } from 'react-native';
 import React, {useState} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -165,7 +165,7 @@ const EditBasicDetails = () => {
   
   return(
     
-    <ScrollView style={{backgroundColor:'white'}}>
+    <ScrollView style={{backgroundColor:'white', marginVertical: Platform.OS === 'ios' ? '8%' : 0}}>
       
       {/* About you header */}
       <Text style={styles.headerTextStyle}>About You</Text>

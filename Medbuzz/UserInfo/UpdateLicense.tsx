@@ -203,7 +203,7 @@ function UpdateLicense() {
                     <View style={{width: "100%", padding : 15}}>
                       <Text style={{ color: "#000", paddingLeft: 10, fontWeight: "600", fontSize: 24 }}>License State</Text>
                       <View style={{ width : "100%", height : height*0.05}}></View>
-                      <Text style={{ color: "#000", paddingLeft: 10, fontSize: 16 }}>Provide you name as stated on your license</Text>
+                      <Text style={{ color: "#000", paddingLeft: 10, fontSize: 16 }}>Provide your name as stated on your License</Text>
 
                       <View style={{ width : "100%", height : height*0.05}}></View>
                         <Text style={{ color: "#000", paddingLeft: 10, fontWeight: "400", fontSize: 16 }}>First Name</Text>
@@ -288,7 +288,9 @@ const styles = StyleSheet.create({
     },
     header:{
         width : "100%",
-        height : height * 0.1,
+        paddingHorizontal: Platform.OS === 'ios' ? '5%' : 0,
+        paddingTop: Platform.OS === 'ios' ? '12%' : 0,
+        height: Platform.OS === 'ios' ? height * 0.125 : height * 0.1,
         backgroundColor: '#FFF',
         elevation: 5, // This will add a box shadow for Android
         shadowColor: "#000",  // this will add a box shadow for IOS

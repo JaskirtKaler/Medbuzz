@@ -28,8 +28,7 @@ import JobInfo from './Screens/JobInfo.tsx';
 import 'react-native-gesture-handler';
 import SaveSVG from './Components/Svg/SaveSvg.tsx';
 import Backarrow from './Components/Svg/Backarrow.tsx';
-import SignInSignUp from './Auth/SignInSignUp.tsx'
-import {StyleSheet, View, TouchableOpacity, Platform,} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -57,7 +56,6 @@ function App() {
       <Stack.Navigator
         initialRouteName="SignInSignUp"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
         <Stack.Screen name="Main" component={Navigation} />
         <Stack.Screen name="EditProfile" component={EditBasicDetails} />
         <Stack.Screen name="Register" component={Register} />
