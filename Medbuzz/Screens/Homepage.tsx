@@ -1,4 +1,5 @@
 import {
+
   Button,
   StyleSheet,
   View,
@@ -64,6 +65,7 @@ const Homepage = () => {
               job.city.toLowerCase().includes(searchQuery.toLowerCase()),
           ),
         );
+
         
       } else {
         setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty

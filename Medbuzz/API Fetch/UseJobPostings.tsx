@@ -76,6 +76,7 @@ export const useJobPostings = () => {
         method: 'GET',
         headers: myHeaders,
       };
+      
       let offset = 0;
       const limit = 50; // Set the limit to the maximum the API allows
 
@@ -134,12 +135,15 @@ export const useJobPostings = () => {
           updated: posting.updated,
           apply_job: posting.apply_job,
           apply_job_without_registration:
-            posting.apply_job_without_registration,
+
+          posting.apply_job_without_registration,
+
+           
           skills: posting.skills,
           postal_code: posting.postal_code,
         })),
       );
-      console.log(jobPostings.length);
+
     } catch (error: any) {
       console.error('Fetch error:', error);
       setJobPostings([]); // Ensure state is cleared on error
