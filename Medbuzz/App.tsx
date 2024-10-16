@@ -28,8 +28,8 @@ import JobInfo from './Screens/JobInfo.tsx';
 import 'react-native-gesture-handler';
 import SaveSVG from './Components/Svg/SaveSvg.tsx';
 import Backarrow from './Components/Svg/Backarrow.tsx';
-
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import SignInSignUp from './Auth/SignInSignUp.tsx'
+import {StyleSheet, View, TouchableOpacity, Platform,} from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -38,6 +38,7 @@ import {
 } from '@react-navigation/drawer';
 import ChangePassword from './Auth/ChangePassword.tsx';
 import JobPosting from './Screens/JobPosting.tsx';
+// import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -54,9 +55,9 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="SignInSignUp"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
         <Stack.Screen name="Main" component={Navigation} />
         <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
         <Stack.Screen name="Register" component={Register} />
@@ -108,6 +109,7 @@ function Navigation() {
       screenOptions={({route}) => ({
         headerShown: false, // DO NOT change this
         drawerPosition: 'right',
+        drawerType: 'front',
       })}
       drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen

@@ -7,6 +7,10 @@ import {
   Dimensions,
   TextInput,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  Alert,
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -80,7 +84,7 @@ return (
         backgroundColor: '#0EA68D',
       }}>
       {/* Back Button */}
-      <View style={{position: 'absolute', top: 10, left: 0}}>
+      <View style={{position: 'absolute', top: Platform.OS === 'ios' ? 60 : 10, left: 0}}>
         <TouchableOpacity onPress={handleBack}>
           <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>
@@ -171,6 +175,7 @@ const stylesLocal = StyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: 20,
     marginBottom:'5%',
+    height: '6%',
   },
   inputError: {
     borderColor: 'red',

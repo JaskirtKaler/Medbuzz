@@ -1,5 +1,4 @@
 import {
-
   Button,
   StyleSheet,
   View,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
+  Platform, 
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import NavigationBar from '../Components/Svg/NavigationBar.tsx';
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     flexDirection: 'row',
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
   },
 
   searchStyle: {
