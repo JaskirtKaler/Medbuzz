@@ -4,7 +4,7 @@ import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} fr
   const config: AuthConfiguration = {
     issuer: ISSUER,
     clientId: CLIENT_ID,
-    redirectUrl: 'DemoAPPV1://auth/',
+    redirectUrl: 'DEMOAPPV1://auth/',
     scopes: ['openid', 'offline_access', 'Profile',],
     additionalParameters: {prompt: 'select_account'},
     serviceConfiguration: {
