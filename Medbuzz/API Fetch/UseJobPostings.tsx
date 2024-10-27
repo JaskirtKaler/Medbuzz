@@ -165,7 +165,7 @@ export const useJobPostings = () => {
   };
 
   useEffect(() => {
-    fetchData(0); // Call the fetchData function when component mounts
+    fetchData(1); // Call the fetchData function when component mounts
   }, []);
 
   return {jobPostings, isLoading, fetchData, page_count, totalJobs};
