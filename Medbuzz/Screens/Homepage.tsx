@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
-  Platform, 
+  Platform,
+  FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import NavigationBar from '../Components/Svg/NavigationBar.tsx';
@@ -48,76 +49,106 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
 const Homepage = () => {
   const navigation = useNavigation<any>();
 
-  const {jobPostings, isLoading, fetchData} = useJobPostings();
+  const {jobPostings, isLoading, fetchData, page_count, totalJobs} = useJobPostings();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState<any[]>([]); // Initialize as an empty array
+  const [page, setPage] = useState(1); // Initialize page state
 
   //This creates a new array which has the filtered jobs based on the search criteria
   useEffect(() => {
     //you need this check since without it, once the user refereshes while there is something present in the search bar, it would throw an error
-      if (searchQuery.trim() && Array.isArray(jobPostings)) {
-        setFilteredJobs(
-          jobPostings.filter(
-            job =>
-              job.position_title
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-              job.city.toLowerCase().includes(searchQuery.toLowerCase()),
-          ),
-        );
+    if (searchQuery.trim() && Array.isArray(jobPostings)) {
+      setFilteredJobs(
+        jobPostings.filter(
+          job =>
+            job.position_title
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            job.city.toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
+      );
+    } else {
+      setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty
+    }
 
-        
-      } else {
-        setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty
-      }
-    
   }, [searchQuery, jobPostings]);
+
+  // Effect to fetch data only when the page changes
+  useEffect(() => {
+    fetchData(page);
+  }, [page]);
 
   // Function to handle navigation and passing job details to the next screen
   const handleMoreDetails = (job: any) => {
     navigation.navigate('JobPosting', {job});
   };
 
-  return (
-    <ScrollView
-      style={styles.containerStyle}
-      refreshControl={
-        <RefreshControl
-          refreshing={isLoading}
-          onRefresh={fetchData} // Pull-to-refresh functionality
-        />
-      }>
-      <View style={styles.headerStyle}>
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <TextInput
-            placeholder="Search"
-            placeholderTextColor="gray"
-            style={styles.searchStyle}
-            value={searchQuery}
-            onChangeText={setSearchQuery} // Update the search query state
-          />
-        </View>
+  // Function to handle page number click
+  const handlePageChange = (newPage: number) => {
+    if (newPage !== page) {
+      setPage(newPage); // Change the page number and trigger new data fetch
+    }
+  };
+
+  // Function to render pagination buttons
+  const renderPagination = () => {
+    const buttons = [];
+    const totalPages = page_count;
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
         <TouchableOpacity
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-          <NavigationBar width={35} height={35} color={'#000'} />
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.jobFeedStyle}>Job Feed {'(' + jobPostings.length+ ')'}</Text>
-
-      {/* Map through the filteredJobs array but check if its not uninitialized */}
-      <View>
-        {Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
-          filteredJobs.map(job => (
-            <Job key={job.id} job={job} handleMoreDetails={handleMoreDetails} />
-          ))
-        ) : (
-          <Text style={{textAlign: 'center', marginTop: 20, color: 'gray'}}>
-            No jobs available
+          key={i}
+          onPress={() => handlePageChange(i)}
+          style={i === page ? styles.activePageButton : styles.pageButton}>
+          <Text style={i === page ? styles.activePageText : styles.pageText}>
+            {i}
           </Text>
-        )}
-      </View>
-    </ScrollView>
+        </TouchableOpacity>,
+      );
+    }
+    return <View style={styles.paginationContainer}>{buttons}</View>;
+  };
+
+  return (
+    // use flatlist instead of scrollview as it has built in pagination and header and is more efficient than scroll view.
+    <FlatList
+      data={filteredJobs}
+      renderItem={({item}) => (
+        <Job key={item.id} job={item} handleMoreDetails={handleMoreDetails} />
+      )}
+      keyExtractor={item => item.id}
+      ListHeaderComponent={
+        <>
+          <View style={styles.headerStyle}>
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <TextInput
+                placeholder="Search"
+                placeholderTextColor="gray"
+                style={styles.searchStyle}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+              <NavigationBar width={35} height={35} color={'#000'} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.jobFeedStyle}>
+            Job Feed {'(' + totalJobs + ')'}
+          </Text>
+        </>
+      }
+      ListEmptyComponent={
+        <View style={styles.noJobsContainer}>
+          <Text style={styles.noJobsText}>No jobs available</Text>
+        </View>
+      }
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={() => fetchData(1)} />
+      }
+      ListFooterComponent={renderPagination()} // Render pagination buttons
+    />
   );
 };
 
@@ -208,6 +239,38 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     width: '70%',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  pageButton: {
+    marginHorizontal: 5,
+    padding: 10,
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+  },
+  activePageButton: {
+    marginHorizontal: 5,
+    padding: 10,
+    backgroundColor: '#0EA68D',
+    borderRadius: 5,
+  },
+  pageText: {
+    color: 'black',
+  },
+  activePageText: {
+    color: 'white',
+  },
+  noJobsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  noJobsText: {
+    fontSize: 18,
+    color: 'grey',
   },
 });
 

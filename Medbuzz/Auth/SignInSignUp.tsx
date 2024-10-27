@@ -16,6 +16,8 @@ function SignInSignUp(){
             setAuthenticated(isUserAuthenticated); // Set the state based on the authentication result
         };
         checkAuth();
+
+        
     }, []);
     
       const handleGetStarted = async () => {
@@ -25,6 +27,7 @@ function SignInSignUp(){
           // Redirect based on authentication status
           if (authState.idToken) {
             // Redirect to the welcome page for new sign-up
+            console.log('we in')
           } else {
             // Redirect to the home page for existing user sign-in
           }

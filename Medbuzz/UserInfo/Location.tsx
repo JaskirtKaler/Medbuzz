@@ -14,7 +14,6 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
 import Statelocation from '../Components/Svg/Statelocation';
 import Citylocation from '../Components/Svg/Citylocation';
-import ZipCodeLocation from '../Components/Svg/Zipcodelocation';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usaStates } from '../mapVariables/optionsData';
@@ -34,14 +33,10 @@ const Location = ({header = 'Locations'}) => {
 
   // State for the selected city in the text input
   const [city, setCity] = useState('');
-
-  // State for the selected zipcode in the text input
-  const [zipcode, setZipCode] = useState('');
   const saveInfoEventHandler = async () => {
     const userLocInfo = {
       state: selectedState,
-      city,
-      zipcode,
+      city: city.trim(),
     };
 
     try {

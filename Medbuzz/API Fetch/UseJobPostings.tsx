@@ -46,8 +46,10 @@ export interface JobPosting {
 export const useJobPostings = () => {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
+  const [page_count, setPage_count] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(1);
 
-  const fetchData = async () => {
+  const fetchData = async (pageNum: number) => {
     setIsLoading(true); // Set loading to true when starting the fetch
     try {
       setJobPostings([]); // Ensure state is clear in the beginning
@@ -59,7 +61,7 @@ export const useJobPostings = () => {
       //Location preferences state needs to be saved as integers, currently stored as a string. String to int conversion is provided by ceipal
       //Update the Location.tsx page accordingly.
       if (userLocInfo) {
-        const {state, city, zipcode} = JSON.parse(userLocInfo);
+        const {state, city} = JSON.parse(userLocInfo);
         // Construct location parameters for the URL
         const params = [];
 
@@ -77,13 +79,14 @@ export const useJobPostings = () => {
         headers: myHeaders,
       };
       
-      let offset = 0;
-      const limit = 50; // Set the limit to the maximum the API allows
+      
+      const limit = 20; // Set the limit to the maximum the API allows
+      const page = pageNum; // Dynamically set offset based on the page number
 
       const response = await fetch(
         `https://api.ceipal.com/v1/getJobPostingsList${locationParams}${
           locationParams ? '&' : '?'
-        }limit=${limit}&offset=${offset}`,
+        }limit=${limit}&page=${page}`,
         requestOptions,
       );
 
@@ -95,6 +98,15 @@ export const useJobPostings = () => {
       }
 
       const result = await response.json();
+
+      if (result.num_pages > 5){
+        setPage_count(5)
+        setTotalJobs(100)
+      }
+      else{
+        setPage_count(result.num_pages)
+        setTotalJobs(result.count)
+      }
 
       setJobPostings(result);
       setJobPostings(
@@ -153,8 +165,8 @@ export const useJobPostings = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Call the fetchData function when component mounts
+    fetchData(0); // Call the fetchData function when component mounts
   }, []);
 
-  return {jobPostings, isLoading, fetchData};
+  return {jobPostings, isLoading, fetchData, page_count, totalJobs};
 };

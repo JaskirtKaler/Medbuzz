@@ -4,8 +4,8 @@ import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} fr
   const config: AuthConfiguration = {
     issuer: ISSUER,
     clientId: CLIENT_ID,
-    redirectUrl: 'DemoAPPV1://auth/',
-    scopes: ['openid', 'offline_access', 'Profile',],
+    redirectUrl: 'com.medbuzz://auth/',
+    scopes: ['openid', 'email'],
     additionalParameters: {prompt: 'select_account'},
     serviceConfiguration: {
       authorizationEndpoint:
@@ -21,8 +21,10 @@ class Auth {
   static async signIn() {
     try {
       console.log('Made it to SigIn()')
+      //we get stuck here
       const authState = await authorize(config);
       console.log('Made it passed authState')
+      
       // Store tokens in AsyncStorage
       await AsyncStorage.setItem('accessToken', authState.accessToken);
       await AsyncStorage.setItem('idToken', authState.idToken);

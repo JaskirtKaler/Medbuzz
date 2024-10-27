@@ -57,7 +57,7 @@ function App() {
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{headerShown: false}}>
-        {/* <Stack.Screen name="SignInSignUp" component={SignInSignUp} /> */}
+        <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Navigation} />
         <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
