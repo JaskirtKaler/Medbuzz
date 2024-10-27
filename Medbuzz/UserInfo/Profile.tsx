@@ -13,6 +13,9 @@ import CheckBox from '@react-native-community/checkbox';
 import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker'
 import Calendar from '../Components/Svg/Calender.tsx'
+import { useFocusEffect } from '@react-navigation/native';
+
+
 
 // Interface for user's Staff Role Preferences
 interface StaffRoles {
@@ -42,6 +45,7 @@ interface TravelContracts {
 }
 
 const Profile = () => {
+
 
     // useStates for the Calendar Date Picker
     const [date, setDate] = useState(new Date())
@@ -227,6 +231,32 @@ const Profile = () => {
         },
     });
 
+    useEffect(() => {
+        loadProfileData(); // Initial load
+    }, []);
+    
+
+    // Load profile data from AsyncStorage on mount
+    const loadProfileData = async () => {
+        try {
+            const storedProfileData = await AsyncStorage.getItem('profileData');
+            if (storedProfileData) {
+                setProfileData({ ...JSON.parse(storedProfileData) });
+                console.log('Profile loaded successfully');
+            }
+        } catch (error) {
+            console.error("Failed to load profile data from AsyncStorage", error);
+        }
+    };
+    
+    useFocusEffect(
+        React.useCallback(() => {
+            loadProfileData(); // This will reload data from AsyncStorage when screen is focused
+        }, [])
+    );
+    
+
+
     // Destructure personal info
     const { personalInfo, jobPreferences, licenses } = profileData;
     const { firstName, lastName, specialty, contactInfo } = personalInfo;
@@ -374,15 +404,39 @@ const Profile = () => {
             },
         };
     
-        // Update the profile data in state
-        await setProfileData(updatedProfile);
+        // // Update the profile data in state
+        // await setProfileData(updatedProfile);
+
+    //      // Save the updated profile to AsyncStorage
+    // try {
+    //     await AsyncStorage.setItem('profileData', JSON.stringify(updatedProfile));
+    //     console.log('Profile updated in AsyncStorage');
+
+    //     // Reload the updated profile data
+    //     loadProfileData(); // Call this function to reload data after saving
+    // } catch (error) {
+    //     console.error("Failed to save profile data to AsyncStorage", error);
+    // }
     
-        // Log the updated details from the updated profile object
-        console.log('Start Date:', updatedProfile.jobPreferences.staffRoles.details.startDate);
-        console.log('Location:', updatedProfile.jobPreferences.staffRoles.details.preferredLocation);
-        console.log('Relocation:', updatedProfile.jobPreferences.staffRoles.details.relocate);
-        console.log('Pay:', updatedProfile.jobPreferences.staffRoles.details.desiredPay);
-        console.log('Hours:', updatedProfile.jobPreferences.staffRoles.details.preferredHours);
+    //     // Log the updated details from the updated profile object
+    //     console.log('Start Date:', updatedProfile.jobPreferences.staffRoles.details.startDate);
+    //     console.log('Location:', updatedProfile.jobPreferences.staffRoles.details.preferredLocation);
+    //     console.log('Relocation:', updatedProfile.jobPreferences.staffRoles.details.relocate);
+    //     console.log('Pay:', updatedProfile.jobPreferences.staffRoles.details.desiredPay);
+    //     console.log('Hours:', updatedProfile.jobPreferences.staffRoles.details.preferredHours);
+
+    try {
+        await AsyncStorage.setItem('profileData', JSON.stringify(updatedProfile));
+        console.log('Profile updated in AsyncStorage');
+        
+        // Display success alert after saving data
+        Alert.alert('Success', 'Profile updated successfully.');
+
+        // Reload the updated profile data immediately
+        loadProfileData();
+    } catch (error) {
+        console.error("Failed to save profile data to AsyncStorage", error);
+    }
     };
 
 

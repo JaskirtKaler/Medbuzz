@@ -1,12 +1,15 @@
+/* eslint-disable prettier/prettier */
 import {StyleSheet, View, Text, TouchableOpacity, Platform, Dimensions, Button} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { authorize } from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Auth from './Auth.tsx';
 const {width, height} = Dimensions.get('window'); // get width of page
+import { RootStackParamList } from '../App';
+
 function SignInSignUp(){
-    const navigation = useNavigation(); // Hook to access navigation
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // Hook to access navigation
     const [authenticated, setAuthenticated] = useState(false); // State to store authentication status
 
     useEffect(() => {
@@ -18,20 +21,27 @@ function SignInSignUp(){
         checkAuth();
     }, []);
     
-      const handleGetStarted = async () => {
-        try {
-          const authState = await Auth.signIn();
-          
-          // Redirect based on authentication status
+    // Handle "Get Started" button click
+    const handleGetStarted = async () => {
+      try {
+          const authState = await Auth.signIn(); // Simulate authentication
           if (authState.idToken) {
-            // Redirect to the welcome page for new sign-up
-          } else {
-            // Redirect to the home page for existing user sign-in
+              await AsyncStorage.setItem('authToken', authState.idToken); // Store the token
+              const storedProfile = await AsyncStorage.getItem('userProfile');
+              if (!storedProfile) {
+                  await AsyncStorage.setItem('userProfile', JSON.stringify(mockProfile)); // Save mock profile for first-time users
+                  console.log('Mock profile saved for new user');
+                  navigation.navigate('Register'); // Navigate to registration for new users
+              } else {
+                  navigation.navigate('Homepage'); // Navigate to homepage for existing users
+              }
           }
-        } catch (error) {
+      } catch (error) {
           console.error('Error during authentication:', error);
-        }
-      };
+      }
+  };
+  
+
     return(
         <View style={style.main}>
             {/* Logo Section */}

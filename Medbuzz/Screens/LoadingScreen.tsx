@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prettier/prettier */
 /*
 Author: Richard Varela
 Date Created: 2024-09-07
@@ -14,12 +16,31 @@ import profileData from '../UserInfo/Profile.tsx';
 
 const { width, height } = Dimensions.get('window');
 
-const LoadingScreen = () => {
+// Mock Profile Object (replace with real data later)
+const mockProfile = {
+    firstName: 'First',
+    lastName: 'Last',
+    specialty: 'Specialty',
+    profileStrength: 33, // as seen on the progress bar
+    phoneNumber: '(123) 456-7890',
+    email: 'example@example.com',
+    resume: '',
+    licenses: [],
+    degree: '',
+    certifications: [],
+    references: [],
+    vaccination: [],
+    jobPreferences: {
+      activelyLooking: true,
+    },
+  };
+
+  const LoadingScreen = () => {
     const navigation = useNavigation<any>();
-    const [profile, setProfile] = useState(profileData);
+    const [profile, setProfile] = useState(mockProfile); // Use mockProfile as the initial state
 
     // Save profile to AsyncStorage
-    const saveProfileToStorage = async (profile: typeof profileData) => {
+    const saveProfileToStorage = async (profile: typeof mockProfile) => {
         try {
             await AsyncStorage.setItem('userProfile', JSON.stringify(profile));
             console.log('Profile saved to local storage');
@@ -28,31 +49,31 @@ const LoadingScreen = () => {
         }
     };
 
-    // Load profile from AsyncStorage
-    const loadProfileFromStorage = async () => {
-        try {
-            const storedProfile = await AsyncStorage.getItem('userProfile');
-            if (storedProfile !== null) {
-                setProfile(JSON.parse(storedProfile)); // Load existing profile
-                console.log('Profile loaded from local storage');
-            } else {
-                await saveProfileToStorage(profileData); // Save default profile if no data exists
-                console.log('Default profile saved to local storage');
-            }
-        } catch (error) {
-            console.error('Error loading profile from local storage', error);
-        }
-    };
 
     useEffect(() => {
-        loadProfileFromStorage();
+        const loadProfileFromStorage = async () => {
+            try {
+                const storedProfile = await AsyncStorage.getItem('userProfile');
+                if (storedProfile !== null) {
+                    setProfile(JSON.parse(storedProfile)); // Load the stored profile
+                    console.log('Profile loaded from local storage');
+                } else {
+                    await saveProfileToStorage(mockProfile); // Save mock profile if no data exists
+                    console.log('Default profile saved to local storage');
+                }
+            } catch (error) {
+                console.error('Error loading profile from local storage', error);
+            }
+        };
+        loadProfileFromStorage(); // Load or save the profile when the screen loads
     }, []);
+    
 
     const handleContinue = () => {
         console.log('Continued was hit, now waiting to simulate network traffic for 5 seconds.');
         setTimeout(() => {
             console.log("done");
-            navigation.navigate('Main');
+            navigation.navigate('Main'); // Navigate to the main screen
         }, 5000);
     };
 
