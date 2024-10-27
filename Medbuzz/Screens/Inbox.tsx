@@ -15,7 +15,7 @@ import PaperAirplaneIcon from '../Components/Svg/PaperAirplaneIcon';
 import MessageBubble from './MessageBubble';
 
 const Inbox: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   // tester messages for user and client
   const [messages, setMessages] = useState([
@@ -55,8 +55,8 @@ const Inbox: React.FC = () => {
       style={styles.container}
     >
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Backarrow width={30} height={30} color="#000" />
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('MessagePage')}>
+          <Backarrow width={40} height={40} color="#000" />
         </TouchableOpacity>
         <Text style={styles.clientName}>{clientName}</Text>
       </View>
@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    left: 10,
-    padding: 10,
+    left: 0,
+    padding: 0,
     backgroundColor: 'transparent',
     borderRadius: 20,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   clientName: {
     fontSize: 18,
