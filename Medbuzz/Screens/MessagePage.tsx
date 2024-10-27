@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal, Alert, Platform } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
 import Backarrow from '../Components/Svg/Backarrow';
 import { useNavigation } from '@react-navigation/native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Trashcan from '../Components/Svg/Trashcan';
-import messaging from '@react-native-firebase/messaging'; // Import Firebase messaging
 import notifee, { AndroidStyle, AndroidImportance } from '@notifee/react-native';
-import { v4 as uuidv4 } from 'uuid';
 import { Button } from 'react-native'; // Import Button
 
 
@@ -32,6 +30,7 @@ interface Sender {
 }
 
 const MessagePage = () => {
+  
   // Navigation hook from React Navigation
   const navigation = useNavigation<any>();
 
@@ -91,49 +90,49 @@ const MessagePage = () => {
 
 
   // Firebase setup and notification listener
-  useEffect(() => {
+  // useEffect(() => {
     // Request permission for notifications
-    const requestUserPermission = async () => {
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    // const requestUserPermission = async () => {
+    //   const authStatus = await messaging().requestPermission();
+    //   const enabled =
+    //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      if (enabled) {
-        console.log('Notification permission granted.');
-      }
-    };
+    //   if (enabled) {
+    //     console.log('Notification permission granted.');
+    //   }
+    // };
 
     // Get FCM token
-    const getToken = async () => {
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-    };
+    // const getToken = async () => {
+    //   const token = await messaging().getToken();
+    //   console.log('FCM Token:', token);
+    // };
 
 
     
     // Listen for foreground messages
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('A new message arrived!', JSON.stringify(remoteMessage));
-      // Show an alert when a new message comes in
-      Alert.alert('New message!', remoteMessage.notification?.title ?? 'You have a new message');
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     console.log('A new message arrived!', JSON.stringify(remoteMessage));
+  //     // Show an alert when a new message comes in
+  //     Alert.alert('New message!', remoteMessage.notification?.title ?? 'You have a new message');
 
-      const newMessage: Message = {
-        id: remoteMessage.data?.messageId || uuidv4(),  // Replace with a unique ID
-        senderId: remoteMessage.data?.senderId || 'unknown_sender', // Replace with senderId from remoteMessage
-        content: remoteMessage.notification?.body || 'New message content',
-        timestamp: Date.now(),
-        isDeletable: true,
-      };
-      addMessage(newMessage);
+  //     const newMessage: Message = {
+  //       id: remoteMessage.data?.messageId || uuidv4(),  // Replace with a unique ID
+  //       senderId: remoteMessage.data?.senderId || 'unknown_sender', // Replace with senderId from remoteMessage
+  //       content: remoteMessage.notification?.body || 'New message content',
+  //       timestamp: Date.now(),
+  //       isDeletable: true,
+  //     };
+  //     addMessage(newMessage);
 
-    });
+  //   });
 
-    requestUserPermission();
-    getToken();
+  //   requestUserPermission();
+  //   getToken();
 
-    return unsubscribe;
-  }, []);
+  //   return unsubscribe;
+  // }, []);
 
   
 
