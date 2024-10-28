@@ -54,12 +54,12 @@ const mockProfile = {
         const loadProfileFromStorage = async () => {
             try {
                 const storedProfile = await AsyncStorage.getItem('userProfile');
-                if (storedProfile !== null) {
-                    setProfile(JSON.parse(storedProfile)); // Load the stored profile
-                    console.log('Profile loaded from local storage');
-                } else {
-                    await saveProfileToStorage(mockProfile); // Save mock profile if no data exists
+                if (!storedProfile) {
+                    await saveProfileToStorage(mockProfile);
                     console.log('Default profile saved to local storage');
+                } else {
+                    setProfile(JSON.parse(storedProfile));
+                    console.log('Profile loaded from local storage');
                 }
             } catch (error) {
                 console.error('Error loading profile from local storage', error);

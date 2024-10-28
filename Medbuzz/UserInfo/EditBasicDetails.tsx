@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
   add cancel button functionality, add upload photo button functionality
 */
 
+
+
 interface EditBasicDetailsProps {
   navigation: NavigationProp<any>; // Replace 'any' with your specific navigation parameter type if available
 }
@@ -206,40 +208,97 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
     console.log("Valid ZIP code: " + isValidZipCode);
   }
 
+// Inside EditBasicDetails component
+const [staffRolePrefs, setStaffRolePrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
+const [travelContractsPrefs, setTravelContractsPrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
+const [localContractsPrefs, setLocalContractsPrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
   const handleSave = async () => {
     try {
         const updatedProfile = {
-            firstName,
-            middleName,
-            lastName,
-            phoneNumber,
-            email,
-            profesionalSummary,
-            dob,
-            schoolName,
-            schoolCountry,
-            schoolCity,
-            discipline,
-            schoolState,
-            degreeType,
-            yearsOfSpecialty,
-            homeAddress,
-            homeCity,
-            homeState,
-            zipCode,
-            ssn,
-            legalFirstName,
-            legalLastName,
-            selectedCertification
+            personalInfo: { 
+                firstName,
+                lastName,
+                specialty: "Specialty",
+              contactInfo: {
+                  phoneNumber,
+                  email,
+              },
+            },
+            profileStrength: 33,
+            jobPreferences: {
+                staffRoles: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: staffRolePrefs.startDate,
+                        preferredLocation: staffRolePrefs.preferredLocation,
+                        relocate: staffRolePrefs.relocate,
+                        desiredPay: staffRolePrefs.desiredPay,
+                        preferredHours: staffRolePrefs.preferredHours,
+                    }
+                },
+                travelContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: travelContractsPrefs.startDate,
+                        preferredLocation: travelContractsPrefs.preferredLocation,
+                        relocate: travelContractsPrefs.relocate,
+                        desiredPay: travelContractsPrefs.desiredPay,
+                        preferredHours: travelContractsPrefs.preferredHours,
+                    },
+                },
+                localContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: localContractsPrefs.startDate,
+                        preferredLocation: localContractsPrefs.preferredLocation,
+                        relocate: localContractsPrefs.relocate,
+                        desiredPay: localContractsPrefs.desiredPay,
+                        preferredHours: localContractsPrefs.preferredHours,
+                    }
+                },
+            },
+            licenses: {
+                textInputs: {
+                    licenseNumber: '',
+                    state: '',
+                    expirationDate: '',
+                },
+                documents: {
+                    uploadedFiles: [],
+                },
+            },
         };
-
         // Save the updated profile to AsyncStorage
         await AsyncStorage.setItem('userProfile', JSON.stringify(updatedProfile));
-        console.log('Profile updated in AsyncStorage');
+        console.log('Profile saved successfully');
         
-        // Alert user of success and navigate to Profile page
+
+        setTimeout(() => {
+          navigation.navigate('Profile');
+                  // Alert user of success and navigate to Profile page
         Alert.alert('Success', 'Profile updated successfully.');
-        navigation.navigate('Profile'); // Redirect to Profile page
+      }, 300); // Small delay before navigation
     } catch (error) {
         console.error('Error updating profile:', error);
         Alert.alert('Error', 'Could not update profile.');

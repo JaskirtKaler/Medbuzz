@@ -20,26 +20,35 @@ function SignInSignUp(){
         };
         checkAuth();
     }, []);
+
+
+    const mockProfile = {
+      firstName: 'First',
+      lastName: 'Last',
+      specialty: 'Specialty',
+      phoneNumber: '(123) 456-7890',
+      email: 'example@example.com',
+  };
     
     // Handle "Get Started" button click
     const handleGetStarted = async () => {
-      try {
-          const authState = await Auth.signIn(); // Simulate authentication
-          if (authState.idToken) {
-              await AsyncStorage.setItem('authToken', authState.idToken); // Store the token
-              const storedProfile = await AsyncStorage.getItem('userProfile');
-              if (!storedProfile) {
-                  await AsyncStorage.setItem('userProfile', JSON.stringify(mockProfile)); // Save mock profile for first-time users
-                  console.log('Mock profile saved for new user');
-                  navigation.navigate('Register'); // Navigate to registration for new users
-              } else {
-                  navigation.navigate('Homepage'); // Navigate to homepage for existing users
-              }
-          }
-      } catch (error) {
-          console.error('Error during authentication:', error);
-      }
-  };
+    try {
+        const authState = await Auth.signIn();
+        if (authState.idToken) {
+            await AsyncStorage.setItem('authToken', authState.idToken);
+            const storedProfile = await AsyncStorage.getItem('userProfile');
+            if (!storedProfile) {
+                await AsyncStorage.setItem('userProfile', JSON.stringify(mockProfile));
+                console.log('Mock profile saved for new user');
+                navigation.navigate('Register');
+            } else {
+                navigation.navigate('Homepage');
+            }
+        }
+    } catch (error) {
+        console.error('Error during authentication:', error);
+    }
+};
   
 
     return(

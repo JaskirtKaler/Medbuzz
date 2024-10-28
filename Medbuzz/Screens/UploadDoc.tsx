@@ -24,19 +24,17 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const storedProfile = await AsyncStorage.getItem('userProfile');
-        if (storedProfile !== null) {
-          setProfile(JSON.parse(storedProfile));
-          console.log('Profile loaded:', storedProfile);
-        } else {
-          console.log('No profile found in AsyncStorage.');
-        }
+          const storedProfile = await AsyncStorage.getItem('userProfile');
+          if (storedProfile) {
+              setProfile(JSON.parse(storedProfile));
+              console.log('Profile loaded:', storedProfile);
+          }
       } catch (error) {
-        console.error('Error loading profile:', error);
+          console.error('Error loading profile:', error);
       }
-    };
-    loadProfile();
-  }, []);
+  };
+  loadProfile();
+}, []);
 
   // Handle document upload
   const handleUpload = async () => {
