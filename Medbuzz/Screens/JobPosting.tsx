@@ -19,8 +19,8 @@ const JobPosting = () => {
     const testDate = new Date().toLocaleDateString('en-US');
     const route = useRoute<RouteProp<{params: {job: any}}, 'params'>>();
     const {job} = route.params;
-    console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
-    //console.log(job);
+    //console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
+    console.log("job id: " + job.id);
 
     // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
     // These files exist on my emulator only and will need to be renames on other systems.
@@ -81,7 +81,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(resumePath)
             .then((resumeExists) => {
                 if(resumeExists)
-                    console.log("File exists.\nResume sent.")
+                    console.log("File exists. Resume sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -99,7 +99,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(licensePath)
             .then((licenseExists) => {
                 if(licenseExists)
-                    console.log("File exists.\nLicense sent.")
+                    console.log("File exists. License sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -117,7 +117,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(degreePath)
             .then((degreeExists) => {
                 if(degreeExists)
-                    console.log("File exists.\nDegree sent.")
+                    console.log("File exists. Degree sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -135,7 +135,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(certificationPath)
             .then((certificationExists) => {
                 if(certificationExists)
-                    console.log("File exists.\nCertification sent.")
+                    console.log("File exists. Certification sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -153,7 +153,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(referencePath)
             .then((referenceExists) => {
                 if(referenceExists)
-                    console.log("File exists.\nReference sent.")
+                    console.log("File exists. Reference sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -171,7 +171,7 @@ const JobPosting = () => {
             await RNFetchBlob.fs.exists(vaccinationPath)
             .then((vaccinationExists) => {
                 if(vaccinationExists)
-                    console.log("File exists.\nVaccination sent.")
+                    console.log("File exists. Vaccination sent.")
                 else{
                     console.log("File does not exist.") 
                     problems = true
@@ -188,6 +188,8 @@ const JobPosting = () => {
         if(problems){
             alertTitle = alertIssueTitle;
             alertMessage = alertIssueMessage;
+        } else {
+            
         }
 
         // display the alert
@@ -197,6 +199,7 @@ const JobPosting = () => {
                 onPress: () => console.log("OK Pressed"),
             }
         ]);
+
 
         // close the modal
         setApplyModalVisible(!applyModalVisible)
@@ -306,7 +309,7 @@ const JobPosting = () => {
                 </TouchableOpacity>
                 {/* Job Title */}
                 <View style={{width: '85%', justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={styles.headerTitle}>{job.position_title || 'Job Title'}</Text>
+                    <Text style={styles.headerTitle}>{job.position_title || 'NA'}</Text>
                     {/*<View style={{width: width * 0.1, height: height * .05}} />*/} 
                 </View>
             </View>
@@ -326,7 +329,7 @@ const JobPosting = () => {
                     {/* Job Title */}
                     <View>
                         <Text style={styles.upperRowItemTitle}>Job Title</Text>
-                        <Text style={styles.upperRowItemBody}>{job.position_title || 'NA'}</Text>
+                        <Text style={styles.upperRowItemBody}>{job.position_title || 'Title unavailable'}</Text>
                     </View>
                     {/* Space Gap */}
                     <View style={{ width: '100%', height: 20 }}></View>
@@ -335,7 +338,7 @@ const JobPosting = () => {
                         <StateLocation></StateLocation>
                         <View>
                             <Text style={styles.upperRowItemTitle}>Location</Text>
-                            <Text style={styles.upperRowItemBody}>{job.city + ", " + job.state || 'California'}</Text>
+                            <Text style={styles.upperRowItemBody}>{job.city + ", " + job.state || 'Location unavailable'}</Text>
                         </View>
                     </View>
                     {/* Space Gap */}
@@ -373,10 +376,10 @@ const JobPosting = () => {
                     <View style={styles.payContainer}>
                         {/* Pay Body Container */}
                         <View style = {styles.payLeftItem}>
-                            <Text style = {styles.payLowerText}>{job.pay_rates[0] || 'NA'}</Text>
+                            <Text style = {styles.payLowerText}>{job.pay_rates.pay_rate_currency || 'NA'}</Text>
                         </View>
                         <View style = {styles.payRightItem}>
-                            <Text style = {styles.payRangeText}>{job.pay_rates[0] || 'NA'}</Text>
+                            <Text style = {styles.payRangeText}>{job.pay_rates.pay_rate || 'NA'}</Text>
                         </View>
                     </View>
                 </View>
@@ -388,18 +391,25 @@ const JobPosting = () => {
                 <View>
                     <Text style = {styles.overviewHeaderText}>Description</Text>
                     <View style = {styles.descriptionBody}>
-                        <WebView
-                            originWhitelist={['*']}
-                            source={{html: job.public_job_desc}} 
-                            scrollEnabled={false}
-                            style={{height: 800, width: '100%', color: 'black'}}
-                        />
+
+                        {/* If public_job-desc is not null display the description, otherwise display "No description provided" */}
+                        {job.public_job_desc ? (
+                            <WebView
+                                originWhitelist={['*']}
+                                source={{html: job.public_job_desc}} 
+                                scrollEnabled={false}
+                                style={{height: 800, width: '100%', color: 'black'}}
+                            />
+                            ) : (
+                                <Text>No description provided.</Text>
+                            )
+                        }
                     </View>
                 </View>
 
                 {/* Space Gap */}
                 <View style={{ width: '100%', height: 20 }}></View>
-                {/* Date osted and Date last modified */}
+                {/* Date Posted and Date last modified */}
                 <View style={styles.upperRow}>
                     {/* Date Posted */}
                     <View style={styles.upperRowItem}>

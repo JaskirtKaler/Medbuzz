@@ -3,8 +3,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import {useJobPostings} from '../API Fetch/JobPostings';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {useJobPostings} from '../API Fetch/UseJobPostings';
 import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock job data
 
 
