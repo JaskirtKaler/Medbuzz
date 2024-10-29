@@ -43,27 +43,37 @@ const JobPosting = () => {
     const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
     const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
 
-    // This commented out code is progress towards dynamically rendering the 
-    /*const [jobDescContainerHeight, setJobDescContainerHeight] = useState(800);   // State for the webView container height
+     /*
+       webViewScaleFactor is the scale factor for the height of the webView (job description) container. It is multiplied by the height
+       returned by the webView message in the style prop of the webView element. It was detemined by trial and error. After some research 
+       it seems like this is necessary due to a few possible factors: pixel density differences between webView CSS and device pixel 
+       height, viewport scaling, webView default CSS styling, or Foint size scaling. Not sure which, but currently functions as desired.
+    */
+    const webViewScaleFactor = 0.4;    
 
+    const [jobDescContainerHeight, setJobDescContainerHeight] = useState(0);   // State for the webView job description container height
+
+    // This funtion is called when there is a webViewMessageEvent. Data holds the message sent to the app from webView
+    // which will be the jobDescription's height
     const webViewMessageEvent = (event: WebViewMessageEvent) => {
         const {data} = event.nativeEvent;
         const newHeight = parseInt(data);
 
+        // if the height is greater than 0 set the jobDescContainerHeight to the newHeight
         if (newHeight > 0) {
             console.log('Calculated Heigh: ' + newHeight);
-            setJobDescContainerHeight(parseInt(data));
+            setJobDescContainerHeight(newHeight);
         }
     };
 
+    // injectedJavascript gets the job description's height and sends it to the app using postMessage
     const injectedJavaScript = `
-        setTimeout(() => ) {
+        setTimeout(() => {
             const height = document.documentElement.scrollHeight || document.body.scrollHeight;
-            window.ReactNativeWebView.postMessage(height.toString());
+            window.ReactNativeWebView.postMessage(height);
         }, 100);
         true;
-        `;*/
-
+        `;
 
     const handleBack = () => {
         navigation.goBack()
@@ -419,9 +429,9 @@ const JobPosting = () => {
                                 originWhitelist={['*']}
                                 source={{html: job.public_job_desc}} 
                                 scrollEnabled={false}
-                                /*injectedJavaScript={injectedJavaScript}
-                                onMessage={webViewMessageEvent}*/
-                                style={{height: 800/*jobDescContainerHeight*/, width: '100%', color: 'black'}}
+                                injectedJavaScript={injectedJavaScript}
+                                onMessage={webViewMessageEvent}
+                                style={{height: jobDescContainerHeight * webViewScaleFactor, width: '100%', color: 'black'}}
                             />
                             ) : (
                                 <Text>No description provided.</Text>
