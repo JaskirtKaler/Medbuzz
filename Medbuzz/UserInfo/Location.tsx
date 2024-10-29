@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   View,
@@ -16,16 +16,54 @@ import Statelocation from '../Components/Svg/Statelocation';
 import Citylocation from '../Components/Svg/Citylocation';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { usaStates } from '../mapVariables/optionsData';
+import { usaCeipalStateInts, usaStates } from '../mapVariables/optionsData';
 
 const {width, height} = Dimensions.get('window'); // screen max width and height
-
 const Location = ({header = 'Locations'}) => {
+  
   const navigation = useNavigation<any>();
+
+  // call when page is loaded
+  useEffect(() => {
+
+    // get saved location preferences from local storage
+    const getLocationInfo = async () => {
+      try {
+        const savedLocationInfo = await AsyncStorage.getItem('LocationPreference');
+
+        // if there is data in saveLocationInfo parse it and set useState variables accordingly
+        if (savedLocationInfo !== null) {
+          const parsedLocInfo = JSON.parse(savedLocationInfo); // Parse the user data and set it in the state
+          setCity(parsedLocInfo.city)
+          setSelectedState(parsedLocInfo.state)
+
+        } else {
+          console.log("No location info found on local storage.");
+        }
+      } catch (error) {
+        console.error('Error loading location data:', error);
+      }
+    };
+
+    getLocationInfo();
+  }, []);
 
   const handleBack = () => {
     navigation.goBack();
     console.log('backarrow clicked');
+  };
+
+  // set useState variables to '' and clear LocationPreferences from storage
+  const clearPreferences = async () => {
+    setCity('')
+    setSelectedState('')
+    
+    try {
+      await AsyncStorage.removeItem('LocationPreference');
+      ToastAndroid.show('Preferences have been reset', ToastAndroid.SHORT);
+    } catch (error){
+      console.log('Something went wrong: ', error);
+    }
   };
 
   // State for the selected state in the dropdown
@@ -75,15 +113,15 @@ const Location = ({header = 'Locations'}) => {
             <View style={styles.stateBoxContainer}>
               {/* State Dropdown */}
               <Dropdown
-                data={usaStates}
+                data={usaCeipalStateInts}
                 labelField="label"
                 valueField="value"
                 search
-                placeholder={selectedState ? selectedState : 'Select Item'} // If no State is selected/saved, placeholder is "Select Item"
+                placeholder={/*userLocInfo ? userLocInfo.state : 'Select Item'*/ selectedState ? selectedState : 'Select Item'} // If no State is selected/saved, placeholder is "Select Item"
                 searchPlaceholder="Search..."
                 value={selectedState}
                 onChange={item => {
-                  setSelectedState(item.value);
+                  setSelectedState(item.label);
                 }}
                 selectedTextStyle={styles.selectedTextStyle}
               />
@@ -106,6 +144,7 @@ const Location = ({header = 'Locations'}) => {
                 value={city}
                 onChangeText={text => setCity(text)}
                 style={styles.textInput}
+                placeholder={/*userLocInfo ? userLocInfo.city : ''*/city ? city : ''}
               />
             </View>
           </View>
@@ -114,12 +153,20 @@ const Location = ({header = 'Locations'}) => {
 
     
 
-      {/* Save button */}
+      {/* Save button and clear preferences button*/}
       <View style={styles.saveButtonContainer}>
+        {/* Save */}
         <TouchableOpacity
           style={styles.saveButton}
           onPress={saveInfoEventHandler}>
           <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+        {/* Clear Preferences */}
+        <TouchableOpacity 
+          style={styles.clearPreferencesButton}
+          onPress={clearPreferences}>
+          <Text style={styles.clearPreferencesButtonText}>Reset</Text>
+          {/*<Text style={styles.clearPreferencesButtonText}>Preferences</Text>*/}
         </TouchableOpacity>
       </View>
     </View>
@@ -215,13 +262,15 @@ const styles = StyleSheet.create({
   },
   saveButtonContainer: {
     width: '100%',
-    alignItems: 'center',
+    //alignItems: 'center',
     paddingTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
   saveButton: {
     backgroundColor: '#0EA68D',
-    width: '50%',
-    padding: 30,
+    width: '60%',
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center',
     elevation: 5, // This will add a box shadow for Android
@@ -238,6 +287,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  clearPreferencesButton: {
+    backgroundColor: "#E6E6E6",
+    width: '19%',
+    padding: 20,
+    justifyContent: 'center',
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  clearPreferencesButtonText: {
+    color: 'black', 
+    fontSize: 14, 
+    fontWeight: 'bold'
+  }
 });
 
 export default Location;

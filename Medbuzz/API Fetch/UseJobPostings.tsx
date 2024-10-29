@@ -4,6 +4,7 @@ Search by location parameters is still in the works
 import {useState, useEffect} from 'react';
 import {API_TOKEN} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usaCeipalStateInts } from '../mapVariables/optionsData';
 
 export interface JobPosting {
   id: string;
@@ -62,10 +63,24 @@ export const useJobPostings = () => {
       //Update the Location.tsx page accordingly.
       if (userLocInfo) {
         const {state, city} = JSON.parse(userLocInfo);
+        let stateInt = null;
+
+        // Check if state is not null
+        if(state) {
+
+          // If true, search usaCeipalStateInts labels for matching string and set stateInt to the associated int value
+          for(let i = 0; i < usaCeipalStateInts.length; i++) {
+            if(usaCeipalStateInts[i].label === state) {
+              stateInt = usaCeipalStateInts[i].value;
+              console.log("StateInt: " + stateInt)
+            }
+          }
+        }
         // Construct location parameters for the URL
         const params = [];
 
         if (city) params.push(`city=${city}`);
+        if (stateInt) params.push(`state=${stateInt}`);
         locationParams = params.length > 0 ? `?${params.join('&')}` : '';
       }
 
