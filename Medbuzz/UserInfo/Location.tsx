@@ -172,8 +172,8 @@ const Location = ({header = 'Locations'}) => {
         <TouchableOpacity 
           style={styles.clearPreferencesButton}
           onPress={clearPreferences}>
-          <Text style={styles.clearPreferencesButtonText}>Clear</Text>
-          <Text style={styles.clearPreferencesButtonText}>Preferences</Text>
+          <Text style={styles.clearPreferencesButtonText}>Reset</Text>
+          {/*<Text style={styles.clearPreferencesButtonText}>Preferences</Text>*/}
         </TouchableOpacity>
       </View>
     </View>
@@ -276,8 +276,8 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#0EA68D',
-    width: '50%',
-    padding: 30,
+    width: '60%',
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center',
     elevation: 5, // This will add a box shadow for Android
@@ -296,8 +296,8 @@ const styles = StyleSheet.create({
   },
   clearPreferencesButton: {
     backgroundColor: "#E6E6E6",
-    width: '22%',
-    //padding: 30,
+    width: '19%',
+    padding: 20,
     justifyContent: 'center',
     borderRadius: 10,
     alignItems: 'center',

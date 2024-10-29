@@ -10,7 +10,7 @@ import {
 import CalendarSuccess from "../Components/Svg/CalendarSuccess";
 import CheckBox from '@react-native-community/checkbox';
 import CancelX from '../Components/Svg/CancelX.tsx'
-import {WebView} from "react-native-webview";
+import {WebView, WebViewMessageEvent} from "react-native-webview";
 import StateLocation from "../Components/Svg/Statelocation.tsx"
 import RNFetchBlob from 'rn-fetch-blob'
 
@@ -42,6 +42,27 @@ const JobPosting = () => {
     const [sendCertificationsSelected, setSendCertificationsSelection] = useState(false);   // State for checkbox regarding certifications for application
     const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
     const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
+
+    // This commented out code is progress towards dynamically rendering the 
+    /*const [jobDescContainerHeight, setJobDescContainerHeight] = useState(800);   // State for the webView container height
+
+    const webViewMessageEvent = (event: WebViewMessageEvent) => {
+        const {data} = event.nativeEvent;
+        const newHeight = parseInt(data);
+
+        if (newHeight > 0) {
+            console.log('Calculated Heigh: ' + newHeight);
+            setJobDescContainerHeight(parseInt(data));
+        }
+    };
+
+    const injectedJavaScript = `
+        setTimeout(() => ) {
+            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+            window.ReactNativeWebView.postMessage(height.toString());
+        }, 100);
+        true;
+        `;*/
 
 
     const handleBack = () => {
@@ -398,7 +419,9 @@ const JobPosting = () => {
                                 originWhitelist={['*']}
                                 source={{html: job.public_job_desc}} 
                                 scrollEnabled={false}
-                                style={{height: 800, width: '100%', color: 'black'}}
+                                /*injectedJavaScript={injectedJavaScript}
+                                onMessage={webViewMessageEvent}*/
+                                style={{height: 800/*jobDescContainerHeight*/, width: '100%', color: 'black'}}
                             />
                             ) : (
                                 <Text>No description provided.</Text>
