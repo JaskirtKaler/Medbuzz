@@ -1,16 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
 import Backarrow from '../Components/Svg/Backarrow';
 import { useNavigation } from '@react-navigation/native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Trashcan from '../Components/Svg/Trashcan';
-import messaging from '@react-native-firebase/messaging'; // Import Firebase messaging
-import notifee, { AndroidStyle, AndroidImportance } from '@notifee/react-native';
-import { v4 as uuidv4 } from 'uuid';
-import { Button } from 'react-native'; // Import Button
-
+import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
 
 
 // Define the structure of a message
@@ -18,7 +14,7 @@ interface Message {
   id: string;
   senderId: string;
   content: string;
-  timestamp: number;
+  timestamp?: number;
   isDeletable: boolean;
 }
 
@@ -29,180 +25,80 @@ interface Sender {
   companyName: string;
   profilePicture: string;
   unreadCount: number;
+  lastUnreadMessageTimestamp: number | null;
+
 }
 
 const MessagePage = () => {
   // Navigation hook from React Navigation
   const navigation = useNavigation<any>();
 
+  const { unreadCount, incrementUnreadCount, resetUnreadCount } = useUnreadMessages(); // Access resetUnreadCount from context
+
+    // This effect will log the unread count whenever it changes
+    useEffect(() => {
+      console.log('Unread messages:', unreadCount);
+    }, [unreadCount]);
+
   // State to control modal visibility and selected sender
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
 
-  // Inactivity timer reference
-  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
-  const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
-
-  // Reset inactivity timer
-  const resetTimer = () => {
-    if (inactivityTimer.current) {
-      clearTimeout(inactivityTimer.current);
-    }
-    
-    inactivityTimer.current = setTimeout(() => {
-      sendInactivityNotification();
-    }, INACTIVITY_TIMEOUT);
-  };
-
-  // Function to send inactivity notification
-  const sendInactivityNotification = async () => {
-    const title = 'You have unread messages!';
-    const body = 'Check your messages to see what you missed.';
-    await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-      importance: AndroidImportance.HIGH,
-    });
-  };
-
-
   // Handler for the back arrow button
   const handleBack = () => {
-    navigation.goBack();
+    navigation.navigate('Homepage');
     console.log("backarrow clicked");
   };
 
+
+// Assuming you're receiving new messages in the context and updating the state accordingly
+
+// Update the useEffect to also listen to changes in messages
+useEffect(() => {
+  // Update senders with actual unread counts and timestamps from the context
+  const updatedSenders = senders.map(sender => {
+    // Find the last message for this sender
+    const lastMessage = messages
+      .filter((message) => message.senderId === sender.id)
+      .sort((a, b) => b.timestamp - a.timestamp)[0]; // Get the latest message
+
+    // Update the lastUnreadMessageTimestamp if there's a new message
+    const lastUnreadMessageTimestamp = lastMessage ? lastMessage.timestamp : null;
+
+    return {
+      ...sender,
+      unreadCount: sender.id === '1' ? unreadCount : 0, // Radixsol HR has the unread count
+      lastUnreadMessageTimestamp, // Update the timestamp here
+    };
+  });
+  setSenders(updatedSenders);
+}, [unreadCount, messages]); // Add messages to the dependencies
+
   // Sample state for senders
   const [senders, setSenders] = useState<Sender[]>([
-    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 1 },
-    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 3 },
-    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 2 },
-    { id: '5', name: 'Person 3', companyName: 'Company Name', profilePicture: '', unreadCount: 0 },
-    { id: '7', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 1 }
+    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 0, lastUnreadMessageTimestamp: null  },
+    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null },
+    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null }
   ]);
 
   // Sample state for messages
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', senderId: '1', content: 'Welcome to Medbuzz!', timestamp: Date.now(), isDeletable: false },
-    { id: '2', senderId: '2', content: 'Hello there!', timestamp: Date.now() - 3600 * 1000, isDeletable: true },
-    { id: '3', senderId: '3', content: 'How are you?', timestamp: Date.now() - 7200 * 1000, isDeletable: true },
-    { id: '7', senderId: '5', content: 'How are you?', timestamp: Date.now() - 7200 * 1000, isDeletable: true },
+    { id: '2', senderId: '2', content: 'Hello there!', isDeletable: true },
+    { id: '3', senderId: '3', content: 'How are you?', isDeletable: true },
   ]);
 
-
-  // Firebase setup and notification listener
-  useEffect(() => {
-    // Request permission for notifications
-    const requestUserPermission = async () => {
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-      if (enabled) {
-        console.log('Notification permission granted.');
-      }
-    };
-
-    // Get FCM token
-    const getToken = async () => {
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-    };
-
-
-    
-    // Listen for foreground messages
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('A new message arrived!', JSON.stringify(remoteMessage));
-      // Show an alert when a new message comes in
-      Alert.alert('New message!', remoteMessage.notification?.title ?? 'You have a new message');
-
-      const newMessage: Message = {
-        id: remoteMessage.data?.messageId || uuidv4(),  // Replace with a unique ID
-        senderId: remoteMessage.data?.senderId || 'unknown_sender', // Replace with senderId from remoteMessage
-        content: remoteMessage.notification?.body || 'New message content',
-        timestamp: Date.now(),
-        isDeletable: true,
-      };
-      addMessage(newMessage);
-
-    });
-
-    requestUserPermission();
-    getToken();
-
-    return unsubscribe;
-  }, []);
-
-  
-
-    // Function to add a new message
-    const addMessage = (newMessage: Message) => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-      const senderExists = senders.find(sender => sender.id === newMessage.senderId);
-  
-      if (senderExists) {
-        // If sender already exists, update unread count
-        const updatedSenders = senders.map(sender => {
-          if (sender.id === newMessage.senderId) {
-            const updatedUnreadCount = sender.unreadCount + 1;
-            sendNotification(sender.name, updatedUnreadCount);
-            return { ...sender, unreadCount: updatedUnreadCount };
-          }
-          return sender;
-        });
-        setSenders(updatedSenders);
-      } else {
-        // If sender does not exist, add sender to senders state
-        const newSender: Sender = {
-          id: newMessage.senderId,
-          name: `Sender ${newMessage.senderId}`, // Placeholder name
-          companyName: 'Unknown Company', // Placeholder company
-          profilePicture: '', // Placeholder profile picture
-          unreadCount: 1,
-        };
-        setSenders(prevSenders => [...prevSenders, newSender]);
-        sendNotification(newSender.name, 1);
-      }
-    };
-
-    const sendNotification = async (senderName: string, unreadCount: number) => {
-      // This is where you can customize your notification
-      const title = `New message from ${senderName}`;
-      const body = `You have ${unreadCount} unread messages from ${senderName}`;
-    
-      
-      await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
-        sound: 'default',
-        importance: AndroidImportance.HIGH,
-      });
-  
-      // Display the notification
-      await notifee.displayNotification({
-        title: title,
-        body: body,
-        android: {
-          channelId: 'default',
-          smallIcon: 'ic_launcher', // Add your small icon here
-          pressAction: {
-            id: 'default',
-          },
-        },
-      });
-
-            // Assuming you're in the foreground, use an alert for demo purposes
-            Alert.alert(title, body);
-    };
-  
 
   // Handler for pressing a sender item
   const handlePress = (senderId: string) => {
     console.log(`Clicked on sender with ID: ${senderId}`);
-    // Navigate to the detail view or perform other actions here
-    // navigation.navigate('MessageDetail', { senderId });
+    if (senderId === '1') { // Assuming '1' is the ID for 'Radixsol HR'
+      navigation.navigate('Inbox'); // Navigate to Inbox when 'Radixsol HR' is clicked
+    }
+  };
+
+  const handleMarkAsRead = () => {
+    resetUnreadCount(); // Reset unread count when marking as read
   };
 
   // Handler for pressing the trash can icon
@@ -250,10 +146,14 @@ const MessagePage = () => {
 
   // Render individual sender items in the list
   const renderItem = ({ item }: { item: Sender }) => {
-    // Find the last message for this sender
-    const lastMessage = messages.find((message) => message.senderId === item.id);
-    // Format the time since the last message
-    const timeAgo = lastMessage ? moment(lastMessage.timestamp).fromNow() : '';
+  // Find the last message for this sender
+  const lastMessage = messages
+    .filter((message) => message.senderId === item.id && !message.isRead) // Filter for unread messages
+    .sort((a, b) => b.timestamp - a.timestamp)[0]; // Sort to get the latest unread message
+
+      // Format the time since the last unread message
+  const timeAgo = lastMessage ? moment(lastMessage.timestamp).fromNow() : 'No messages yet';
+
 
     return (
       <GestureHandlerRootView>
@@ -261,14 +161,15 @@ const MessagePage = () => {
           // Render without swipe for 'Radixsol HR'
           <TouchableOpacity onPress={() => handlePress(item.id)}>
             <View style={styles.encasing}>
+
               <Profile style={{ marginLeft: 15 }} width={50} height={50} color={"#000"} />
               <View style={styles.messageInfo}>
                 <Text style={styles.username}>{item.name}</Text>
                 <Text style={styles.companyName}>{item.companyName}</Text>
               </View>
               <View style={styles.rightInfo}>
-                <Text style={styles.timeAgo}>{timeAgo}</Text>
-                {item.unreadCount > 0 && (
+                {item.unreadCount > 0 && <Text style={styles.timeAgo}>{timeAgo}</Text>}
+                {item.unreadCount > 0 &&(
                   <View style={styles.unreadCountContainer}>
                     <Text style={styles.unreadCount}>{item.unreadCount}</Text>
                   </View>
@@ -276,7 +177,6 @@ const MessagePage = () => {
               </View>
             </View>
           </TouchableOpacity>
-          
         ) : (
           // Render with swipe for other users
           <Swipeable
@@ -291,8 +191,8 @@ const MessagePage = () => {
                   <Text style={styles.companyName}>{item.companyName}</Text>
                 </View>
                 <View style={styles.rightInfo}>
-                  <Text style={styles.timeAgo}>{timeAgo}</Text>
-                  {item.unreadCount > 0 && (
+                {item.unreadCount > 0 && <Text style={styles.timeAgo}>{timeAgo}</Text>}
+                {item.unreadCount > 0 &&(
                     <View style={styles.unreadCountContainer}>
                       <Text style={styles.unreadCount}>{item.unreadCount}</Text>
                     </View>
@@ -317,7 +217,12 @@ const MessagePage = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.header}>Messages</Text>
-      <Button title="Test Notification" onPress={() => sendNotification('Radixsol HR', 1)} />
+
+
+      {/* Mark as Read Button */}
+      <TouchableOpacity style={styles.markAsReadButton} onPress={handleMarkAsRead}>
+        <Text style={styles.markAsReadText}>Mark as Read</Text>
+      </TouchableOpacity>
 
       {/* FlatList to render list of senders */}
       <FlatList
@@ -367,7 +272,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingBottom: 10,
-    paddingTop: Platform.OS === 'ios' ? 45 : 10,
+    paddingTop: 10,
   },
   backArrow: {
     justifyContent: 'flex-start',
@@ -406,6 +311,20 @@ const styles = StyleSheet.create({
   timeAgo: {
     fontSize: 12,
     color: 'black',
+  },
+    markAsReadText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  markAsReadButton: {
+    backgroundColor: '#0EA68D',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 0,
+    alignSelf: 'flex-end',
+    marginRight: 5,
+    marginBottom: 10,
   },
   unreadCountContainer: {
     marginTop: 4,

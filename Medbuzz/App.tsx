@@ -25,8 +25,11 @@ import LoadingScreen from './Screens/LoadingScreen.tsx';
 import MyJobsPage from './Screens/MyJobs.tsx';
 import UpdateLicense from './UserInfo/UpdateLicense.tsx';
 import JobInfo from './Screens/JobInfo.tsx';
+import Inbox from './Screens/Inbox.tsx';
 import 'react-native-gesture-handler';
 import SaveSVG from './Components/Svg/SaveSvg.tsx';
+import { UnreadMessagesContextProvider } from './Components/Utility/UnreadMessagesContext';
+
 import Backarrow from './Components/Svg/Backarrow.tsx';
 import SignInSignUp from './Auth/SignInSignUp.tsx'
 import {StyleSheet, View, TouchableOpacity, Platform,} from 'react-native';
@@ -53,6 +56,7 @@ export type RootStackParamList = {
 function App() {
   const Stack = createNativeStackNavigator<any>();
   return (
+    <UnreadMessagesContextProvider>
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="SignInSignUp"
@@ -97,8 +101,11 @@ function App() {
         />
         <Stack.Screen name="JobInfo" component={JobInfo} />
         <Stack.Screen name="MessagePage" component={MessagePage} />
+        <Stack.Screen name="Inbox" component={Inbox} />
       </Stack.Navigator>
     </NavigationContainer>
+    </UnreadMessagesContextProvider>
+
   );
 }
 

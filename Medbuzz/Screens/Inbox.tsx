@@ -13,10 +13,13 @@ import { useNavigation } from '@react-navigation/native';
 import Backarrow from '../Components/Svg/Backarrow';
 import PaperAirplaneIcon from '../Components/Svg/PaperAirplaneIcon';
 import MessageBubble from './MessageBubble';
+import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
+
 
 const Inbox: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
+  
   // tester messages for user and client
   const [messages, setMessages] = useState([
     { id: 1, text: 'client', sender: 'ATS', date: '10:30 AM' },
@@ -24,7 +27,9 @@ const Inbox: React.FC = () => {
   ]);
 
   const [inputText, setInputText] = useState('');
-  const [clientName] = useState('tester name');
+  const [clientName] = useState('Radixsol HR');
+
+  const { incrementUnreadCount, resetUnreadCount } = useUnreadMessages();
 
   const handleSendMessage = () => {
     if (inputText.trim()) {
@@ -43,6 +48,7 @@ const Inbox: React.FC = () => {
       };
 
       setMessages([...messages, userMessage, atsReply]);
+      incrementUnreadCount();
       setInputText('');
       Keyboard.dismiss();
     }
@@ -50,13 +56,18 @@ const Inbox: React.FC = () => {
 
   // keyboard avoiding code
   return (
+    <View style={styles.container}>
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Backarrow width={30} height={30} color="#000" />
+      {/* Reset the unread count when navigating back to MessagePage */}
+        <TouchableOpacity style={styles.backButton} onPress={() => {
+          navigation.navigate('MessagePage')
+          
+        }}>
+          <Backarrow width={40} height={40} color="#000" />
         </TouchableOpacity>
         <Text style={styles.clientName}>{clientName}</Text>
       </View>
@@ -83,6 +94,8 @@ const Inbox: React.FC = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    </View>
+
   );
 };
 
@@ -102,12 +115,12 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    left: 10,
-    padding: 10,
+    left: 0,
+    padding: 0,
     backgroundColor: 'transparent',
     borderRadius: 20,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   clientName: {
     fontSize: 18,
