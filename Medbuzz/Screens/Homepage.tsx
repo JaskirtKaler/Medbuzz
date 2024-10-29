@@ -145,7 +145,13 @@ const Homepage = () => {
         </View>
       }
       refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={() => fetchData(1)} />
+        <RefreshControl 
+          refreshing={isLoading} 
+          onRefresh={() => {
+            setPage(1); // Reset page to 1
+            fetchData(1); // Fetch data for page 1
+          }} 
+        />
       }
       ListFooterComponent={renderPagination()} // Render pagination buttons
     />
