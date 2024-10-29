@@ -14,6 +14,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="false"
         android:theme="@style/AppTheme">
+
+        <meta-data  
+            android:name="com.google.firebase.messaging.default_notification_channel_id"  
+            android:value="@string/default_notification_channel_id"
+            tools:replace="android:value" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -25,6 +31,35 @@
                 <action android:name="android.intent.action.MAIN" /> 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
+
+        <activity
+        android:name="net.openid.appauth.RedirectUriReceiverActivity" 
+        android:exported="true">
+        <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.medbuzz" android:host="auth" />
+            </intent-filter>
+            </activity>
+           
+
+        <service
+            android:name=".fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+    <service
+        android:name="io.invertase.notifee.notifications.NotificationService"
+        android:permission="BIND_JOB_SERVICE"
+        android:exported="true" />
+
+
+
     </application>
 </manifest>
