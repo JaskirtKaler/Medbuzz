@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
@@ -6,13 +6,15 @@ import Backarrow from '../Components/Svg/Backarrow';
 import { useNavigation } from '@react-navigation/native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Trashcan from '../Components/Svg/Trashcan';
+import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
+
 
 // Define the structure of a message
 interface Message {
   id: string;
   senderId: string;
   content: string;
-  timestamp: number;
+  timestamp?: number;
   isDeletable: boolean;
 }
 
@@ -23,11 +25,20 @@ interface Sender {
   companyName: string;
   profilePicture: string;
   unreadCount: number;
+  lastUnreadMessageTimestamp: number | null;
+
 }
 
 const MessagePage = () => {
   // Navigation hook from React Navigation
   const navigation = useNavigation<any>();
+
+  const { unreadCount, incrementUnreadCount, resetUnreadCount } = useUnreadMessages(); // Access resetUnreadCount from context
+
+    // This effect will log the unread count whenever it changes
+    useEffect(() => {
+      console.log('Unread messages:', unreadCount);
+    }, [unreadCount]);
 
   // State to control modal visibility and selected sender
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,19 +50,44 @@ const MessagePage = () => {
     console.log("backarrow clicked");
   };
 
+
+// Assuming you're receiving new messages in the context and updating the state accordingly
+
+// Update the useEffect to also listen to changes in messages
+useEffect(() => {
+  // Update senders with actual unread counts and timestamps from the context
+  const updatedSenders = senders.map(sender => {
+    // Find the last message for this sender
+    const lastMessage = messages
+      .filter((message) => message.senderId === sender.id)
+      .sort((a, b) => b.timestamp - a.timestamp)[0]; // Get the latest message
+
+    // Update the lastUnreadMessageTimestamp if there's a new message
+    const lastUnreadMessageTimestamp = lastMessage ? lastMessage.timestamp : null;
+
+    return {
+      ...sender,
+      unreadCount: sender.id === '1' ? unreadCount : 0, // Radixsol HR has the unread count
+      lastUnreadMessageTimestamp, // Update the timestamp here
+    };
+  });
+  setSenders(updatedSenders);
+}, [unreadCount, messages]); // Add messages to the dependencies
+
   // Sample state for senders
   const [senders, setSenders] = useState<Sender[]>([
-    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 2 },
-    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 1 },
-    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 }
+    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 0, lastUnreadMessageTimestamp: null  },
+    { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null },
+    { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null }
   ]);
 
   // Sample state for messages
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', senderId: '1', content: 'Welcome to Medbuzz!', timestamp: Date.now(), isDeletable: false },
-    { id: '2', senderId: '2', content: 'Hello there!', timestamp: Date.now() - 3600 * 1000, isDeletable: true },
-    { id: '3', senderId: '3', content: 'How are you?', timestamp: Date.now() - 7200 * 1000, isDeletable: true },
+    { id: '2', senderId: '2', content: 'Hello there!', isDeletable: true },
+    { id: '3', senderId: '3', content: 'How are you?', isDeletable: true },
   ]);
+
 
   // Handler for pressing a sender item
   const handlePress = (senderId: string) => {
@@ -59,6 +95,10 @@ const MessagePage = () => {
     if (senderId === '1') { // Assuming '1' is the ID for 'Radixsol HR'
       navigation.navigate('Inbox'); // Navigate to Inbox when 'Radixsol HR' is clicked
     }
+  };
+
+  const handleMarkAsRead = () => {
+    resetUnreadCount(); // Reset unread count when marking as read
   };
 
   // Handler for pressing the trash can icon
@@ -106,10 +146,14 @@ const MessagePage = () => {
 
   // Render individual sender items in the list
   const renderItem = ({ item }: { item: Sender }) => {
-    // Find the last message for this sender
-    const lastMessage = messages.find((message) => message.senderId === item.id);
-    // Format the time since the last message
-    const timeAgo = lastMessage ? moment(lastMessage.timestamp).fromNow() : '';
+  // Find the last message for this sender
+  const lastMessage = messages
+    .filter((message) => message.senderId === item.id && !message.isRead) // Filter for unread messages
+    .sort((a, b) => b.timestamp - a.timestamp)[0]; // Sort to get the latest unread message
+
+      // Format the time since the last unread message
+  const timeAgo = lastMessage ? moment(lastMessage.timestamp).fromNow() : 'No messages yet';
+
 
     return (
       <GestureHandlerRootView>
@@ -117,14 +161,15 @@ const MessagePage = () => {
           // Render without swipe for 'Radixsol HR'
           <TouchableOpacity onPress={() => handlePress(item.id)}>
             <View style={styles.encasing}>
+
               <Profile style={{ marginLeft: 15 }} width={50} height={50} color={"#000"} />
               <View style={styles.messageInfo}>
                 <Text style={styles.username}>{item.name}</Text>
                 <Text style={styles.companyName}>{item.companyName}</Text>
               </View>
               <View style={styles.rightInfo}>
-                <Text style={styles.timeAgo}>{timeAgo}</Text>
-                {item.unreadCount > 0 && (
+                {item.unreadCount > 0 && <Text style={styles.timeAgo}>{timeAgo}</Text>}
+                {item.unreadCount > 0 &&(
                   <View style={styles.unreadCountContainer}>
                     <Text style={styles.unreadCount}>{item.unreadCount}</Text>
                   </View>
@@ -146,8 +191,8 @@ const MessagePage = () => {
                   <Text style={styles.companyName}>{item.companyName}</Text>
                 </View>
                 <View style={styles.rightInfo}>
-                  <Text style={styles.timeAgo}>{timeAgo}</Text>
-                  {item.unreadCount > 0 && (
+                {item.unreadCount > 0 && <Text style={styles.timeAgo}>{timeAgo}</Text>}
+                {item.unreadCount > 0 &&(
                     <View style={styles.unreadCountContainer}>
                       <Text style={styles.unreadCount}>{item.unreadCount}</Text>
                     </View>
@@ -172,6 +217,12 @@ const MessagePage = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.header}>Messages</Text>
+
+
+      {/* Mark as Read Button */}
+      <TouchableOpacity style={styles.markAsReadButton} onPress={handleMarkAsRead}>
+        <Text style={styles.markAsReadText}>Mark as Read</Text>
+      </TouchableOpacity>
 
       {/* FlatList to render list of senders */}
       <FlatList
@@ -260,6 +311,20 @@ const styles = StyleSheet.create({
   timeAgo: {
     fontSize: 12,
     color: 'black',
+  },
+    markAsReadText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  markAsReadButton: {
+    backgroundColor: '#0EA68D',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 0,
+    alignSelf: 'flex-end',
+    marginRight: 5,
+    marginBottom: 10,
   },
   unreadCountContainer: {
     marginTop: 4,
