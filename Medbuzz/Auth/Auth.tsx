@@ -26,8 +26,10 @@ class Auth {
       console.log('Made it passed authState')
       
       // Store tokens in AsyncStorage
-      await AsyncStorage.setItem('accessToken', authState.accessToken);
+      //await AsyncStorage.setItem('accessToken', authState.accessToken);
       await AsyncStorage.setItem('idToken', authState.idToken);
+
+      console.log(authState.idToken)
 
       // You could also store refreshToken if you need it for token refresh
       if (authState.refreshToken) {
