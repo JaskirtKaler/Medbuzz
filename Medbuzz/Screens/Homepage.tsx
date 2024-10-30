@@ -16,6 +16,8 @@ import NavigationBar from '../Components/Svg/NavigationBar.tsx';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window'); // screen max width and height
 import {useJobPostings} from '../API Fetch/UseJobPostings.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // properties for Job component
 type JobProps = {
   job: any;
@@ -45,6 +47,18 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
   );
 };
 
+const usersJobs = async (jobArray: any) => {
+  let savedJobs: any[] = [];
+
+  for (let i = 0; i < 5 && i < jobArray.length; i++) {
+    savedJobs.push(jobArray[i].id);
+  }
+
+  const savedJobIDs = JSON.stringify(savedJobs);
+  // console.log(savedJobIDs);
+  AsyncStorage.setItem('userSavedJobs', savedJobIDs);
+}
+
 const Homepage = () => {
   const navigation = useNavigation<any>();
 
@@ -65,10 +79,9 @@ const Homepage = () => {
               job.city.toLowerCase().includes(searchQuery.toLowerCase()),
           ),
         );
-
-        
       } else {
         setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty
+        usersJobs(jobPostings);
       }
     
   }, [searchQuery, jobPostings]);
