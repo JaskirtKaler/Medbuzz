@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type UnreadMessagesContextType = {
   unreadCount: number;
@@ -8,7 +8,11 @@ type UnreadMessagesContextType = {
 
 const UnreadMessagesContext = createContext<UnreadMessagesContextType | undefined>(undefined);
 
-export const UnreadMessagesContextProvider: React.FC = ({ children }) => {
+type UnreadMessagesContextProviderProps = {
+  children: ReactNode;
+};
+
+export const UnreadMessagesContextProvider: React.FC<UnreadMessagesContextProviderProps> = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const resetUnreadCount = () => setUnreadCount(0);
