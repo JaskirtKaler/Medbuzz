@@ -41,14 +41,13 @@
     "react-native-svg": "^15.1.0",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.0.3",
-    "uuid": "^10.0.0",
     "react-native-webview": "^13.12.3",
     "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
+    "@babel/runtime": "^7.26.0",
     "@react-native/babel-preset": "0.73.21",
     "@react-native/eslint-config": "0.73.2",
     "@react-native/metro-config": "0.73.5",

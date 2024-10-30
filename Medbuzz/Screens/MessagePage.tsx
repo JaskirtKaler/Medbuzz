@@ -31,6 +31,7 @@ interface Sender {
 }
 
 const MessagePage = () => {
+  
   // Navigation hook from React Navigation
   const navigation = useNavigation<any>();
 
