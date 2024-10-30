@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
+  Platform,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
@@ -181,10 +182,11 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    height: height * 0.1,
+    height: height * (Platform.OS === 'ios' ? 0.125 : 0.1),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: Platform.OS === 'ios' ? 'flex-end' : 'center',
+    paddingBottom: Platform.OS === 'ios' ? '5%' : 0,
     backgroundColor: '#FFF',
     elevation: 5, // This will add a box shadow for Android
     shadowColor: '#000', // this will add a box shadow for IOS
