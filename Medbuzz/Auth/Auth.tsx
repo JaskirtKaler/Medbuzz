@@ -4,8 +4,8 @@ import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} fr
   const config: AuthConfiguration = {
     issuer: ISSUER,
     clientId: CLIENT_ID,
-    redirectUrl: 'DEMOAPPV1://auth/',
-    scopes: ['openid', 'offline_access', 'Profile',],
+    redirectUrl: 'com.medbuzz://auth/',
+    scopes: ['openid', 'email',],
     additionalParameters: {prompt: 'select_account'},
     serviceConfiguration: {
       authorizationEndpoint:
