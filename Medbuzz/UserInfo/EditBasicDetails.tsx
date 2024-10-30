@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 
 import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert, Platform} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
@@ -8,12 +9,15 @@ import Profile from "../Components/Svg/Profile.tsx"
 // import { useNavigation } from '@react-navigation/native';
 import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
 import { usaStates } from '../mapVariables/optionsData.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
   add test to ensure that all required fields were actually entered and if they weren't reprompt
   the user, possibly add US territories: US virgin islands, Guam, Puerto Rico, etc to State options, 
   add cancel button functionality, add upload photo button functionality
 */
+
+
 
 interface EditBasicDetailsProps {
   navigation: NavigationProp<any>; // Replace 'any' with your specific navigation parameter type if available
@@ -108,45 +112,46 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
   const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
 
   useEffect(() => {
-    // Fetch existing user data when the component mounts
     const fetchData = async () => {
-      try {
-        // Simulating an API call
-        const response = await fetch('https://api.example.com/user'); // Replace with your API endpoint
-        const data = await response.json();
-        
-        // Set state with the fetched data
-        setFirstName(data.firstName);
-        setMiddleName(data.middleName);
-        setLastName(data.lastName);
-        setPhoneNumber(data.phoneNumber);
-        setEmail(data.email);
-        setDob(data.dob);
-        setSchoolName(data.schoolName);
-        setSchoolCountry(data.schoolCountry);
-        setSchoolCity(data.schoolCity);
-        setFieldOfStudy(data.fieldOfStudy);
-        setHomeAddress(data.homeAddress);
-        setHomeCity(data.homeCity);
-        setHomeState(data.homeState);
-        setZipCode(data.zipCode);
-        setSSN(data.ssn);
-        setLegalFirstName(data.legalFirstName);
-        setLegalLastName(data.legalLastName);
-        setDiscipline(data.discipline);
-        setSchoolState(data.schoolState);
-        setDegreeType(data.degreeType);
-        setYearsOfSpecialty(data.yearsOfSpecialty);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        Alert.alert("Error", "Could not fetch user data.");
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const storedProfile = await AsyncStorage.getItem('userProfile');
+            if (storedProfile !== null) {
+                const profile = JSON.parse(storedProfile);
+                // Set all profile state variables here
+                setFirstName(profile.firstName);
+                setMiddleName(profile.middleName);
+                setLastName(profile.lastName);
+                setPhoneNumber(profile.phoneNumber);
+                setEmail(profile.email);
+                setDob(profile.dob);
+                setSchoolName(profile.schoolName);
+                setSchoolCountry(profile.schoolCountry);
+                setSchoolCity(profile.schoolCity);
+                setFieldOfStudy(profile.fieldOfStudy);
+                setHomeAddress(profile.homeAddress);
+                setHomeCity(profile.homeCity);
+                setHomeState(profile.homeState);
+                setZipCode(profile.zipCode);
+                setSSN(profile.ssn);
+                setLegalFirstName(profile.legalFirstName);
+                setLegalLastName(profile.legalLastName);
+                setDiscipline(profile.discipline);
+                setSchoolState(profile.schoolState);
+                setDegreeType(profile.degreeType);
+                setYearsOfSpecialty(profile.yearsOfSpecialty);
+                console.log('Profile loaded successfully');
+            } else {
+                console.log('No profile found in AsyncStorage.');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            Alert.alert('Error', 'Could not fetch user data.');
+        } finally {
+            setLoading(false); // Ensure loading state is updated here
+        }
     };
-
     fetchData();
-  }, []);
+}, []);
 
   // Handle the dropdown change
   const handleDropdownChange = (value: string) => {
@@ -203,61 +208,103 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
     console.log("Valid ZIP code: " + isValidZipCode);
   }
 
+// Inside EditBasicDetails component
+const [staffRolePrefs, setStaffRolePrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
+const [travelContractsPrefs, setTravelContractsPrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
+const [localContractsPrefs, setLocalContractsPrefs] = useState({
+  startDate: "",
+  preferredLocation: "",
+  relocate: false,
+  desiredPay: "",
+  preferredHours: ""
+});
+
   const handleSave = async () => {
     try {
-      // Add validation checks here if needed
-      if (!isValidZipCode) {
-        Alert.alert("Error", "Please enter a valid zip code.");
-        return;
-      }
+        const updatedProfile = {
+            personalInfo: { 
+                firstName,
+                lastName,
+                specialty: "Specialty",
+              contactInfo: {
+                  phoneNumber,
+                  email,
+              },
+            },
+            profileStrength: 33,
+            jobPreferences: {
+                staffRoles: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: staffRolePrefs.startDate,
+                        preferredLocation: staffRolePrefs.preferredLocation,
+                        relocate: staffRolePrefs.relocate,
+                        desiredPay: staffRolePrefs.desiredPay,
+                        preferredHours: staffRolePrefs.preferredHours,
+                    }
+                },
+                travelContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: travelContractsPrefs.startDate,
+                        preferredLocation: travelContractsPrefs.preferredLocation,
+                        relocate: travelContractsPrefs.relocate,
+                        desiredPay: travelContractsPrefs.desiredPay,
+                        preferredHours: travelContractsPrefs.preferredHours,
+                    },
+                },
+                localContracts: {
+                    activelyLooking: false,
+                    details: {
+                        startDate: localContractsPrefs.startDate,
+                        preferredLocation: localContractsPrefs.preferredLocation,
+                        relocate: localContractsPrefs.relocate,
+                        desiredPay: localContractsPrefs.desiredPay,
+                        preferredHours: localContractsPrefs.preferredHours,
+                    }
+                },
+            },
+            licenses: {
+                textInputs: {
+                    licenseNumber: '',
+                    state: '',
+                    expirationDate: '',
+                },
+                documents: {
+                    uploadedFiles: [],
+                },
+            },
+        };
+        // Save the updated profile to AsyncStorage
+        await AsyncStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+        console.log('Profile saved successfully');
+        
 
-      // Simulating API call to save updated data
-      setLoading(true);
-      const response = await fetch('https://api.example.com/user/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName,
-          middleName,
-          lastName,
-          phoneNumber,
-          email,
-          profesionalSummary,
-          dob,
-          schoolName,
-          schoolCountry,
-          schoolCity,
-          discipline,
-          schoolState,
-          degreeType,
-          yearsOfSpecialty,
-          homeAddress,
-          homeCity,
-          homeState,
-          zipCode,
-          ssn,
-          legalFirstName,
-          legalLastName,
-          selectedCertification
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        Alert.alert("Success", "Profile updated successfully.");
-        navigation.goBack(); // Navigate back on successful save
-      } else {
-        console.error("Update failed:", result);
-        Alert.alert("Error", "Could not update profile.");
-      }
+        setTimeout(() => {
+          navigation.navigate('Profile');
+                  // Alert user of success and navigate to Profile page
+        Alert.alert('Success', 'Profile updated successfully.');
+      }, 300); // Small delay before navigation
     } catch (error) {
-      console.error("Error updating profile:", error);
-      Alert.alert("Error", "Could not update profile.");
-    } finally {
-      setLoading(false);
+        console.error('Error updating profile:', error);
+        Alert.alert('Error', 'Could not update profile.');
     }
-  };
+};
+
 
   // Created by Ashar from the UserLocation.tsx file
   const validateZipCode = (text: string) => {
@@ -571,9 +618,13 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
         value={legalLastName} onChangeText={setLegalLastName} style={styles.textBoxStyle}></TextInput>
 
       {/* Save button */}
-      <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
+      {/* <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+    <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
+</TouchableOpacity>
+
 
       {/* Cancel button */}
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>

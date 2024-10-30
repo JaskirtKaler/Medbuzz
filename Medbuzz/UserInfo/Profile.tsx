@@ -13,6 +13,9 @@ import CheckBox from '@react-native-community/checkbox';
 import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker'
 import Calendar from '../Components/Svg/Calender.tsx'
+import { useFocusEffect } from '@react-navigation/native';
+
+
 
 // Interface for user's Staff Role Preferences
 interface StaffRoles {
@@ -42,6 +45,7 @@ interface TravelContracts {
 }
 
 const Profile = () => {
+
 
     // useStates for the Calendar Date Picker
     const [date, setDate] = useState(new Date())
@@ -227,6 +231,43 @@ const Profile = () => {
         },
     });
 
+    useEffect(() => {
+        loadProfileData(); // Initial load
+    }, []);
+    
+
+    // Load profile data from AsyncStorage on mount
+    const loadProfileData = async () => {
+        try {
+            const storedProfileData = await AsyncStorage.getItem('userProfile');
+            if (storedProfileData) {
+                const parsedData = JSON.parse(storedProfileData);
+                if (parsedData && parsedData.personalInfo) {
+                    setProfileData(parsedData);
+                } else {
+                    console.log("Data structure mismatch.");
+                }
+            } else {
+                console.log("No profile data found in AsyncStorage.");
+            }
+        } catch (error) {
+            console.error("Failed to load profile data from AsyncStorage", error);
+        }
+    };
+    
+    
+    useFocusEffect(
+        React.useCallback(() => {
+            loadProfileData(); // Reload profile data each time the Profile screen is focused
+        }, [])
+    );
+    
+    const saveAndReloadProfileData = async () => {
+        await updateUserObject(); // Await the profile update
+        await loadProfileData();  // Load profile data immediately after updating
+    };
+
+
     // Destructure personal info
     const { personalInfo, jobPreferences, licenses } = profileData;
     const { firstName, lastName, specialty, contactInfo } = personalInfo;
@@ -321,8 +362,8 @@ const Profile = () => {
     const updateUserObject = async () => {
         const updatedProfile = {
             personalInfo: { 
-                firstName: "First",
-                lastName: "Last",
+                firstName: "John",
+                lastName: "Doe",
                 specialty: "Specialty",
                 contactInfo: {
                     phoneNumber: "(123) 456-7890",
@@ -374,15 +415,19 @@ const Profile = () => {
             },
         };
     
-        // Update the profile data in state
-        await setProfileData(updatedProfile);
-    
-        // Log the updated details from the updated profile object
-        console.log('Start Date:', updatedProfile.jobPreferences.staffRoles.details.startDate);
-        console.log('Location:', updatedProfile.jobPreferences.staffRoles.details.preferredLocation);
-        console.log('Relocation:', updatedProfile.jobPreferences.staffRoles.details.relocate);
-        console.log('Pay:', updatedProfile.jobPreferences.staffRoles.details.desiredPay);
-        console.log('Hours:', updatedProfile.jobPreferences.staffRoles.details.preferredHours);
+        try {
+            console.log('Attempting to save updatedProfile:', updatedProfile);
+            await AsyncStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+            console.log('Profile successfully saved in AsyncStorage');
+            
+            // Update state directly to reflect changes immediately in the UI
+            setProfileData(updatedProfile);
+            Alert.alert('Success', 'Profile updated successfully.');
+        } catch (error) {
+            console.error("Failed to save profile data to AsyncStorage", error);
+            Alert.alert("Error", "Failed to update profile data.");
+        }
+
     };
 
 
@@ -513,7 +558,8 @@ const Profile = () => {
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <TouchableOpacity style={styles.exitModalButton} onPress={() => {
                             updateStaffRolePrefs();
-                            updateUserObject();
+                            // updateUserObject();
+                            saveAndReloadProfileData();
                             setStaffRoleModalVisible(!staffRoleModalVisible);}}>
                             <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
                         </TouchableOpacity>
