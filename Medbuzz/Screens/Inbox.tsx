@@ -8,12 +8,14 @@ import { View,
   TouchableOpacity,
   StyleSheet,
   Keyboard,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Backarrow from '../Components/Svg/Backarrow';
 import PaperAirplaneIcon from '../Components/Svg/PaperAirplaneIcon';
 import MessageBubble from './MessageBubble';
 import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
+const {width, height} = Dimensions.get('window'); // screen max width and height
 
 
 const Inbox: React.FC = () => {
@@ -61,16 +63,19 @@ const Inbox: React.FC = () => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
+            {/* Header */}
+            {/* Reset the unread count when navigating back to MessagePage */}
       <View style={styles.header}>
-      {/* Reset the unread count when navigating back to MessagePage */}
-        <TouchableOpacity style={styles.backButton} onPress={() => {
-          navigation.navigate('MessagePage')
-          
-        }}>
-          <Backarrow width={40} height={40} color="#000" />
+        <TouchableOpacity onPress={() => {
+          navigation.navigate('MessagePage')}}>
+          <Backarrow width={40} height={40} color={'#000'} />
         </TouchableOpacity>
-        <Text style={styles.clientName}>{clientName}</Text>
+        <Text style={styles.headerText}>{clientName}</Text>
+        <View style={styles.placeholder} />
       </View>
+      {/* Spacer */}
+      <View style={styles.spacer}></View>
+      
 
       <ScrollView
         contentContainerStyle={styles.messagesContainer}
@@ -90,7 +95,7 @@ const Inbox: React.FC = () => {
           multiline
         />
         <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
-          <PaperAirplaneIcon width={24} height={24} color="#000" />
+          <PaperAirplaneIcon width={24} height={Platform.OS === 'ios' ? height * 0.105 : 24} color="#000" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -105,13 +110,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    width: '100%',
+    height: height * (Platform.OS === 'ios' ? 0.125 : 0.1),
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
+    justifyContent: 'space-between',
+    alignItems: Platform.OS === 'ios' ? 'flex-end' : 'center',
+    paddingBottom: Platform.OS === 'ios' ? '5%' : 0,
+    backgroundColor: '#FFF',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  headerText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  placeholder: {
+    width: 40,
+  },
+  spacer: {
+    width: width,
+    height: height * .01,
   },
   backButton: {
     position: 'absolute',
@@ -140,6 +165,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 5,
+    paddingBottom: Platform.OS === 'ios' ? height * 0.045 : 5,
+    // paddingBottom: '10%',
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderColor: '#ddd',

@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
 
   headerStyle: {
     width: '100%',
-    height: height * 0.1,
+    height: height * (Platform.OS == 'ios' ? 0.125 : 0.1),
     backgroundColor: '#FFF',
     elevation: 5, // This will add a box shadow for Android
     shadowColor: '#000', // this will add a box shadow for IOS
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     flexDirection: 'row',
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === 'ios' ? 60 : 0,
   },
 
   searchStyle: {
@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     width: '70%',
+    height: Platform.OS == 'ios' ? '80%' : '100%',
   },
   paginationContainer: {
     flexDirection: 'row',

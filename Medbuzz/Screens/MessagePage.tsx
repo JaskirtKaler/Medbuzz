@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Animated, Modal, Platform, Dimensions } from 'react-native';
 import Profile from '../Components/Svg/Profile.tsx'; // Assuming you have an SVG for profile pics
 import moment from 'moment'; // For time formatting
 import Backarrow from '../Components/Svg/Backarrow';
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Trashcan from '../Components/Svg/Trashcan';
 import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
+const {width, height} = Dimensions.get('window'); // screen max width and height
 
 
 // Define the structure of a message
@@ -208,16 +209,16 @@ useEffect(() => {
 
   return (
     <View style={styles.container}>
-      {/* Back Arrow */}
-      <View style={styles.backArrowContainer}>
+      {/* Header */}
+      <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <View style={styles.backArrow}>
-            <Backarrow width={40} height={40} color={"#000"} />
-          </View>
+          <Backarrow width={40} height={40} color={'#000'} />
         </TouchableOpacity>
+        <Text style={styles.headerText}>Messages</Text>
+        <View style={styles.placeholder} />
       </View>
-      <Text style={styles.header}>Messages</Text>
-
+      {/* Spacer */}
+      <View style={styles.spacer}></View>
 
       {/* Mark as Read Button */}
       <TouchableOpacity style={styles.markAsReadButton} onPress={handleMarkAsRead}>
@@ -261,11 +262,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    width: '100%',
+    height: height * (Platform.OS === 'ios' ? 0.125 : 0.1),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: Platform.OS === 'ios' ? 'flex-end' : 'center',
+    paddingBottom: Platform.OS === 'ios' ? '5%' : 0,
+    backgroundColor: '#FFF',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  headerText: {
     fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 16,
-    paddingLeft: 10,
     color: 'black',
+  },
+  placeholder: {
+    width: 40,
+  },
+  spacer: {
+    width: width,
+    height: height * .075,
   },
   backArrowContainer: {
     justifyContent: 'space-between',

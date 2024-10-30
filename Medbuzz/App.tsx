@@ -59,7 +59,7 @@ function App() {
     <UnreadMessagesContextProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SignInSignUp"
+        initialRouteName="Login"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
         <Stack.Screen name="Login" component={Login} />
@@ -186,6 +186,7 @@ function CustomDrawerContent(props: any) {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
+        paddingBottom: Platform.OS == 'ios' ? '8%' : 0,
       }}>
       <DrawerItemList {...props} />
       <View style={{flex: 1}} />
