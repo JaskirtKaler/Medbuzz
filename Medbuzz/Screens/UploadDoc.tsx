@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, Platform } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, PermissionsAndroid, Platform, Linking } from 'react-native'
+import React, { useState,useRef, useEffect } from 'react'
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 const { width, height } = Dimensions.get('window'); // screen max width and height
 import { Svg, Path} from 'react-native-svg';
@@ -8,48 +8,105 @@ import Download from '../Components/Svg/Download';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../App'; // Import the type for RootStackParamList
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import RNFS from 'react-native-fs';
+import Toast from 'react-native-toast-message';
 
-
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 // Define props type using NativeStackScreenProps
 type UploadDocProps = NativeStackScreenProps<RootStackParamList, 'UploadDoc'>;
 
 const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   const navigation = useNavigation<any>(); // Stack Navigation
-  const header  = route.params.header; // returns the header : value
+  const header = route.params.header; // returns the header : value
   const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
-const handleUpload = async () =>{
-    try{
-        const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
-        setSelectedDocument(doc); // Save the document path to the state
-        console.log(doc);
-        console.log(header)
-        // create switch statment for back end calls
-    }catch (err){
-        if (DocumentPicker.isCancel(err)) {
-            // User cancelled the picker
-            console.log('user Cancelled the upload', err);
-        } else {
-            throw err;
-        }
+  const toastRef = useRef(null);
+  
+  const handleUpload = async () => {
+    try {
+      const doc = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
+      });
+      setSelectedDocument(doc); 
+      console.log(doc);
+      console.log(header);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled the upload', err);
+      } else {
+        throw err;
+      }
     }
+  };
+  
+  const getRealPathFromURI = async (uri: string): Promise<string> => {
+    if (uri.startsWith('content://')) {
+      const newFilePath = `${RNFS.DocumentDirectoryPath}/${uri.split('/').pop()}`;
+      await RNFS.copyFile(uri, newFilePath);
+      console.log('File copied to: ', newFilePath);
+      return newFilePath;
+    }
+    
+    return uri;
+  };
 
+const requestPermissions = async () => {
+  if (Platform.OS === 'android') {
+    const permissions = [
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    ];
+    const granted = await PermissionsAndroid.requestMultiple(permissions);
 
+    // Check if both permissions are granted
+    if (granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED ||
+        granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED) {
+      console.warn('Storage permissions denied');
+      Toast.show({ type: 'error', text1: 'Permission Denied', text2: 'You need to allow storage permissions.' });
+      return false;
+    }
+  }
+  return true;
+};
+
+// the download logic is there....but the permission is denied and i cant
+// figure out how to fix it....
+const handleDownload = async () => {
+  if (selectedDocument && selectedDocument.uri) {
+    try {
+      const filePath = await getRealPathFromURI(selectedDocument.uri);
+      const downloadDest = Platform.OS === 'android'
+        ? `${RNFS.DownloadDirectoryPath}/${selectedDocument.name}` // Downloads folder on Android
+        : `${RNFS.DocumentDirectoryPath}/${selectedDocument.name}`; // Internal storage for iOS
+
+      Toast.show({ type: 'info', text1: 'Download Started', text2: 'Your file is being downloaded...' });
+
+      await RNFS.copyFile(filePath, downloadDest);
+
+      Toast.show({ type: 'success', text1: 'Download Complete', text2: 'File saved to Downloads!' });
+      console.log('File downloaded to: ', downloadDest);
+    } catch (error) {
+      console.error('Error downloading file: ', error);
+      Toast.show({ type: 'error', text1: 'Download Failed', text2: 'Error occurred while downloading.' });
+    }
+  } else {
+    console.log('No file selected for download.');
+  }
+};
+
+// handle when back arrow is clicked
+const handleBack = () => {
+  navigation.goBack();
+  console.log('backarrow clicked')
 }
 
-  // handle when Download icon/btn is clicked
-  const handleDownload = () => {
-    console.log('download clicked');
-  };
-
-  // handle when back arrow is clicked
-  const handleBack = () => {
-    navigation.goBack();
-    console.log('backarrow clicked');
-  };
-
-  return (
+return (
     <View style={styles.main}>
+      {/* Toast Notification Container */}
+      <View style={{ position: 'absolute', zIndex: 10, width: '100%' }}>
+        <Toast />
+        </View>
+
       {/*Header Section */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
