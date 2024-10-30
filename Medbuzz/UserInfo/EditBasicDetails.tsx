@@ -1,15 +1,19 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 
 import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert, Platform} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
+import {Image} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
 // import { useNavigation } from '@react-navigation/native';
 import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
 import { usaStates } from '../mapVariables/optionsData.tsx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
   add test to ensure that all required fields were actually entered and if they weren't reprompt
@@ -24,6 +28,7 @@ interface EditBasicDetailsProps {
 }
 
 type CategoryType = keyof typeof certificationMap; // Create a union type from the certificationMap keys
+
 interface OptionType { // Option type is for Certificaion mapping
   label: string;
   value: string;
@@ -81,6 +86,7 @@ const years = [
 // Screen - Edit Basic Details
 const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [discipline, setDiscipline] = useState("");
   const [schoolState, setSchoolState] = useState("");
   const [month, setMonth] = useState("");
@@ -151,7 +157,37 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
         }
     };
     fetchData();
+    loadProfileImage();
 }, []);
+
+  const loadProfileImage = async () => {
+    const savedImageUri = await AsyncStorage.getItem('profileImage');
+    if (savedImageUri) {
+      setProfilePicture(savedImageUri);
+    }
+  };
+
+  const handleImagePick = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.assets && response.assets.length > 0) {
+        const imageUri = response.assets[0].uri;
+        if (imageUri) {
+          setProfilePicture(imageUri); // Update state with the selected image
+          saveProfileImage(imageUri);
+        } else {
+          console.log('No URI found for the selected image');
+        }
+      } else {
+        console.log('Error picking image:'); // Handle errors
+      }
+    });
+  };
+
+  const saveProfileImage = async (imageUri: string) => {
+    await AsyncStorage.setItem('profileImage', imageUri);
+  };
 
   // Handle the dropdown change
   const handleDropdownChange = (value: string) => {
@@ -326,10 +362,22 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
       <Text style={styles.headerTextStyle}>About You</Text>
 
       {/* Profile image and 'Upload Photo' button */}
-      <View style={{flexDirection: 'row', justifyContent: "space-between", width: '60%', alignItems: 'center'}}>
-        <Profile style= {{marginLeft: 15}} width={50} height={50} color={"#000"}/>
-        <TouchableOpacity style={styles.uplaodPhotoButton}>
-          <Text style={{color: '#0EA68D', fontWeight: 'bold'}}>Upload Photo</Text>
+      <View style={styles.profileContainer}>
+        {/* Display the profile picture or a default image */}
+        <TouchableOpacity onPress={handleImagePick}>
+        {profilePicture ? (
+          <Image 
+          source={{ uri: profilePicture }} 
+          style={styles.profileImage} 
+          />
+        ) : (
+          <Text style={styles.profileContainer}></Text>
+        )}
+        </TouchableOpacity>
+        
+        {/* Upload Photo button */}
+        <TouchableOpacity onPress={handleImagePick} style={styles.uplaodPhotoButton}>
+          <Text style={styles.uploadText}>Upload</Text>
         </TouchableOpacity>
       </View>
 
@@ -630,7 +678,6 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
       </TouchableOpacity>
-      
     </ScrollView>    
   )
 }
@@ -707,7 +754,28 @@ const styles = StyleSheet.create({
     borderColor: "#0EA68D", 
     backgroundColor: 'white',
     alignItems: "center",
-    width: 150,
+    width: 100,
+    marginLeft: 15,
+  },
+
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    marginTop: 5,
+    marginBottom: 20,
+    marginLeft: 15,
+  },
+
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#e0e0e0',
+  },
+
+  uploadText: {
+    color: '#007BFF',
+    marginTop: 3,
   },
 
   // Styles below this pint were included in the Dropdown library
