@@ -3,23 +3,9 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import { mockJobPostings } from '../__mocks__/mockJobsData'; // Importing mock job data
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
-
-
-// Define the type for job properties
-type JobProps = {
-  jobId: string;
-  title: string;
-  company: {
-    name: string;
-    location: string;
-  };
-  description: string;
-  dateApplied: string;
-};
+import { loadUsersJobs } from '../API Fetch/LoadUsersJobs';
+import { JobPosting } from '../API Fetch/UseJobPostings';
 
 // Function to truncate long descriptions
 const truncateText = (text: string, maxLength: number) => {
@@ -29,25 +15,31 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-// Component to display each job
-const Job = ({ title, company, description, dateApplied, onPressDetails }: JobProps & { onPressDetails: () => void }) => {
-  const descriptionText = description ? truncateText(description, 100) : "No description available";
+// properties for Job component
+type JobProps = {
+  job: any;
+  handleMoreDetails: (job: any) => void;
+};
 
+// Component to display each job
+const Job = ({job, handleMoreDetails}: JobProps) => {
   return (
     <View style={styles.jobStyle}>
-      <View style={styles.jobHeader}>
-        <View>
-          <Text style={styles.jobHeaderText}>{title}</Text>
-          <Text style={styles.companyName}>{company.name}</Text>
-        </View>
-        <View style={styles.locationDateContainer}>
-          <Text style={styles.jobHeaderText}>{company.location}</Text>
-          <Text style={styles.dateApplied}>{dateApplied}</Text>
-        </View>
+      <View>
+        <Text style={{color: 'black', fontSize: 20, marginLeft: 10}}>
+          {job.position_title}
+        </Text>
+        <Text style={{color: 'black', marginLeft: 15, fontSize: 16}}>
+          {job.city}
+          {', '}
+          {job.state}
+        </Text>
       </View>
-      <Text style={styles.jobTextStyle}>{descriptionText}</Text>
-      <TouchableOpacity style={styles.detailsButton} onPress={onPressDetails}>
-        <Text style={{ color: 'black' }}>Click for more details</Text>
+      <Text style={styles.jobTextStyle}>{job.job_status}</Text>
+      <TouchableOpacity
+        style={styles.detailsButton}
+        onPress={() => handleMoreDetails(job)}>
+        <Text style={{padding: 5, color: 'black'}}>Click for more details</Text>
       </TouchableOpacity>
     </View>
   );
@@ -55,17 +47,22 @@ const Job = ({ title, company, description, dateApplied, onPressDetails }: JobPr
 
 // Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
+  const navigation = useNavigation<any>();
   const navigation = useNavigation<any>();  // Fixed error
   const [profile, setProfile] = useState<any>(null); // State for the user's profile
   const [currentPage, setCurrentPage] = useState<number>(1); // State for current page
   const jobsPerPage: number = 20; // Number of jobs to display per page
   const scrollViewRef = useRef<ScrollView | null>(null); // Reference for ScrollView
+  const {jobPostings, isLoading, fetchData} = loadUsersJobs();
+  const [filteredJobs, setFilteredJobs] = useState<any[]>([]); // Initialize as an empty array
 
   // Use mock job postings
-  const jobsData: JobProps[] = mockJobPostings;
+  // const jobsData: JobPosting[] = Array.isArray(jobPostings) ? jobPostings : Object.values(jobPostings || {});
+  const jobsData: JobPosting[] = jobPostings;
+  console.log(`length: ${jobsData.length}`);
 
-  // Calculate total number of jobs and pages
-  const totalJobs = jobsData.length;
+  // Calculate the total number of jobs and pages
+  const totalJobs = jobPostings.length;
   const totalPages = Math.ceil(totalJobs / jobsPerPage);
 
   // Get jobs for the current page
@@ -110,29 +107,48 @@ const MyJobsPage: React.FC = () => {
     });
   };
 
+  // Function to handle navigation and passing job details to the next screen
+  const handleMoreDetails = (job: any) => {
+    navigation.navigate('JobInfo', {job});
+  };
+
+  useEffect(() => {
+    if (Array.isArray(jobPostings)) {
+      // userJobs(jobPostings);
+    }
+  });
+  
   return (
     <View style={styles.container}>
       {/* Job Listings */}
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
-        {currentJobs.map((job, index) => (
-          <Job key={index} {...job} onPressDetails={() => handleJobDetails(job)} />
-        ))}
+        {/* Render the jobs for the current page */}
+        {Array.isArray(jobsData) && jobsData.length > 0 ? (
+        jobsData.map((job, index) => (
+          <Job key={job.id} job={job} handleMoreDetails={handleMoreDetails}/>
+        )))
+        : (
+            <Text style={{textAlign: 'center', marginTop: 20, color: 'gray'}}>
+            No jobs available
+            </Text>
+          )
+        }
       </ScrollView>
 
       {/* Pagination Navigation Bar */}
-      <View style={styles.pagination}>
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-          <TouchableOpacity
-            key={page}
-            onPress={() => handlePageChange(page)}
-            style={styles.pageNumber}
-            accessible={true}
-            accessibilityRole="button"
-          >
-            <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+    <View style={styles.pagination}>
+    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+    <TouchableOpacity 
+      key={page} 
+      onPress={() => handlePageChange(page)} 
+      style={styles.pageNumber}
+      accessible={true} // Mark as accessible
+      accessibilityRole="button" // Explicitly set the role to button
+    >
+      <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
+    </TouchableOpacity>
+  ))}
+</View>
     </View>
   );
 };
