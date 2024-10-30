@@ -2,6 +2,9 @@ import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, Touch
 import { NavigationProp } from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
+import {Image} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Profile from "../Components/Svg/Profile.tsx"
 // import { useNavigation } from '@react-navigation/native';
@@ -19,6 +22,7 @@ interface EditBasicDetailsProps {
 }
 
 type CategoryType = keyof typeof certificationMap; // Create a union type from the certificationMap keys
+
 interface OptionType { // Option type is for Certificaion mapping
   label: string;
   value: string;
@@ -76,6 +80,7 @@ const years = [
 // Screen - Edit Basic Details
 const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [discipline, setDiscipline] = useState("");
   const [schoolState, setSchoolState] = useState("");
   const [month, setMonth] = useState("");
@@ -145,7 +150,37 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
     };
 
     fetchData();
+    loadProfileImage();
   }, []);
+
+  const loadProfileImage = async () => {
+    const savedImageUri = await AsyncStorage.getItem('profileImage');
+    if (savedImageUri) {
+      setProfilePicture(savedImageUri);
+    }
+  };
+
+  const handleImagePick = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.assets && response.assets.length > 0) {
+        const imageUri = response.assets[0].uri;
+        if (imageUri) {
+          setProfilePicture(imageUri); // Update state with the selected image
+          saveProfileImage(imageUri);
+        } else {
+          console.log('No URI found for the selected image');
+        }
+      } else {
+        console.log('Error picking image:'); // Handle errors
+      }
+    });
+  };
+
+  const saveProfileImage = async (imageUri: string) => {
+    await AsyncStorage.setItem('profileImage', imageUri);
+  };
 
   // Handle the dropdown change
   const handleDropdownChange = (value: string) => {
@@ -204,18 +239,9 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
 
   const handleSave = async () => {
     try {
-      // Add validation checks here if needed
-      if (!isValidZipCode) {
-        Alert.alert("Error", "Please enter a valid zip code.");
-        return;
-      }
-
-      // Simulating API call to save updated data
-      setLoading(true);
-      const response = await fetch('https://api.example.com/user/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      if (isValidZipCode) {
+        // Add any validation logic if needed
+        const profileData = {
           firstName,
           middleName,
           lastName,
@@ -226,35 +252,35 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
           schoolName,
           schoolCountry,
           schoolCity,
-          discipline,
           schoolState,
+          month,
+          year,
           degreeType,
-          yearsOfSpecialty,
+          fieldOfStudy,
           homeAddress,
           homeCity,
           homeState,
+          discipline,
+          yearsOfSpecialty,
           zipCode,
           ssn,
           legalFirstName,
           legalLastName,
-          selectedCertification
-        }),
-      });
+          profilePicture // Include profile picture in the saved data
+        };
+        
+        // Save profile data to AsyncStorage
+        await AsyncStorage.setItem('userProfile', JSON.stringify(profileData));
+        printInputs(); 
 
-      const result = await response.json();
-
-      if (response.ok) {
-        Alert.alert("Success", "Profile updated successfully.");
-        navigation.goBack(); // Navigate back on successful save
+        Alert.alert("Profile Saved", "Your profile details have been saved successfully.");
+        navigation.goBack();
       } else {
-        console.error("Update failed:", result);
-        Alert.alert("Error", "Could not update profile.");
+        Alert.alert("Invalid");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      Alert.alert("Error", "Could not update profile.");
-    } finally {
-      setLoading(false);
+      console.error("Error saving profile data:", error);
+      Alert.alert("Error", "Could not save profile data.");
     }
   };
 
@@ -278,10 +304,22 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
       <Text style={styles.headerTextStyle}>About You</Text>
 
       {/* Profile image and 'Upload Photo' button */}
-      <View style={{flexDirection: 'row', justifyContent: "space-between", width: '60%', alignItems: 'center'}}>
-        <Profile style= {{marginLeft: 15}} width={50} height={50} color={"#000"}/>
-        <TouchableOpacity style={styles.uplaodPhotoButton}>
-          <Text style={{color: '#0EA68D', fontWeight: 'bold'}}>Upload Photo</Text>
+      <View style={styles.profileContainer}>
+        {/* Display the profile picture or a default image */}
+        <TouchableOpacity onPress={handleImagePick}>
+        {profilePicture ? (
+          <Image 
+          source={{ uri: profilePicture }} 
+          style={styles.profileImage} 
+          />
+        ) : (
+          <Text style={styles.profileContainer}></Text>
+        )}
+        </TouchableOpacity>
+        
+        {/* Upload Photo button */}
+        <TouchableOpacity onPress={handleImagePick} style={styles.uplaodPhotoButton}>
+          <Text style={styles.uploadText}>Upload</Text>
         </TouchableOpacity>
       </View>
 
@@ -578,7 +616,6 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
       </TouchableOpacity>
-      
     </ScrollView>    
   )
 }
@@ -655,7 +692,28 @@ const styles = StyleSheet.create({
     borderColor: "#0EA68D", 
     backgroundColor: 'white',
     alignItems: "center",
-    width: 150,
+    width: 100,
+    marginLeft: 15,
+  },
+
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    marginTop: 5,
+    marginBottom: 20,
+    marginLeft: 15,
+  },
+
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#e0e0e0',
+  },
+
+  uploadText: {
+    color: '#007BFF',
+    marginTop: 3,
   },
 
   // Styles below this pint were included in the Dropdown library
