@@ -20,21 +20,6 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
   const [profile, setProfile] = useState<any>(null); // Profile data from AsyncStorage
 
-  // Load profile from AsyncStorage when the component mounts
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-          const storedProfile = await AsyncStorage.getItem('userProfile');
-          if (storedProfile) {
-              setProfile(JSON.parse(storedProfile));
-              console.log('Profile loaded:', storedProfile);
-          }
-      } catch (error) {
-          console.error('Error loading profile:', error);
-      }
-  };
-  loadProfile();
-}, []);
 
   // Handle document upload
   const handleUpload = async () => {
@@ -62,20 +47,6 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
     // Simulate download logic
     console.log('Downloading file:', selectedDocument.name);
   };
-
-  // Handle document submission along with profile
-  const handleSubmit = async () => {
-    if (!profile || !selectedDocument) {
-        Alert.alert('Error', 'Please ensure both profile and document are selected.');
-        return;
-    }
-
-    console.log('Submitting application with profile:', profile);
-    console.log('Submitting document:', selectedDocument.name);
-
-    // Simulate submission to backend...
-    Alert.alert('Success', 'Application submitted successfully!');
-};
 
   // Handle when back arrow is clicked
   const handleBack = () => {
@@ -116,11 +87,6 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
           {/* Upload Button */}
           <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
             <Text style={{ color: '#000' }}>Upload new File</Text>
-          </TouchableOpacity>
-
-          {/* Submit Application Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={{ color: '#FFF' }}>Submit Application</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -194,16 +160,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: Platform.OS === 'ios' ? width * 0.35 : width * 0.3,
-    height: height * 0.05,
-    backgroundColor: '#0EA68D',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  submitButton: {
-    marginTop: 20,
-    padding: 10,
-    borderRadius: 5,
-    width: Platform.OS === 'ios' ? width * 0.4 : width * 0.35,
     height: height * 0.05,
     backgroundColor: '#0EA68D',
     justifyContent: 'center',

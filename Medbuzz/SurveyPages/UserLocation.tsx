@@ -52,7 +52,7 @@ const UserLocation = () => {
       //save the final object to the db
 
       //clear the local storage
-      AsyncStorage.removeItem('user')     
+      AsyncStorage.setItem('user', JSON.stringify(updatedUser))     
 
       navigation.navigate('LoadingScreen');
 

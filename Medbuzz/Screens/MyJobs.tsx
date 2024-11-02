@@ -6,6 +6,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from '
 import { useNavigation } from '@react-navigation/native';
 import { loadUsersJobs } from '../API Fetch/LoadUsersJobs';
 import { JobPosting } from '../API Fetch/UseJobPostings';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 // Function to truncate long descriptions
 const truncateText = (text: string, maxLength: number) => {
@@ -48,7 +50,7 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
 // Main component for the Jobs Page
 const MyJobsPage: React.FC = () => {
   const navigation = useNavigation<any>();
-  const navigation = useNavigation<any>();  // Fixed error
+
   const [profile, setProfile] = useState<any>(null); // State for the user's profile
   const [currentPage, setCurrentPage] = useState<number>(1); // State for current page
   const jobsPerPage: number = 20; // Number of jobs to display per page
@@ -66,7 +68,7 @@ const MyJobsPage: React.FC = () => {
   const totalPages = Math.ceil(totalJobs / jobsPerPage);
 
   // Get jobs for the current page
-  const currentJobs: JobProps[] = jobsData.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
+  //const currentJobs: JobProps[] = jobsData.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   // Load profile from AsyncStorage when the component mounts
   useEffect(() => {
@@ -74,6 +76,7 @@ const MyJobsPage: React.FC = () => {
         try {
             const storedProfile = await AsyncStorage.getItem('userProfile');
             if (storedProfile !== null) {
+              console.log(JSON.parse(storedProfile))
                 setProfile(JSON.parse(storedProfile)); // Load the stored profile
                 console.log('Profile loaded from local storage');
             } else {
@@ -92,6 +95,8 @@ const MyJobsPage: React.FC = () => {
     setCurrentPage(page);
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
+
+
 
   // Handle when the user wants to view job details
   const handleJobDetails = (job: JobProps) => {

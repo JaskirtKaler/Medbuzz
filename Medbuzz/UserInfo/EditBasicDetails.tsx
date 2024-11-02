@@ -1,18 +1,39 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 
-import { Button, StyleSheet, View, Text, ScrollView, TextInput, Touchable, TouchableOpacity, ActivityIndicator, Alert, Platform} from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
+import {
+  Button,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  Touchable,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  Platform,
+} from 'react-native';
+import {NavigationProp} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
-import { Dropdown } from 'react-native-element-dropdown';
+import {Dropdown} from 'react-native-element-dropdown';
 import {Image} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import Profile from "../Components/Svg/Profile.tsx"
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Profile from '../Components/Svg/Profile.tsx';
 // import { useNavigation } from '@react-navigation/native';
-import { disciplineOptions, categoryOptions, certificationMap } from '../mapVariables/optionsData.tsx';
-import { usaStates } from '../mapVariables/optionsData.tsx';
+import {
+  disciplineOptions,
+  categoryOptions,
+  certificationMap,
+} from '../mapVariables/optionsData.tsx';
+import {
+  usaStates,
+  degrees,
+  months,
+  years,
+} from '../mapVariables/optionsData.tsx';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 /*
   functionality to be added: convert to flex, generate years dynamically for graduation date,
@@ -21,161 +42,121 @@ import { usaStates } from '../mapVariables/optionsData.tsx';
   add cancel button functionality, add upload photo button functionality
 */
 
-
-
 interface EditBasicDetailsProps {
   navigation: NavigationProp<any>; // Replace 'any' with your specific navigation parameter type if available
 }
 
 type CategoryType = keyof typeof certificationMap; // Create a union type from the certificationMap keys
 
-interface OptionType { // Option type is for Certificaion mapping
+interface OptionType {
+  // Option type is for Certificaion mapping
   label: string;
   value: string;
 }
 
-// Degrees for use with degree Dropdown selector
-const degrees = [
-  {label: 'AA', value: 'aa'}, {label: 'AS', value: 'as'},
-  {label: 'BA', value: 'ba'}, {label: 'BS', value: 'bs'},
-  {label: 'MA', value: 'ma'}, {label: 'MS', value: 'ms'},
-  {label: 'PHD', value: 'phd'}
-];
-
-// months and years, respectively, for use with graduation date Dropdown selector
-const months = [
-  {label: 'January', value: 'january'}, {label: 'February', value: 'february'},
-  {label: 'March', value: 'march'}, {label: 'April', value: 'april'},
-  {label: 'May', value: 'may'}, {label: 'June', value: 'june'},
-  {label: 'July', value: 'july'}, {label: 'August', value: 'august'},
-  {label: 'September', value: 'september'}, {label: 'October', value: 'october'},
-  {label: 'November', value: 'november'}, {label: 'December', value: 'december'},
-];
-
-const years = [
-  {label: '1975', value: '1975'}, {label: '1976', value: '1976'}, 
-  {label: '1977', value: '1977'}, {label: '1978', value: '1978'},
-  {label: '1979', value: '1979'}, {label: '1980', value: '1980'},
-  {label: '1981', value: '1981'}, {label: '1982', value: '1982'},
-  {label: '1983', value: '1983'}, {label: '1984', value: '1984'},
-  {label: '1985', value: '1985'}, {label: '1986', value: '1986'},
-  {label: '1987', value: '1987'}, {label: '1988', value: '1988'},
-  {label: '1989', value: '1989'}, {label: '1990', value: '1990'},
-  {label: '1991', value: '1991'}, {label: '1992', value: '1992'},
-  {label: '1993', value: '1993'}, {label: '1994', value: '1994'},
-  {label: '1995', value: '1995'}, {label: '1996', value: '1996'},
-  {label: '1997', value: '1997'}, {label: '1998', value: '1998'},
-  {label: '1999', value: '1999'}, {label: '2000', value: '2000'},
-  {label: '2001', value: '2001'}, {label: '2002', value: '2002'},
-  {label: '2003', value: '2003'}, {label: '2004', value: '2004'},
-  {label: '2005', value: '2005'}, {label: '2006', value: '2006'},
-  {label: '2007', value: '2007'}, {label: '2008', value: '2008'},
-  {label: '2009', value: '2009'}, {label: '2010', value: '2010'},
-  {label: '2011', value: '2011'}, {label: '2012', value: '2012'},
-  {label: '2013', value: '2013'}, {label: '2014', value: '2014'},
-  {label: '2015', value: '2015'}, {label: '2016', value: '2016'},
-  {label: '2017', value: '2017'}, {label: '2018', value: '2018'},
-  {label: '2019', value: '2019'}, {label: '2020', value: '2020'},
-  {label: '2021', value: '2021'}, {label: '2022', value: '2022'},
-  {label: '2023', value: '2023'}, {label: '2024', value: '2024'},
-  {label: '2025', value: '2025'}, {label: '2026', value: '2026'},
-  {label: '2027', value: '2027'}, {label: '2028', value: '2028'},
-];
-
-
 // Screen - Edit Basic Details
-const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
+const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
   const [loading, setLoading] = useState(true);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [discipline, setDiscipline] = useState("");
-  const [schoolState, setSchoolState] = useState("");
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
-  const [degreeType, setDegreeType] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [profesionalSummary, setProfessionalSummary] = useState("");
-  const [dob, setDob] = useState("");
-  const [schoolName, setSchoolName] = useState("");
-  const [schoolCountry, setSchoolCountry] = useState("");
-  const [schoolCity, setSchoolCity] = useState("");
-  const [fieldOfStudy, setFieldOfStudy] = useState("");
-  const [homeAddress, setHomeAddress] = useState("");
-  const [homeCity, setHomeCity] = useState("");
-  const [homeState, setHomeState] = useState("");
-  const [yearsOfSpecialty, setYearsOfSpecialty] = useState("");
-  const[zipCode, setZipCode] = useState("");
-  const[ssn, setSSN] = useState("");
-  const[legalFirstName, setLegalFirstName] = useState("");
-  const[legalLastName, setLegalLastName] = useState("");
-  const [isValidZipCode, setIsValidZipCode] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
-  const [certificationOptions, setCertificationOptions] = useState<OptionType[]>(categoryOptions); // Initially, it holds categories
-  const [selectedCertification, setSelectedCertification] = useState<string | null>(null);
-  const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
 
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [discipline, setDiscipline] = useState('');
+  const [schoolState, setSchoolState] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
+  const [degreeType, setDegreeType] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [professionalSummary, setProfessionalSummary] = useState('');
+  const [dob, setDob] = useState('');
+  const [schoolName, setSchoolName] = useState('');
+  const [schoolCountry, setSchoolCountry] = useState('');
+  const [schoolCity, setSchoolCity] = useState('');
+  const [fieldOfStudy, setFieldOfStudy] = useState('');
+  const [homeAddress, setHomeAddress] = useState('');
+  const [homeCity, setHomeCity] = useState('');
+  const [homeState, setHomeState] = useState('');
+  const [yearsOfSpecialty, setYearsOfSpecialty] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [ssn, setSSN] = useState('');
+  const [legalFirstName, setLegalFirstName] = useState('');
+  const [legalLastName, setLegalLastName] = useState('');
+  const [isValidZipCode, setIsValidZipCode] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null,
+  );
+  const [certificationOptions, setCertificationOptions] =
+    useState<OptionType[]>(categoryOptions); // Initially, it holds categories
+  const [selectedCertification, setSelectedCertification] = useState<
+    string | null
+  >(null);
+  const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
+  
+
+  // Fetch existing data from local storage at the start of page, to populate the fields
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            const storedProfile = await AsyncStorage.getItem('userProfile');
-            if (storedProfile !== null) {
-                const profile = JSON.parse(storedProfile);
-                // Set all profile state variables here
-                setFirstName(profile.firstName);
-                setMiddleName(profile.middleName);
-                setLastName(profile.lastName);
-                setPhoneNumber(profile.phoneNumber);
-                setEmail(profile.email);
-                setDob(profile.dob);
-                setSchoolName(profile.schoolName);
-                setSchoolCountry(profile.schoolCountry);
-                setSchoolCity(profile.schoolCity);
-                setFieldOfStudy(profile.fieldOfStudy);
-                setHomeAddress(profile.homeAddress);
-                setHomeCity(profile.homeCity);
-                setHomeState(profile.homeState);
-                setZipCode(profile.zipCode);
-                setSSN(profile.ssn);
-                setLegalFirstName(profile.legalFirstName);
-                setLegalLastName(profile.legalLastName);
-                setDiscipline(profile.discipline);
-                setSchoolState(profile.schoolState);
-                setDegreeType(profile.degreeType);
-                setYearsOfSpecialty(profile.yearsOfSpecialty);
-                console.log('Profile loaded successfully');
-            } else {
-                console.log('No profile found in AsyncStorage.');
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            Alert.alert('Error', 'Could not fetch user data.');
-        } finally {
-            setLoading(false); // Ensure loading state is updated here
+      try {
+        const storedProfile = await AsyncStorage.getItem('userProfile');
+        if (storedProfile !== null) {
+          const parsedData = JSON.parse(storedProfile);
+  
+          // Set individual states based on the stored data
+          setProfilePicture(parsedData.profilePicture || null);
+          setFirstName(parsedData.personalInfo?.firstName || '');
+          setMiddleName(parsedData.personalInfo?.middleName || '');
+          setLastName(parsedData.personalInfo?.lastName || '');
+          setPhoneNumber(parsedData.personalInfo?.phoneNumber || '');
+          setEmail(parsedData.personalInfo?.email || '');
+          setProfessionalSummary(parsedData.personalInfo?.professionalSummary || '');
+  
+          setSchoolName(parsedData.education?.schoolName || '');
+          setSchoolCity(parsedData.education?.schoolCity || '');
+          setSchoolCountry(parsedData.education?.schoolCountry || '');
+          setMonth(parsedData.education?.gradDate?.month || '');
+          setYear(parsedData.education?.gradDate?.year || '');
+          setDegreeType(parsedData.education?.degreeType || '');
+          setFieldOfStudy(parsedData.education?.fieldOfStudy || '');
+  
+          setHomeAddress(parsedData.homeAddress?.street || '');
+          setHomeCity(parsedData.homeAddress?.city || '');
+          setHomeState(parsedData.homeAddress?.state || '');
+          setZipCode(parsedData.homeAddress?.zipcode || '');
+  
+          setDiscipline(parsedData.expertise?.discipline || '');
+          setSelectedCertification(parsedData.expertise?.certification || '');
+          setYearsOfSpecialty(parsedData.expertise?.yearsOfExperience || '');
+  
+          setDob(parsedData.identityVerification?.DOB || '');
+          setSSN(parsedData.identityVerification?.last4ssn || '');
+          setLegalFirstName(parsedData.identityVerification?.legalFirstName || '');
+          setLegalLastName(parsedData.identityVerification?.legalLastName || '');
+  
+          console.log('Profile loaded successfully');
+        } else {
+          console.log('No profile found in AsyncStorage.');
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        Alert.alert('Error', 'Could not fetch user data.');
+      } finally {
+        setLoading(false); // Ensure loading state is updated here
+      }
     };
+  
     fetchData();
-    loadProfileImage();
-}, []);
-
-  const loadProfileImage = async () => {
-    const savedImageUri = await AsyncStorage.getItem('profileImage');
-    if (savedImageUri) {
-      setProfilePicture(savedImageUri);
-    }
-  };
+  }, []);
 
   const handleImagePick = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.assets && response.assets.length > 0) {
         const imageUri = response.assets[0].uri;
         if (imageUri) {
           setProfilePicture(imageUri); // Update state with the selected image
-          saveProfileImage(imageUri);
         } else {
           console.log('No URI found for the selected image');
         }
@@ -185,8 +166,89 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
     });
   };
 
-  const saveProfileImage = async (imageUri: string) => {
-    await AsyncStorage.setItem('profileImage', imageUri);
+  //saves the data from the states back to the userProfile object so on the next fetch it reflects to most up to date information
+  const handleSave1 = async () => {
+    try {
+      // Retrieve the existing profile from AsyncStorage
+      const storedProfile = await AsyncStorage.getItem('userProfile');
+      const existingProfile = storedProfile ? JSON.parse(storedProfile) : {};
+  
+      // Construct the updated profile by merging with the existing profile
+      const currentProfile = {
+        ...existingProfile, // this spread operator allow us to keep existing properties and only update the ones we explicitely mention
+        profilePicture: profilePicture,
+        personalInfo: {
+          ...existingProfile.personalInfo,
+          firstName,
+          middleName,
+          lastName,
+          phoneNumber,
+          email,
+          professionalSummary,
+        },
+        education: {
+          ...existingProfile.education,
+          schoolName,
+          schoolCity,
+          schoolCountry,
+          gradDate: {
+            month,
+            year,
+          },
+          degreeType,
+          fieldOfStudy,
+        },
+        homeAddress: {
+          ...existingProfile.homeAddress,
+          street: homeAddress,
+          city: homeCity,
+          state: homeState,
+          zipcode: zipCode,
+        },
+        expertise: {
+          ...existingProfile.expertise,
+          discipline,
+          certification: selectedCertification,
+          yearsOfExperience: yearsOfSpecialty,
+        },
+        identityVerification: {
+          ...existingProfile.identityVerification,
+          DOB: dob,
+          last4ssn: ssn,
+          legalFirstName,
+          legalLastName,
+        },
+      };
+  
+      // Save the updated profile back to AsyncStorage
+      await AsyncStorage.setItem('userProfile', JSON.stringify(currentProfile));
+      console.log('Profile saved successfully');
+      Alert.alert('Success', 'Profile has been saved.');
+      navigation.goBack();
+
+      // try {
+      //   // Get all keys from AsyncStorage
+      //   const keys = await AsyncStorage.getAllKeys();
+  
+      //   if (keys.length > 0) {
+      //     // Fetch all key-value pairs
+      //     const result = await AsyncStorage.multiGet(keys);
+  
+      //     // Display key-value pairs
+      //     result.forEach(([key, value]) => {
+      //       console.log(`Key: ${key}, Value: ${value}`);
+      //     });
+      //   } else {
+      //     console.log('No data found in AsyncStorage.');
+      //   }
+      // } catch (error) {
+      //   console.error('Error fetching data from AsyncStorage', error);
+      // }
+      
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      Alert.alert('Error', 'Could not save user data.');
+    }
   };
 
   // Handle the dropdown change
@@ -198,7 +260,10 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
       // User selected a category, now we show certifications
       setSelectedCategory(value as CategoryType);
       const certifications = certificationMap[value as CategoryType] || [];
-      setCertificationOptions([{ label: 'Back to Category', value: 'back' }, ...certifications]); // Add the back option to certifications
+      setCertificationOptions([
+        {label: 'Back to Category', value: 'back'},
+        ...certifications,
+      ]); // Add the back option to certifications
       setIsCategorySelected(true); // Indicate that category is selected
     } else {
       // User selected a certification
@@ -214,133 +279,29 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({ navigation }) => {
     setSelectedCertification(null); // Reset selected certification
   };
 
-  // prints all inputs when 'Save' button is pressed
-  // Temporary function. Later this information will be saved to the database.
-  function printInputs() {
-    console.log("First name: " + firstName);
-    console.log("Middle name: " + middleName);
-    console.log("Last name: " + lastName);
-    console.log("Phone number: " + phoneNumber);
-    console.log("Email: " + email);
-    console.log("Professional summary: " + profesionalSummary);
-    console.log("Date of birth: " + dob);
-    console.log("School name: " + schoolName);
-    console.log("School country: " + schoolCountry);
-    console.log("School City: " + schoolCity);
-    console.log("SChool state: " + schoolState);
-    console.log("Graduation date: " + month + " " + year);
-    console.log("Degree type: " + degreeType);
-    console.log("Field of study: " + fieldOfStudy);
-    console.log("Home address: " + homeAddress);
-    console.log("Home city: " + homeCity);
-    console.log("Home state: " + homeState);
-    console.log("Discipline: " + discipline);
-    console.log("Years of specialty: " + yearsOfSpecialty);
-    console.log("Certificate: " + selectedCertification);
-    console.log("ZIP Code: " + zipCode);
-    console.log("SSN: " + ssn)
-    console.log("Legal first name: " + legalFirstName);
-    console.log("Legal last name: " + legalLastName);
-    console.log("Valid ZIP code: " + isValidZipCode);
-  }
-
-// Inside EditBasicDetails component
-const [staffRolePrefs, setStaffRolePrefs] = useState({
-  startDate: "",
-  preferredLocation: "",
-  relocate: false,
-  desiredPay: "",
-  preferredHours: ""
-});
-
-const [travelContractsPrefs, setTravelContractsPrefs] = useState({
-  startDate: "",
-  preferredLocation: "",
-  relocate: false,
-  desiredPay: "",
-  preferredHours: ""
-});
-
-const [localContractsPrefs, setLocalContractsPrefs] = useState({
-  startDate: "",
-  preferredLocation: "",
-  relocate: false,
-  desiredPay: "",
-  preferredHours: ""
-});
-
-  const handleSave = async () => {
+  const checkLocalItems = async () => {
+    alert(
+      'A function which gets all the item from local storage and prints it to terminal is bounded to this save button, add correct function',
+    );
     try {
-        const updatedProfile = {
-            personalInfo: { 
-                firstName,
-                lastName,
-                specialty: "Specialty",
-              contactInfo: {
-                  phoneNumber,
-                  email,
-              },
-            },
-            profileStrength: 33,
-            jobPreferences: {
-                staffRoles: {
-                    activelyLooking: false,
-                    details: {
-                        startDate: staffRolePrefs.startDate,
-                        preferredLocation: staffRolePrefs.preferredLocation,
-                        relocate: staffRolePrefs.relocate,
-                        desiredPay: staffRolePrefs.desiredPay,
-                        preferredHours: staffRolePrefs.preferredHours,
-                    }
-                },
-                travelContracts: {
-                    activelyLooking: false,
-                    details: {
-                        startDate: travelContractsPrefs.startDate,
-                        preferredLocation: travelContractsPrefs.preferredLocation,
-                        relocate: travelContractsPrefs.relocate,
-                        desiredPay: travelContractsPrefs.desiredPay,
-                        preferredHours: travelContractsPrefs.preferredHours,
-                    },
-                },
-                localContracts: {
-                    activelyLooking: false,
-                    details: {
-                        startDate: localContractsPrefs.startDate,
-                        preferredLocation: localContractsPrefs.preferredLocation,
-                        relocate: localContractsPrefs.relocate,
-                        desiredPay: localContractsPrefs.desiredPay,
-                        preferredHours: localContractsPrefs.preferredHours,
-                    }
-                },
-            },
-            licenses: {
-                textInputs: {
-                    licenseNumber: '',
-                    state: '',
-                    expirationDate: '',
-                },
-                documents: {
-                    uploadedFiles: [],
-                },
-            },
-        };
-        // Save the updated profile to AsyncStorage
-        await AsyncStorage.setItem('userProfile', JSON.stringify(updatedProfile));
-        console.log('Profile saved successfully');
-        
+      // Get all keys from AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
 
-        setTimeout(() => {
-          navigation.navigate('Profile');
-                  // Alert user of success and navigate to Profile page
-        Alert.alert('Success', 'Profile updated successfully.');
-      }, 300); // Small delay before navigation
+      if (keys.length > 0) {
+        // Fetch all key-value pairs
+        const result = await AsyncStorage.multiGet(keys);
+
+        // Display key-value pairs
+        result.forEach(([key, value]) => {
+          console.log(`Key: ${key}, Value: ${value}`);
+        });
+      } else {
+        console.log('No data found in AsyncStorage.');
+      }
     } catch (error) {
-        console.error('Error updating profile:', error);
-        Alert.alert('Error', 'Could not update profile.');
+      console.error('Error fetching data from AsyncStorage', error);
     }
-};
-
+  };
 
   // Created by Ashar from the UserLocation.tsx file
   const validateZipCode = (text: string) => {
@@ -349,15 +310,17 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
     setIsValidZipCode(isValid); // Update validity state
     setZipCode(text); // Update zip code state
   };
-  
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  
-  return(
-    <ScrollView style={{backgroundColor:'white', marginVertical: Platform.OS === 'ios' ? '8%' : 0}}>
-      
+  return (
+    <ScrollView
+      style={{
+        backgroundColor: 'white',
+        marginVertical: Platform.OS === 'ios' ? '8%' : 0,
+      }}>
       {/* About you header */}
       <Text style={styles.headerTextStyle}>About You</Text>
 
@@ -365,18 +328,17 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
       <View style={styles.profileContainer}>
         {/* Display the profile picture or a default image */}
         <TouchableOpacity onPress={handleImagePick}>
-        {profilePicture ? (
-          <Image 
-          source={{ uri: profilePicture }} 
-          style={styles.profileImage} 
-          />
-        ) : (
-          <Text style={styles.profileContainer}></Text>
-        )}
+          {profilePicture ? (
+            <Image source={{uri: profilePicture}} style={styles.profileImage} />
+          ) : (
+            <Text style={styles.profileContainer}></Text>
+          )}
         </TouchableOpacity>
-        
+
         {/* Upload Photo button */}
-        <TouchableOpacity onPress={handleImagePick} style={styles.uplaodPhotoButton}>
+        <TouchableOpacity
+          onPress={handleImagePick}
+          style={styles.uplaodPhotoButton}>
           <Text style={styles.uploadText}>Upload</Text>
         </TouchableOpacity>
       </View>
@@ -386,36 +348,60 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         <Text>First name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="firstNameInput" value={firstName} onChangeText={setFirstName} style={styles.textBoxStyle}></TextInput> 
+      <TextInput
+        testID="firstNameInput"
+        value={firstName}
+        onChangeText={setFirstName}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Middle name field and TextBox */}
       <Text style={styles.fieldTextStyle}>Middle name</Text>
-      <TextInput testID="middleNameInput" value={middleName} onChangeText={setMiddleName}style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="middleNameInput"
+        value={middleName}
+        onChangeText={setMiddleName}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Last name field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Last name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="lastNameInput" value={lastName} onChangeText={setLastName} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="lastNameInput"
+        value={lastName}
+        onChangeText={setLastName}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Phone number field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Phone number</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="phoneNumberInput" value={phoneNumber} onChangeText={setPhoneNumber} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="phoneNumberInput"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Email field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>Email</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="emailInput" value={email} onChangeText={setEmail} style={styles.textBoxStyle}></TextInput> 
+      <TextInput
+        testID="emailInput"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Professional summary field and TextBox */}
       <Text style={styles.fieldTextStyle}>Professional summary</Text>
-      <TextInput testID="professionalSummaryInput" value={profesionalSummary} onChangeText={setProfessionalSummary} style={styles.bigTextBoxStyle}></TextInput>
+      <TextInput
+        testID="professionalSummaryInput"
+        value={professionalSummary}
+        onChangeText={setProfessionalSummary}
+        style={styles.bigTextBoxStyle}></TextInput>
 
       {/* Education header */}
       <Text style={styles.headerTextStyle}>Education</Text>
@@ -425,18 +411,19 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         <Text>School name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="schoolNameInput" value={schoolName} onChangeText={setSchoolName} style={styles.textBoxStyle}></TextInput> 
-
-      {/* School country field and TextBox */}
-      <Text style={styles.fieldTextStyle}>
-        <Text>Country</Text>
-        <Text style={{color: 'red'}}> *</Text>
-      </Text>
-      <TextInput testID="countryInput" value={schoolCountry} onChangeText={setSchoolCountry} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="schoolNameInput"
+        value={schoolName}
+        onChangeText={setSchoolName}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* School city field and TextBox */}
       <Text style={styles.fieldTextStyle}>City</Text>
-      <TextInput testID="cityInput" value={schoolCity} onChangeText={setSchoolCity} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="cityInput"
+        value={schoolCity}
+        onChangeText={setSchoolCity}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* School state field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
@@ -462,12 +449,28 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         }}
       />
 
+      {/* School country field and TextBox */}
+      <Text style={styles.fieldTextStyle}>
+        <Text>Country</Text>
+        <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <TextInput
+        testID="countryInput"
+        value={schoolCountry}
+        onChangeText={setSchoolCountry}
+        style={styles.textBoxStyle}></TextInput>
+
       {/* Graduation date field and Dropdown selectors for month and year, respectively */}
       <Text style={styles.fieldTextStyle}>
         <Text>Graduation date, or expected</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <View style={{flexDirection: 'row', justifyContent: "space-between", width:'60%' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: '60%',
+        }}>
         <Dropdown
           style={styles.dropdownMonthYear}
           placeholderStyle={styles.placeholderStyle}
@@ -484,7 +487,7 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
           value={month}
           onChange={item => {
             setMonth(item.value);
-         }}
+          }}
         />
         <Dropdown
           style={styles.dropdownMonthYear}
@@ -532,8 +535,14 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
 
       {/* Field of study field and TextBox, along with example*/}
       <Text style={styles.fieldTextStyle}>Field of study</Text>
-      <TextInput testID="fieldOfStudyInput" value={fieldOfStudy} onChangeText={setFieldOfStudy} style={styles.textBoxStyle}></TextInput>
-      <Text style={{color: 'grey', marginLeft: 15}}>Ex. Health Science, Biology, Public Health, etc.</Text>
+      <TextInput
+        testID="fieldOfStudyInput"
+        value={fieldOfStudy}
+        onChangeText={setFieldOfStudy}
+        style={styles.textBoxStyle}></TextInput>
+      <Text style={{color: 'grey', marginLeft: 15}}>
+        Ex. Health Science, Biology, Public Health, etc.
+      </Text>
 
       {/* Home address header */}
       <Text style={styles.headerTextStyle}>Permanent home address</Text>
@@ -543,32 +552,44 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         <Text>Home street address</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="homeStreetAddressInput"
-      value={homeAddress} onChangeText={setHomeAddress} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="homeStreetAddressInput"
+        value={homeAddress}
+        onChangeText={setHomeAddress}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Home city field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>City</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="homeCityInput"
-        value={homeCity} onChangeText={setHomeCity} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="homeCityInput"
+        value={homeCity}
+        onChangeText={setHomeCity}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Home state field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>State</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="homeStateInput"
-        value={homeState} onChangeText={setHomeState} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="homeStateInput"
+        value={homeState}
+        onChangeText={setHomeState}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Zip code field and TextBox */}
       <Text style={styles.fieldTextStyle}>
         <Text>ZIP Code</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="zipCodeInput"
-        value={zipCode} onChangeText={validateZipCode} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="zipCodeInput"
+        value={zipCode}
+        onChangeText={validateZipCode}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Your Expertise header */}
       <Text style={styles.headerTextStyle}>Your expertise</Text>
@@ -576,7 +597,7 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
       {/* Discipline field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>Discipline</Text>
-        <Text style={{color:'red'}}> *</Text>
+        <Text style={{color: 'red'}}> *</Text>
       </Text>
       <Dropdown
         style={styles.dropdown}
@@ -600,7 +621,7 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
       {/* Certificate field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>Certification</Text>
-        <Text style={{color:'red'}}> *</Text>
+        <Text style={{color: 'red'}}> *</Text>
       </Text>
       <Dropdown
         style={styles.dropdown}
@@ -616,9 +637,7 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         placeholder="Select item"
         searchPlaceholder="Search..."
         value={isCategorySelected ? 'Select Certification' : 'Select Category'}
-        onChange={
-          (item) => handleDropdownChange(item.value)
-        }
+        onChange={item => handleDropdownChange(item.value)}
       />
 
       {/* Years of specialty experience field and TextBox */}
@@ -626,141 +645,154 @@ const [localContractsPrefs, setLocalContractsPrefs] = useState({
         <Text>Years of experience</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="yearsOfExperienceInput"
-        value={yearsOfSpecialty} onChangeText={setYearsOfSpecialty} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="yearsOfExperienceInput"
+        value={yearsOfSpecialty}
+        onChangeText={setYearsOfSpecialty}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* IDENTITY VERIFICATION SECTION */}
       {/* Richard Varela add the identity verification section related to SCRUM - 106 */}
       <Text style={styles.headerTextStyle}>Identity verfication</Text>
 
       {/* Date of birth field and TextBox */}
-      <Text style = {styles.fieldTextStyle}>
+      <Text style={styles.fieldTextStyle}>
         <Text>Date of birth</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="dateOfBirthInput"
-        value={dob} onChangeText={setDob} style={styles.textBoxStyle} placeholder='MM/DD/YYYY' placeholderTextColor={'grey'}></TextInput>
+      <TextInput
+        testID="dateOfBirthInput"
+        value={dob}
+        onChangeText={setDob}
+        style={styles.textBoxStyle}
+        placeholder="MM/DD/YYYY"
+        placeholderTextColor={'grey'}></TextInput>
 
       {/* Input field for last four of SSN */}
       <Text style={styles.fieldTextStyle}>
         <Text>Last four of SSN</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="ssnLastFourInput"
-        value={ssn} onChangeText={setSSN} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="ssnLastFourInput"
+        value={ssn}
+        onChangeText={setSSN}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Input field for legal first name */}
       <Text style={styles.fieldTextStyle}>
         <Text>Legal First Name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="legalFirstNameInput"
-        value={legalFirstName} onChangeText={setLegalFirstName} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="legalFirstNameInput"
+        value={legalFirstName}
+        onChangeText={setLegalFirstName}
+        style={styles.textBoxStyle}></TextInput>
 
       {/* Input field for legal last name */}
       <Text style={styles.fieldTextStyle}>
         <Text>Legal Last Name</Text>
         <Text style={{color: 'red'}}> *</Text>
       </Text>
-      <TextInput testID="legalLastNameInput"
-        value={legalLastName} onChangeText={setLegalLastName} style={styles.textBoxStyle}></TextInput>
+      <TextInput
+        testID="legalLastNameInput"
+        value={legalLastName}
+        onChangeText={setLegalLastName}
+        style={styles.textBoxStyle}></TextInput>
 
-      {/* Save button */}
-      {/* <TouchableOpacity style={styles.saveButton} onPress={printInputs}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave1}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
-      </TouchableOpacity> */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-    <Text style={{color: 'black', fontWeight: 'bold'}}>SAVE</Text>
-</TouchableOpacity>
-
+      </TouchableOpacity>
 
       {/* Cancel button */}
-      <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => navigation.goBack()}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>CANCEL</Text>
       </TouchableOpacity>
-    </ScrollView>    
-  )
-}
+    </ScrollView>
+  );
+};
 
-  // Styles
+// Styles
 const styles = StyleSheet.create({
-
-  // custom styles. Subject to change  
+  // custom styles. Subject to change
   textBoxStyle: {
     borderColor: 'black',
-    borderWidth: 1, 
+    borderWidth: 1,
     borderRadius: 10,
     marginLeft: 15,
     marginRight: 15,
-    height: 40
+    height: 40,
   },
 
   bigTextBoxStyle: {
     borderColor: 'black',
-    borderWidth: 1, 
+    borderWidth: 1,
     borderRadius: 10,
     marginLeft: 15,
     marginRight: 15,
-    height: 100
-  }, 
+    height: 100,
+  },
 
   fieldTextStyle: {
     marginTop: 10,
-    marginLeft: 15, 
-    marginRight: 15, 
-    marginBottom:5, 
-    color:'black'
-  }, 
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 5,
+    color: 'black',
+  },
 
   headerTextStyle: {
     marginLeft: 15,
     marginRight: 15,
-    marginTop: 30, 
-    marginBottom: 10, 
+    marginTop: 30,
+    marginBottom: 10,
     color: 'black',
-    fontSize: 20, 
-    fontWeight: 'bold'
-  }, 
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 
   saveButton: {
-    marginTop: 20, 
+    marginTop: 20,
     marginLeft: 15,
     marginRight: 15,
-    marginBottom: 10, 
-    height: 40, 
-    borderRadius: 10, 
-    backgroundColor: "#0EA68D", 
-    alignItems: "center", 
-    padding: 10
-  }, 
+    marginBottom: 10,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#0EA68D',
+    alignItems: 'center',
+    padding: 10,
+  },
 
   cancelButton: {
-    marginTop: 10, 
+    marginTop: 10,
     marginLeft: 15,
     marginRight: 15,
-    marginBottom: 10, 
-    height: 40, 
-    borderRadius: 10, 
-    backgroundColor: "#E6E6E6", 
-    alignItems: "center", 
-    padding: 10
-  }, 
+    marginBottom: 10,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    padding: 10,
+  },
 
   uplaodPhotoButton: {
-    padding:5,
+    padding: 5,
     borderWidth: 1,
     borderRadius: 10,
     height: 35,
-    borderColor: "#0EA68D", 
+    borderColor: '#0EA68D',
     backgroundColor: 'white',
-    alignItems: "center",
+    alignItems: 'center',
     width: 100,
     marginLeft: 15,
   },
 
   profileContainer: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     marginTop: 5,
     marginBottom: 20,
     marginLeft: 15,
@@ -788,7 +820,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 10
+    borderRadius: 10,
   },
 
   dropdownMonthYear: {
@@ -800,18 +832,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 10
+    borderRadius: 10,
   },
 
   placeholderStyle: {
     fontSize: 16,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   selectedTextStyle: {
     color: 'black',
     fontSize: 16,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   iconStyle: {
@@ -822,7 +854,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-  }
+  },
 });
 
-export default EditBasicDetails
+export default EditBasicDetails;

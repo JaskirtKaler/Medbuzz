@@ -12,62 +12,28 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, StyleSheet, View, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import profileData from '../UserInfo/Profile.tsx';
+import { UserObject } from '../UserInfo/UserObject';
 
 const { width, height } = Dimensions.get('window');
 
-// Mock Profile Object (replace with real data later)
-const mockProfile = {
-    firstName: 'First',
-    lastName: 'Last',
-    specialty: 'Specialty',
-    profileStrength: 33, // as seen on the progress bar
-    phoneNumber: '(123) 456-7890',
-    email: 'example@example.com',
-    resume: '',
-    licenses: [],
-    degree: '',
-    certifications: [],
-    references: [],
-    vaccination: [],
-    jobPreferences: {
-      activelyLooking: true,
-    },
-  };
 
   const LoadingScreen = () => {
     const navigation = useNavigation<any>();
-    const [profile, setProfile] = useState(mockProfile); // Use mockProfile as the initial state
 
-    // Save profile to AsyncStorage
-    const saveProfileToStorage = async (profile: typeof mockProfile) => {
+    const initializeUserObject = async () => {
         try {
-            await AsyncStorage.setItem('userProfile', JSON.stringify(profile));
-            console.log('Profile saved to local storage');
+            const existingUserObject = await AsyncStorage.getItem('userProfile');
+            if (!existingUserObject) {
+                console.log('User object does not exist. Initializing...');
+                await AsyncStorage.setItem('userProfile', JSON.stringify(UserObject));
+                console.log('User object initialized.');
+            } else {
+                console.log('User object already exists.');
+            }
         } catch (error) {
-            console.error('Error saving profile to local storage', error);
+            console.error('Error initializing user object:', error);
         }
     };
-
-
-    useEffect(() => {
-        const loadProfileFromStorage = async () => {
-            try {
-                const storedProfile = await AsyncStorage.getItem('userProfile');
-                if (!storedProfile) {
-                    await saveProfileToStorage(mockProfile);
-                    console.log('Default profile saved to local storage');
-                } else {
-                    setProfile(JSON.parse(storedProfile));
-                    console.log('Profile loaded from local storage');
-                }
-            } catch (error) {
-                console.error('Error loading profile from local storage', error);
-            }
-        };
-        loadProfileFromStorage(); // Load or save the profile when the screen loads
-    }, []);
-    
 
     const handleContinue = () => {
         console.log('Continued was hit, now waiting to simulate network traffic for 5 seconds.');
@@ -77,7 +43,10 @@ const mockProfile = {
         }, 5000);
     };
 
-    useFocusEffect(handleContinue);
+    useEffect(() => {
+        initializeUserObject(); // Initialize the object when the screen is focused
+        handleContinue();
+    });
 
     return (
         <View style={styles.background_style}>
