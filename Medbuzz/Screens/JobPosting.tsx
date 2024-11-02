@@ -235,6 +235,7 @@ const JobPosting = () => {
       alertTitle = alertIssueTitle;
       alertMessage = alertIssueMessage;
     } else {
+      //save the jobID to the object
     }
 
     // display the alert

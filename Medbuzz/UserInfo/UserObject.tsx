@@ -55,35 +55,6 @@ export const UserObject = {
     references: '',
     vaccination: '',
   },
-  staffRolePrefs: {
-    toggle: '',
-    startDate: '',
-    preferredLocation: '',
-    relocate: false,
-    desiredPay: '',
-    preferredHours: '',
-  },
-  travelContractsPrefs: {
-    toggle: '',
-    startDate: '',
-    preferredLocation: '',
-    relocate: false,
-    desiredPay: '',
-    preferredHours: '',
-  },
-  localContractsPrefs: {
-    toggle: '',
-    startDate: '',
-    preferredLocation: '',
-    relocate: false,
-    desiredPay: '',
-    preferredHours: '',
-  },
-  //currently location preferences are set separately as 
-  // locationPreference: {
-  //   state: '',
-  //   city: '',
-  // },
   myJobs: {
     appliedJobs: [
       {
@@ -98,3 +69,30 @@ export const UserObject = {
     },
   ],
 };
+
+export const staffRolePrefs = {
+  toggle: '',
+  startDate: '',
+  preferredLocation: '',
+  relocate: false,
+  desiredPay: '',
+  preferredHours: '',
+}
+
+export const travelContractsPrefs= {
+  toggle: '',
+  startDate: '',
+  preferredLocation: '',
+  relocate: false,
+  desiredPay: '',
+  preferredHours: '',
+}
+
+export const localContractsPrefs = {
+  toggle: '',
+  startDate: '',
+  preferredLocation: '',
+  relocate: false,
+  desiredPay: '',
+  preferredHours: '',
+}
