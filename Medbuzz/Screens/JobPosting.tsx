@@ -25,6 +25,7 @@ import CancelX from '../Components/Svg/CancelX.tsx';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
 import StateLocation from '../Components/Svg/Statelocation.tsx';
 import RNFetchBlob from 'rn-fetch-blob';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {width, height} = Dimensions.get('window');
 const JobPosting = () => {
@@ -32,16 +33,15 @@ const JobPosting = () => {
   const route = useRoute<RouteProp<{params: {job: any}}, 'params'>>();
   const {job} = route.params;
   //console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
-  console.log('job id: ' + job.id);
+  //console.log('job id: ' + job.id);
 
   // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
-  // These files exist on my emulator only and will need to be renames on other systems.
+  // These files exist on my emulator only and will need to be renamed on other systems.
   // This is for testing error checking only
   let resumePath = '/storage/emulated/0/Pictures/IMG_20241014_183209.jpg';
   let licensePath = '/storage/emulated/0/Pictures/IMG_20241014_183208.jpg';
   let degreePath = '/storage/emulated/0/Pictures/IMG_20241014_183206.jpg';
-  let certificationPath =
-    '/storage/emulated/0/Pictures/IMG_20241014_183205.jpg';
+  let certificationPath = '/storage/emulated/0/Pictures/IMG_20241014_183205.jpg';
   let referencePath = '/storage/emulated/0/Pictures/IMG_20241014_182941.jpg';
   let vaccinationPath = '/storage/emulated/0/Pictures/IMG_20241014_175006.jpg';
 
@@ -234,9 +234,79 @@ const JobPosting = () => {
     if (problems) {
       alertTitle = alertIssueTitle;
       alertMessage = alertIssueMessage;
+
     } else {
-      //save the jobID to the object
-    }
+
+      // otherwise attempt to retrieve the User Object from AsyncStorage, push an applyJob object, and save 
+      try {
+        const savedUserObject = await AsyncStorage.getItem('userProfile');
+
+        // if there is data in saveLocationInfo parse it and set useState variables accordingly
+        if (savedUserObject !== null) {
+
+          console.log("User data successfully loaded!");
+
+          // set parsedUserObject equal to the parsed savedUserObject from AsyncStorage 
+          const parsedUserObject = JSON.parse(savedUserObject);
+
+          // check to ensure that parsedUserObject.myJobs and parsedUserObject.myJobs.appliedJobs have been defined
+          // If they haven't, define them
+          if (!parsedUserObject.myJobs) {
+            console.log("myJobs is null")  //TEST
+            parsedUserObject.myJobs = { appliedJobs: [] };
+
+          } else if (!parsedUserObject.myJobs.appliedJobs) {
+            console.log("appliedJobs is null");  //TEST
+            parsedUserObject.myJobs.appliedJobs = [];
+          }
+
+          // ensure user has not already applied to the job. If they have, inform them and return from the function immediately
+          for (let i = 0; i < parsedUserObject.myJobs.appliedJobs.length; i++) {
+            if(job.id === parsedUserObject.myJobs.appliedJobs[i].jobID) {
+              Alert.alert("Already applied", "It looks like you have already applied to this job", [ 
+                {
+                  text: 'OK',
+                  onPress: () => console.log('OK Pressed'),
+                }
+              ]);
+
+              return
+            }
+          }
+
+          // create applyObject to contain the job id and the date the user applied.
+          let applyObject = {
+            jobID: job.id,
+            dateApplied: new Date().toLocaleDateString('en-US'),
+          };
+
+          // push the new applyObject to the parsedUserObject.myJobs.appliedJobs array
+          parsedUserObject.myJobs.appliedJobs.push(applyObject);
+          console.log("job id from job object: " + job.id);  //TEST
+          console.log(parsedUserObject);   //TEST
+
+          console.log(parsedUserObject.myJobs.appliedJobs);  //TEST
+
+          //TEST
+          for(let i = 0; i < parsedUserObject.myJobs.appliedJobs.length; i++) {
+            console.log(parsedUserObject.myJobs.appliedJobs[i].jobID);
+            console.log(parsedUserObject.myJobs.appliedJobs[i].dateApplied);
+          }
+          
+          // save the user object back to AsyncStorage
+          await AsyncStorage.setItem(
+            'userProfile',
+            JSON.stringify(parsedUserObject),
+          );
+
+        } else {
+          console.log("No user profile info found. Please create a profile.");
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+    
 
     // display the alert
     Alert.alert(alertTitle, alertMessage, [
