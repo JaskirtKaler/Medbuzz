@@ -59,7 +59,7 @@ function App() {
     <UnreadMessagesContextProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="SignInSignUp"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
         <Stack.Screen name="Login" component={Login} />

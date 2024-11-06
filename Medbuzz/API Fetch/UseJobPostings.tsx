@@ -99,7 +99,7 @@ export const useJobPostings = () => {
       const page = pageNum; // Dynamically set offset based on the page number
 
       const response = await fetch(
-        `https://api.ceipal.com/v1/getJobPostingsList${locationParams}${
+        `https://api.ceipal.com/v1/getJobPostingsList/${locationParams}${
           locationParams ? '&' : '?'
         }limit=${limit}&page=${page}`,
         requestOptions,
