@@ -20,14 +20,123 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
   const [profile, setProfile] = useState<any>(null); // Profile data from AsyncStorage
 
-
+  // Load profile data when component mounts
+  useEffect(() => {
+    const loadProfile = async () => {
+      const profileData = await AsyncStorage.getItem('profile');
+      if (profileData) {
+        const currentProfile = JSON.parse(profileData);
+  
+        // Helper function to create a minimal DocumentPickerResponse
+        const createDocumentPickerResponse = (uri: string): DocumentPickerResponse => ({
+          uri,
+          name: uri.split('/').pop() || 'Document', // Extract name from URI or use a placeholder
+          fileCopyUri: null,
+          type: 'application/pdf', // Set a default type, adjust if needed
+          size: 0, // Default to 0, if you don't have the size info
+        });
+  
+        // Check if the document is already uploaded for the current header type
+        switch (header) {
+          case 'Resume':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.resume
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.resume)
+                : null
+            );
+            break;
+          case 'License':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.license?.licenseFile
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.license.licenseFile)
+                : null
+            );
+            break;
+          case 'Degree':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.degree
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.degree)
+                : null
+            );
+            break;
+          case 'Certifications':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.certifications
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.certifications)
+                : null
+            );
+            break;
+          case 'References':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.references
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.references)
+                : null
+            );
+            break;
+          case 'Vaccination':
+            setSelectedDocument(
+              currentProfile.uploadedFiles?.vaccination
+                ? createDocumentPickerResponse(currentProfile.uploadedFiles.vaccination)
+                : null
+            );
+            break;
+          default:
+            break;
+        }
+  
+        setProfile(currentProfile); // Update the profile state
+      }
+    };
+  
+    loadProfile();
+  }, [header]);
+  
   // Handle document upload
   const handleUpload = async () => {
     try {
-      const doc = await DocumentPicker.pickSingle({ type: [DocumentPicker.types.pdf, DocumentPicker.types.images] });
+      const doc = await DocumentPicker.pickSingle({ type: [DocumentPicker.types.pdf, DocumentPicker.types.images,
+        'public.image', // Specifically for iOS to recognize images
+        'public.item',   // Generic file type for iOS compatibility
+      ] });
       setSelectedDocument(doc); // Save the document path to the state
       console.log('Uploaded Document:', doc);
       console.log('Document Type:', header);
+      // Load the existing profile data from AsyncStorage
+    const profileData = await AsyncStorage.getItem('profile');
+    const currentProfile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
+    // Ensure the uploadedFiles structure exists
+    currentProfile.uploadedFiles = currentProfile.uploadedFiles || {};
+    currentProfile.uploadedFiles.license = currentProfile.uploadedFiles.license || {};
+    // Save the document path in the relevant field based on the `header`
+    switch (header) {
+      case 'Resume':
+        currentProfile.uploadedFiles.resume = doc.uri;
+        break;
+      case 'License':
+        currentProfile.uploadedFiles.license.licenseFile = doc.uri;
+        break;
+      case 'Degree':
+        currentProfile.uploadedFiles.degree = doc.uri;
+        break;
+      case 'Certifications':
+        currentProfile.uploadedFiles.certifications = doc.uri;
+        break;
+      case 'References':
+        currentProfile.uploadedFiles.references = doc.uri;
+        break;
+      case 'Vaccination':
+        currentProfile.uploadedFiles.vaccination = doc.uri;
+        break;
+      default:
+        console.log('Unknown document type');
+        return;
+    }
+
+    // Save the updated profile data back to AsyncStorage
+    await AsyncStorage.setItem('profile', JSON.stringify(currentProfile));
+    setProfile(currentProfile); // Update the profile state if needed
+    console.log('Render object container?')
+    console.log(currentProfile.uploadedFiles.resume);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker

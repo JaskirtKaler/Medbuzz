@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, ScrollView, TextInput, Platform, KeyboardAvoidingView  } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, ScrollView, TextInput, Platform, KeyboardAvoidingView, Alert  } from 'react-native';
 const { width, height } = Dimensions.get('window'); // screen max width and height
 import Backarrow from '../Components/Svg/Backarrow.tsx'
 import { useNavigation } from '@react-navigation/native'
@@ -8,6 +8,7 @@ import Calender from '../Components/Svg/Calender.tsx';
 import Plus from '../Components/Svg/Plusarrow.tsx';
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 import Download from '../Components/Svg/Download.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { licenseType as licsenseOptions } from '../mapVariables/optionsData.tsx';
 import { usaStates } from '../mapVariables/optionsData.tsx';
 interface License{
@@ -17,7 +18,7 @@ interface License{
   expirationDate: string;
   firstName: string;
   lastName: string;
- 
+  licenseFile: string | null;
 }
 interface DropdownItem {
   label: string;
@@ -33,28 +34,72 @@ function UpdateLicense() {
     const [licenseNumber, setLicenseNumber] = useState<string>('');
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
-    const [expirationDate, setExpirationDate] = useState<string>('');
+    // const [expirationDate, setExpirationDate] = useState<string>('');
     const [upload, setUpload] = useState<boolean>(false);
+    const [expirationDate, setExpirationDate] = useState<string>('');
+    const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
 
-
+    useEffect(() => {
+      const loadLicenseData = async () => {
+        const profileData = await AsyncStorage.getItem('profile');
+        if (profileData) {
+          const profile = JSON.parse(profileData);
+          const licenseData = profile.uploadedFiles?.license || {};
+          
+          setSelectedLicenseType(licenseData.licenseType || '');
+          setSelectedState(licenseData.licenseState || '');
+          setLicenseNumber(licenseData.licenseNumber || '');
+          setExpirationDate(licenseData.expirationDate || '');
+          setFirstName(licenseData.firstName || '');
+          setLastName(licenseData.lastName || '');
+    
+          if (licenseData.licenseFile) {
+            setSelectedDocument({
+              uri: licenseData.licenseFile,
+              name: 'License Document',
+              type: 'application/pdf',
+              size: 0,
+              fileCopyUri: null,
+            });
+          }
+        }
+      };
+    
+      loadLicenseData();
+    }, []);
     const isValidLength = licenseNumber.length === 9; // Assuming 9 digits as the valid length
 
-    const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
-    const handleUpload = async () =>{
-        try{
-            const doc = await DocumentPicker.pickSingle({type:  [DocumentPicker.types.pdf, DocumentPicker.types.images],});
-            setSelectedDocument(doc); // Save the document path to the state
-            setUpload(true);
-            console.log(doc);
-        }catch (err){
-            if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker
-                console.log('user Cancelled the upload', err);
-            } else {
-                throw err;
-            }
+    // testing if object is stored in async storage
+    const printLicenseData = async () => {
+      try {
+        const profileData = await AsyncStorage.getItem('profile');
+        if (profileData) {
+          const profile = JSON.parse(profileData);
+          console.log("License Data:", profile.uploadedFiles.license);
+        } else {
+          console.log("No profile data found in AsyncStorage.");
         }
-    }
+      } catch (error) {
+        console.error("Failed to load license data:", error);
+      }
+    };
+    
+    const handleUpload = async () => {
+      try {
+        const doc = await DocumentPicker.pickSingle({
+          type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
+        });
+        setSelectedDocument(doc);
+        setUpload(true); // Set upload status to true
+      } catch (err) {
+        if (DocumentPicker.isCancel(err)) {
+          console.log('User cancelled the upload', err);
+        } else {
+          throw err;
+        }
+      }
+      await printLicenseData();
+    };
 
     
 
@@ -80,7 +125,7 @@ function UpdateLicense() {
    
 
     
-    const handleSave = () => {
+    const handleSave = async () => {
       const licenseData: License = {
         licenseType: selectedLicenseType,
         licenseState: selectedState,
@@ -88,10 +133,18 @@ function UpdateLicense() {
         expirationDate,
         firstName,
         lastName, 
+        licenseFile: selectedDocument ? selectedDocument.uri : null,
       };
   
       console.log(licenseData);
       console.log(selectedDocument?.name || 'None');
+      const profileData = await AsyncStorage.getItem('profile');
+      const profile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
+      profile.uploadedFiles = profile.uploadedFiles || {};
+      profile.uploadedFiles.license = licenseData;
+
+      await AsyncStorage.setItem('profile', JSON.stringify(profile));
+      Alert.alert("Success", "License information saved successfully.");
     };
     // if user decides to download document
     const handleDownload = () =>{
