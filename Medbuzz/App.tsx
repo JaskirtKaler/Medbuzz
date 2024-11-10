@@ -1,6 +1,6 @@
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Login from './Auth/Login.tsx';
 import Register from './Auth/Register.tsx';
 import RegContinue from './Auth/RegContinue.tsx';
@@ -41,6 +41,7 @@ import {
 } from '@react-navigation/drawer';
 import ChangePassword from './Auth/ChangePassword.tsx';
 import JobPosting from './Screens/JobPosting.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export type RootStackParamList = {
@@ -193,9 +194,15 @@ function CustomDrawerContent(props: any) {
       <DrawerItem
         label="Sign Out"
         labelStyle={{color: '#DB0000'}}
-        onPress={() => {
-          navigation.navigate('Login');
-          console.log('Signed out');
+        onPress={async () => {
+          try {
+            await AsyncStorage.clear();
+            console.log('AsyncStorage cleared for testing');
+            navigation.navigate('Login');
+            console.log('Signed out');
+          } catch (error) {
+            console.error('Error clearing AsyncStorage:', error);
+          }
         }}
       />
     </DrawerContentScrollView>
