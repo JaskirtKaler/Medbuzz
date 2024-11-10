@@ -28,7 +28,7 @@
 	<dict>
 	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<true/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
@@ -52,10 +52,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.medbuzz://auth/</string> 
+			<string>com.medbuzz</string> 
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.medbuzz://auth/</string> 
+				<string>com.medbuzz</string> 
 			</array>
 		</dict>
 	</array>
