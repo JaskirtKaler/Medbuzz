@@ -1,6 +1,6 @@
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -28,4 +28,36 @@
 #endif
 }
 
+
+// Handle custom URL schemes for MS AD or other deep linking scenarios
+- (BOOL)application:(UIApplication *)application
+             openURL:(NSURL *)url
+             options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
+{    
+    // Handle AppAuth authorization flow
+    if (self.authorizationFlowManagerDelegate &&
+        [self.authorizationFlowManagerDelegate resumeExternalUserAgentFlowWithURL:url]) {
+        return YES;
+    }
+
+    // Handle React Native deep linking
+    return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+
+// Handle universal links for MS AD or other deep linking scenarios
+- (BOOL)application:(UIApplication *)application
+continueUserActivity:(nonnull NSUserActivity *)userActivity
+  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+  if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
+    if (self.authorizationFlowManagerDelegate) {
+      BOOL resumableAuth = [self.authorizationFlowManagerDelegate resumeExternalUserAgentFlowWithURL:userActivity.webpageURL];
+      if (resumableAuth) {
+        return YES;
+      }
+    }
+  }
+  return [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+}
 @end
