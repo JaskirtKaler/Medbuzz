@@ -1,42 +1,59 @@
 import {authorize, revoke, AuthConfiguration} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} from '@env';
-  const config: AuthConfiguration = {
-    issuer: ISSUER,
-    clientId: CLIENT_ID,
-    redirectUrl: 'com.medbuzz://auth/',
-    scopes: ['openid', 'email'],
-    additionalParameters: {prompt: 'select_account'},
-    serviceConfiguration: {
-      authorizationEndpoint:
-        AUTHORIZATION_ENDPOINT,
-      tokenEndpoint: TOKEN_ENDPOINT,
-    },
-    useNonce: true, 
-    usePKCE: true, //For iOS, we have added the useNonce and usePKCE parameters, which are recommended for security reasons.
-  };
-class Auth {
+import {
+  CLIENT_ID,
+  TENENT_ID,
+  AUTHORIZATION_ENDPOINT,
+  TOKEN_ENDPOINT,
+  ISSUER,
+} from '@env';
+import {atob} from 'react-native-quick-base64';
+global.atob = atob;
+import {jwtDecode, JwtPayload} from 'jwt-decode';
+const config: AuthConfiguration = {
+  issuer: ISSUER,
+  clientId: CLIENT_ID,
+  redirectUrl: 'com.medbuzz://auth/',
+  scopes: ['openid', 'email', 'profile'],
+  additionalParameters: {prompt: 'select_account'},
+  serviceConfiguration: {
+    authorizationEndpoint: AUTHORIZATION_ENDPOINT,
+    tokenEndpoint: TOKEN_ENDPOINT,
+  },
+  useNonce: true,
+  usePKCE: true, //For iOS, we have added the useNonce and usePKCE parameters, which are recommended for security reasons.
+};
 
+interface CustomJwtPayload extends JwtPayload {
+  given_name: string;
+  family_name: string;
+  emails: string;
+}
+
+class Auth {
   // Sign In or Sign Up function
   static async signIn() {
     try {
-      console.log('Made it to SigIn()')
+      console.log('Made it to SigIn()');
       //we get stuck here
       const authState = await authorize(config);
-      console.log('Made it passed authState')
-      
-      // Store tokens in AsyncStorage
-      //await AsyncStorage.setItem('accessToken', authState.accessToken);
-      await AsyncStorage.setItem('idToken', authState.idToken);
+      console.log('Made it passed authState');
+      // Decode the idToken to get user information
+      const decodedIdToken = jwtDecode<CustomJwtPayload>(authState.idToken);
+      console.log('Decoded ID Token:', decodedIdToken);
+      //console.log(decodedIdToken.family_name)
 
-      console.log(authState.idToken)
+      // Store the decoded object in AsyncStorage so survey pages can add to it
+      await AsyncStorage.setItem('Auth', JSON.stringify(decodedIdToken));
+
+      //console.log(authState.idToken);
 
       // You could also store refreshToken if you need it for token refresh
       if (authState.refreshToken) {
         await AsyncStorage.setItem('refreshToken', authState.refreshToken);
       }
 
-      return authState; // Return the auth state with tokens
+      return {authState, decodedIdToken}; // Return the auth state with tokens
     } catch (error) {
       console.error('Error during sign-in:', error);
       throw error;
@@ -55,9 +72,27 @@ class Auth {
       }
 
       // Clear all tokens from AsyncStorage
-      await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('idToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await AsyncStorage.removeItem('initialObject');
+      
+      try {
+        // Get all keys from AsyncStorage
+        const keys = await AsyncStorage.getAllKeys();
+  
+        if (keys.length > 0) {
+          // Fetch all key-value pairs
+          const result = await AsyncStorage.multiGet(keys);
+  
+          // Display key-value pairs
+          result.forEach(([key, value]) => {
+            console.log(`Key: ${key}, Value: ${value}`);
+          });
+        } else {
+          console.log('No data found in AsyncStorage.');
+        }
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage', error);
+      }
 
       return true;
     } catch (error) {
@@ -69,7 +104,7 @@ class Auth {
   // Utility function to get the current access token
   static async getAccessToken() {
     try {
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('initialObject');
       return token;
     } catch (error) {
       console.error('Error getting access token:', error);

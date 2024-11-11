@@ -4,7 +4,7 @@ Search by location parameters is still in the works
 import {useState, useEffect} from 'react';
 import {API_TOKEN} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { usaCeipalStateInts } from '../mapVariables/optionsData';
+import {usaCeipalStateInts} from '../mapVariables/optionsData';
 
 export interface JobPosting {
   id: string;
@@ -66,13 +66,12 @@ export const useJobPostings = () => {
         let stateInt = null;
 
         // Check if state is not null
-        if(state) {
-
+        if (state) {
           // If true, search usaCeipalStateInts labels for matching string and set stateInt to the associated int value
-          for(let i = 0; i < usaCeipalStateInts.length; i++) {
-            if(usaCeipalStateInts[i].label === state) {
+          for (let i = 0; i < usaCeipalStateInts.length; i++) {
+            if (usaCeipalStateInts[i].label === state) {
               stateInt = usaCeipalStateInts[i].value;
-              console.log("StateInt: " + stateInt)
+              console.log('StateInt: ' + stateInt);
             }
           }
         }
@@ -93,8 +92,7 @@ export const useJobPostings = () => {
         method: 'GET',
         headers: myHeaders,
       };
-      
-      
+
       const limit = 20; // Set the limit to the maximum the API allows
       const page = pageNum; // Dynamically set offset based on the page number
 
@@ -114,13 +112,12 @@ export const useJobPostings = () => {
 
       const result = await response.json();
 
-      if (result.num_pages > 5){
-        setPage_count(5)
-        setTotalJobs(100)
-      }
-      else{
-        setPage_count(result.num_pages)
-        setTotalJobs(result.count)
+      if (result.num_pages > 5) {
+        setPage_count(5);
+        setTotalJobs(100);
+      } else {
+        setPage_count(result.num_pages);
+        setTotalJobs(result.count);
       }
 
       setJobPostings(result);
@@ -162,15 +159,12 @@ export const useJobPostings = () => {
           updated: posting.updated,
           apply_job: posting.apply_job,
           apply_job_without_registration:
+            posting.apply_job_without_registration,
 
-          posting.apply_job_without_registration,
-
-           
           skills: posting.skills,
           postal_code: posting.postal_code,
         })),
       );
-
     } catch (error: any) {
       console.error('Fetch error:', error);
       setJobPostings([]); // Ensure state is cleared on error
