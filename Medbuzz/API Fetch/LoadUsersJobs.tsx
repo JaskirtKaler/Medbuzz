@@ -59,15 +59,15 @@ export const loadUsersJobs = () => {
             let singleJobId: any;
             console.log("applied jobs length")
             console.log(userObject.myJobs.appliedJobs.length);
+            console.log(userObject.myJobs.appliedJobs);
 
             // Use a Set to track the unique job IDs already in state
             const existingJobIds = new Set(jobPostings.map(job => job.id));
 
             // Use this to store fetched jobs temporarily
             let fetchedJobs: JobPosting[] = [];
-            for (let i = 0; i < userObject.myJobs.appliedJobs.length; i++) {
+            for (let i = 1; i < userObject.myJobs.appliedJobs.length; i++) {
                 singleJobId = userObject.myJobs.appliedJobs[i].jobID;
-
 
                 const response = await fetch(`https://api.ceipal.com/v1/getJobPostingDetails/?job_id=${singleJobId}`,
                     requestOptions
