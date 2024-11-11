@@ -1,11 +1,12 @@
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
-import Login from './Auth/Login.tsx';
-import Register from './Auth/Register.tsx';
-import RegContinue from './Auth/RegContinue.tsx';
-import ForgotPassword from './Auth/ForgotPassword.tsx';
-import ResetPassword from './Auth/ResetPassword.tsx';
+import {useEffect} from 'react';
+import React from 'react';
+import Login from './Unused Pages/Login.tsx';
+import Register from './Unused Pages/Register.tsx';
+import RegContinue from './Unused Pages/RegContinue.tsx';
+import ForgotPassword from './Unused Pages/ForgotPassword.tsx';
+import ResetPassword from './Unused Pages/ResetPassword.tsx';
 import Certificates from './SurveyPages/Certificates.tsx';
 import UploadDoc from './Screens/UploadDoc.tsx';
 import Discipline from './SurveyPages/Discipline.tsx';
@@ -28,21 +29,21 @@ import JobInfo from './Screens/JobInfo.tsx';
 import Inbox from './Screens/Inbox.tsx';
 import 'react-native-gesture-handler';
 import SaveSVG from './Components/Svg/SaveSvg.tsx';
-import { UnreadMessagesContextProvider } from './Components/Utility/UnreadMessagesContext';
+import {UnreadMessagesContextProvider} from './Components/Utility/UnreadMessagesContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Auth from './Auth/Auth.tsx';
 
 import Backarrow from './Components/Svg/Backarrow.tsx';
-import SignInSignUp from './Auth/SignInSignUp.tsx'
-import {StyleSheet, View, TouchableOpacity, Platform,} from 'react-native';
+import SignInSignUp from './Auth/SignInSignUp.tsx';
+import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import ChangePassword from './Auth/ChangePassword.tsx';
+import ChangePassword from './Unused Pages/ChangePassword.tsx';
 import JobPosting from './Screens/JobPosting.tsx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 export type RootStackParamList = {
   Login: undefined;
@@ -56,57 +57,57 @@ export type RootStackParamList = {
 // Begining on Stack navigation where Login System will begine
 function App() {
   const Stack = createNativeStackNavigator<any>();
+
   return (
     <UnreadMessagesContextProvider>
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{headerShown: false}}>
-        <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Main" component={Navigation} />
-        <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="RegContinue" component={RegContinue} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="Discipline" component={Discipline} />
-        <Stack.Screen name="Certificates" component={Certificates} />
-        <Stack.Screen name="Licenses" component={Licenses} />
-        <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
-        <Stack.Screen name="UserLocation" component={UserLocation} />
-        <Stack.Screen name="JobPosting" component={JobPosting} />
-        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen
-          name="MyJobs"
-          component={MyJobsPage}
-          options={({navigation}) => ({
-            headerShown: true,
-            headerTitle: '', // Remove the title
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Homepage')}
-                style={{marginLeft: 10}}>
-                {/* Replace Image with Backarrow SVG */}
-                <Backarrow width={45} height={45} color={'#000'} />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
-        <Stack.Screen
-          name="UploadDoc"
-          component={UploadDoc as React.FC<any>}
-          initialParams={{header: 'Error'}}
-        />
-        <Stack.Screen name="JobInfo" component={JobInfo} />
-        <Stack.Screen name="MessagePage" component={MessagePage} />
-        <Stack.Screen name="Inbox" component={Inbox} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="SignInSignUp"
+          screenOptions={{headerShown: false}}>
+          <Stack.Screen name="SignInSignUp" component={SignInSignUp} />
+          {/* <Stack.Screen name="Login" component={Login} /> */}
+          <Stack.Screen name="Main" component={Navigation} />
+          <Stack.Screen name="EditBasicDetails" component={EditBasicDetails} />
+          {/* <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="RegContinue" component={RegContinue} /> */}
+          {/* <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
+          {/* <Stack.Screen name="ChangePassword" component={ChangePassword} /> */}
+          <Stack.Screen name="Discipline" component={Discipline} />
+          <Stack.Screen name="Certificates" component={Certificates} />
+          <Stack.Screen name="Licenses" component={Licenses} />
+          <Stack.Screen name="LicenseLocation" component={LicensesLocation} />
+          <Stack.Screen name="UserLocation" component={UserLocation} />
+          <Stack.Screen name="JobPosting" component={JobPosting} />
+          <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
+          <Stack.Screen
+            name="MyJobs"
+            component={MyJobsPage}
+            options={({navigation}) => ({
+              headerShown: true,
+              headerTitle: '', // Remove the title
+              headerLeft: () => (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Homepage')}
+                  style={{marginLeft: 10}}>
+                  {/* Replace Image with Backarrow SVG */}
+                  <Backarrow width={45} height={45} color={'#000'} />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen name="UpdateLicense" component={UpdateLicense} />
+          <Stack.Screen
+            name="UploadDoc"
+            component={UploadDoc as React.FC<any>}
+            initialParams={{header: 'Error'}}
+          />
+          <Stack.Screen name="JobInfo" component={JobInfo} />
+          <Stack.Screen name="MessagePage" component={MessagePage} />
+          <Stack.Screen name="Inbox" component={Inbox} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </UnreadMessagesContextProvider>
-
   );
 }
 
@@ -194,12 +195,14 @@ function CustomDrawerContent(props: any) {
       <DrawerItem
         label="Sign Out"
         labelStyle={{color: '#DB0000'}}
-        onPress={async () => {
+        onPress={async() => {
           try {
             await AsyncStorage.clear();
             console.log('AsyncStorage cleared for testing');
-            navigation.navigate('Login');
-            console.log('Signed out');
+            Auth.signOut();
+
+            navigation.navigate('SignInSignUp');
+            //console.log('Signed out');
           } catch (error) {
             console.error('Error clearing AsyncStorage:', error);
           }

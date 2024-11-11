@@ -22,11 +22,31 @@ const { width, height } = Dimensions.get('window');
 
     const initializeUserObject = async () => {
         try {
-            const existingUserObject = await AsyncStorage.getItem('userProfile');
-            if (!existingUserObject) {
-                console.log('User object does not exist. Initializing...');
-                await AsyncStorage.setItem('userProfile', JSON.stringify(UserObject));
-                console.log('User object initialized.');
+            const existingUserObject = await AsyncStorage.getItem('user');
+            if (existingUserObject) {
+                const user = JSON.parse(existingUserObject);
+                const mappedUserObject = {
+                    ...UserObject,
+                    personalInfo: {
+                      ...UserObject.personalInfo,
+                      firstName: user.firstName || '',
+                      lastName: user.lastName || '',
+                      email: user.email || '',
+                    },
+                    homeAddress: {
+                      ...UserObject.homeAddress,
+                      zipcode: user.zipCode || '', // This is the zip code you captured on the previous page
+                    },
+                    expertise: {
+                      ...UserObject.expertise,
+                      discipline: user.discipline || '',
+                      certification: user.certificate || '',
+                      yearsOfExperience: user.experience || '',
+                    },
+                    
+                  };
+                await AsyncStorage.setItem('userProfile', JSON.stringify(mappedUserObject));
+                console.log('User object initialized.' + mappedUserObject);
             } else {
                 console.log('User object already exists.');
             }

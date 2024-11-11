@@ -15,36 +15,35 @@ import {
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {styles} from './ParentPage';
 import {loadUser, saveUser, User} from '../Components/Utility/userStorage.tsx';
 import { disciplineOptions } from '../mapVariables/optionsData.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const DisciplineScreen = () => {
   const progress = 20; // Example progress percentage
   const [discipline, setDiscipline] = useState('');
   const [experience, setExperience] = useState('');
   const navigation = useNavigation<any>();
   const [user, setUser] = useState<User | null>();
+  const route = useRoute<RouteProp<{params: {authState: any, decodedIdToken:any}}, 'params'>>();
+  const {authState, decodedIdToken} = route.params;
 
-  //everytime the page mounts, this use effect would be called and the user object from local storage will be retrieved
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userData = await loadUser();
-      setUser(userData);
-    };
-
-    fetchUserData();
-  }, []);
 
   const handleBack = () => {
     navigation.goBack();
     console.log('Back button clicked');
   };
+
+
   
   const handleContinue = async()=> {
     try {
       const updatedUser: User = {
         ...user,
+        firstName: decodedIdToken.given_name,
+        lastName: decodedIdToken.family_name,
+        email: decodedIdToken.emails[0],
         discipline,
         experience,
       };

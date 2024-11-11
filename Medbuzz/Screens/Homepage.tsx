@@ -25,6 +25,28 @@ type JobProps = {
   handleMoreDetails: (job: any) => void;
 };
 
+//copied richard's code from myjobs page to calculate weeks
+function calculateWeeksFromIsoDate(startDate: string, endDate: string): string {
+  const millisecondsInOneWeek: number = 7 * 24 * 60 * 60 * 1000;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // For debugging
+  // console.log(`start: ${start.getTime()}`);
+  // console.log(`end: ${end.getTime()}`);
+
+  const millisecondsBetweenDates: number = end.getTime() - start.getTime();
+
+  // These console logs are for debugging. Uncomment them to use
+  // console.log(`Ms: ${millisecondsInOneWeek}`);
+  // console.log(`between: ${millisecondsBetweenDates}`);
+
+  const weeks: number = millisecondsBetweenDates / millisecondsInOneWeek;
+  // console.log(`Weeks: ${weeks}`); // For debugging
+
+  return weeks <= 0 ? "Time Frame: Flexible" : `Time Frame: ${Math.ceil(weeks)} weeks`;
+}
+
 const Job = ({job, handleMoreDetails}: JobProps) => {
   return (
     <View style={styles.jobStyle}>
@@ -38,7 +60,7 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
           {job.state}
         </Text>
       </View>
-      <Text style={styles.jobTextStyle}>{job.requisition_description}</Text>
+      <Text style={styles.jobTextStyle}>{calculateWeeksFromIsoDate(job.job_start_date, job.job_end_date)}</Text>
       <TouchableOpacity
         style={styles.detailsButton}
         onPress={() => handleMoreDetails(job)}>
