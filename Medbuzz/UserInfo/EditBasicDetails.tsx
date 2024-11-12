@@ -94,6 +94,16 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
   >(null);
   const [isCategorySelected, setIsCategorySelected] = useState(false); // Boolean to check if category is selected
   
+  // Validation function for required fields
+  const validateForm = () => {
+    if (!firstName || !lastName || !phoneNumber || !email || !schoolName || !schoolState || !schoolCountry 
+        || !month || !year || !degreeType || !homeAddress || !homeCity || !homeState || !zipCode ||
+        !discipline || !yearsOfSpecialty || !dob || !ssn || !legalFirstName || !legalLastName
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   // Fetch existing data from local storage at the start of page, to populate the fields
   useEffect(() => {
@@ -168,11 +178,28 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
 
   //saves the data from the states back to the userProfile object so on the next fetch it reflects to most up to date information
   const handleSave1 = async () => {
+
+          // Validate the form fields before proceeding
+      const formIsValid = validateForm();
+
+      // If the form is not valid, show an alert and stop the save process
+      if (!formIsValid) {
+        Alert.alert(
+          'Error',
+          'Please fill in all required fields before saving.',
+          [{ text: 'OK' }],
+          { cancelable: false }
+        );
+        return; // Exit the function early to prevent saving
+      }
+
     try {
       // Retrieve the existing profile from AsyncStorage
       const storedProfile = await AsyncStorage.getItem('userProfile');
       const existingProfile = storedProfile ? JSON.parse(storedProfile) : {};
-  
+
+
+
       // Construct the updated profile by merging with the existing profile
       const currentProfile = {
         ...existingProfile, // this spread operator allow us to keep existing properties and only update the ones we explicitely mention
@@ -220,6 +247,7 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
         },
       };
   
+
       // Save the updated profile back to AsyncStorage
       await AsyncStorage.setItem('userProfile', JSON.stringify(currentProfile));
       console.log('Profile saved successfully');
@@ -621,7 +649,6 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
       {/* Certificate field and Dropdown selector */}
       <Text style={styles.fieldTextStyle}>
         <Text>Certification</Text>
-        <Text style={{color: 'red'}}> *</Text>
       </Text>
       <Dropdown
         style={styles.dropdown}
