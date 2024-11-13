@@ -1,40 +1,58 @@
 import {authorize, revoke, AuthConfiguration} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  CLIENT_ID,
-  TENENT_ID,
-  AUTHORIZATION_ENDPOINT,
-  TOKEN_ENDPOINT,
-  ISSUER,
-} from '@env';
-import {atob} from 'react-native-quick-base64';
-global.atob = atob;
-import {jwtDecode, JwtPayload} from 'jwt-decode';
-const config: AuthConfiguration = {
-  issuer: ISSUER,
-  clientId: CLIENT_ID,
-  redirectUrl: 'com.medbuzz://auth/',
-  scopes: ['openid', 'email', 'profile'],
-  additionalParameters: {prompt: 'select_account'},
-  serviceConfiguration: {
-    authorizationEndpoint: AUTHORIZATION_ENDPOINT,
-    tokenEndpoint: TOKEN_ENDPOINT,
+import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} from '@env';
+import { Platform } from 'react-native';
+
+  const config: AuthConfiguration = {
+    issuer: ISSUER,
+    clientId: CLIENT_ID,
+    redirectUrl: 'com.medbuzz://auth/',
+    scopes: ['openid'],
+    additionalParameters: {prompt: 'select_account'},
+    serviceConfiguration: {
+      authorizationEndpoint:AUTHORIZATION_ENDPOINT,
+      tokenEndpoint: TOKEN_ENDPOINT,
   },
-  useNonce: true,
-  usePKCE: true, //For iOS, we have added the useNonce and usePKCE parameters, which are recommended for security reasons.
+};
+if(Platform.OS === 'ios'){
+    config.useNonce = true;
+    config.usePKCE = true;
+    config.additionalParameters = {prompt: 'select_account',p:'B2C_1_com.medbuzz'};
+}
+else{
+    config.scopes.push('email');
+
+}
+class Auth {
+
+  // Function to construct and log the authorization URL
+static logAuthUrl = (config: AuthConfiguration) => {
+  const baseUrl = config.serviceConfiguration?.authorizationEndpoint;
+
+  if (!baseUrl) {
+    console.error("Authorization endpoint is not defined in the configuration.");
+    return;
+  }
+
+  const params = new URLSearchParams({
+    client_id: config.clientId,
+    redirect_uri: config.redirectUrl,
+    response_type: 'code',
+    scope: config.scopes.join(' '),
+    ...config.additionalParameters,
+  });
+
+  const authUrl = `${baseUrl}&${params.toString()}`;
+  console.log("Constructed Authorization URL:", authUrl); // Logs the URL
 };
 
-interface CustomJwtPayload extends JwtPayload {
-  given_name: string;
-  family_name: string;
-  emails: string;
-}
-
-class Auth {
   // Sign In or Sign Up function
   static async signIn() {
     try {
-      console.log('Made it to SigIn()');
+      console.log("Config Start");
+      Auth.logAuthUrl(config);
+      console.log("Config End");
+      console.log('Made it to SigIn()')
       //we get stuck here
       const authState = await authorize(config);
       console.log('Made it passed authState');
@@ -56,6 +74,7 @@ class Auth {
       return {authState, decodedIdToken}; // Return the auth state with tokens
     } catch (error) {
       console.error('Error during sign-in:', error);
+      console.error('Authorization failed:', JSON.stringify(error, null, 2));
       throw error;
     }
   }

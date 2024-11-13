@@ -51,11 +51,11 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.medbuzz</string> 
+			<!-- <key>CFBundleURLName</key>
+			<string>com.medbuzz</string>  -->
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.medbuzz</string> 
+				<string>com.medbuzz</string>
 			</array>
 		</dict>
 	</array>
