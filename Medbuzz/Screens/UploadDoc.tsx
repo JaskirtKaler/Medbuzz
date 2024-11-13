@@ -118,7 +118,24 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
           case 'Resume':
             currentProfile.uploadedFiles.resume = doc.uri;
             break;
-          // Other cases omitted for brevity...
+          case 'License':
+            currentProfile.uploadedFiles.license.licenseFile = doc.uri;
+            break;
+          case 'Degree':
+            currentProfile.uploadedFiles.degree = doc.uri;
+            break;
+          case 'Certifications':
+            currentProfile.uploadedFiles.certifications = doc.uri;
+            break;
+          case 'References':
+            currentProfile.uploadedFiles.references = doc.uri;
+            break;
+          case 'Vaccination':
+            currentProfile.uploadedFiles.vaccination = doc.uri;
+            break;
+          default:
+            console.log('Unknown document type');
+            return;
         }
   
         await AsyncStorage.setItem('profile', JSON.stringify(currentProfile));
