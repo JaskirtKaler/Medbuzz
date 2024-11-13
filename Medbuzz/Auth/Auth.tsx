@@ -55,20 +55,23 @@ static logAuthUrl = (config: AuthConfiguration) => {
       console.log('Made it to SigIn()')
       //we get stuck here
       const authState = await authorize(config);
-      console.log('Made it passed authState')
-      
-      // Store tokens in AsyncStorage
-      //await AsyncStorage.setItem('accessToken', authState.accessToken);
-      await AsyncStorage.setItem('idToken', authState.idToken);
+      console.log('Made it passed authState');
+      // Decode the idToken to get user information
+      const decodedIdToken = jwtDecode<CustomJwtPayload>(authState.idToken);
+      console.log('Decoded ID Token:', decodedIdToken);
+      //console.log(decodedIdToken.family_name)
 
-      console.log(authState.idToken)
+      // Store the decoded object in AsyncStorage so survey pages can add to it
+      await AsyncStorage.setItem('Auth', JSON.stringify(decodedIdToken));
+
+      //console.log(authState.idToken);
 
       // You could also store refreshToken if you need it for token refresh
       if (authState.refreshToken) {
         await AsyncStorage.setItem('refreshToken', authState.refreshToken);
       }
 
-      return authState; // Return the auth state with tokens
+      return {authState, decodedIdToken}; // Return the auth state with tokens
     } catch (error) {
       console.error('Error during sign-in:', error);
       console.error('Authorization failed:', JSON.stringify(error, null, 2));
@@ -88,9 +91,27 @@ static logAuthUrl = (config: AuthConfiguration) => {
       }
 
       // Clear all tokens from AsyncStorage
-      await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('idToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await AsyncStorage.removeItem('initialObject');
+      
+      try {
+        // Get all keys from AsyncStorage
+        const keys = await AsyncStorage.getAllKeys();
+  
+        if (keys.length > 0) {
+          // Fetch all key-value pairs
+          const result = await AsyncStorage.multiGet(keys);
+  
+          // Display key-value pairs
+          result.forEach(([key, value]) => {
+            console.log(`Key: ${key}, Value: ${value}`);
+          });
+        } else {
+          console.log('No data found in AsyncStorage.');
+        }
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage', error);
+      }
 
       return true;
     } catch (error) {
@@ -102,7 +123,7 @@ static logAuthUrl = (config: AuthConfiguration) => {
   // Utility function to get the current access token
   static async getAccessToken() {
     try {
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('initialObject');
       return token;
     } catch (error) {
       console.error('Error getting access token:', error);

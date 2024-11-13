@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View,
   Text,
   TextInput,
@@ -24,8 +24,7 @@ const Inbox: React.FC = () => {
   
   // tester messages for user and client
   const [messages, setMessages] = useState([
-    { id: 1, text: 'client', sender: 'ATS', date: '10:30 AM' },
-    { id: 2, text: 'user', sender: 'User', date: '10:32 AM' },
+    { id: 1, text: 'Would you like our HR team to contact you for any assistance in finding a job? Answer Yes or No', sender: 'ATS', date: new Date().toLocaleTimeString() },
   ]);
 
   const [inputText, setInputText] = useState('');
@@ -33,10 +32,11 @@ const Inbox: React.FC = () => {
 
   const { incrementUnreadCount, resetUnreadCount } = useUnreadMessages();
 
+
   const handleSendMessage = () => {
     if (inputText.trim()) {
       const userMessage = {
-        id: messages.length + 1,
+        id: Date.now() + Math.random(),
         text: inputText,
         sender: 'User',
         date: new Date().toLocaleTimeString(),
@@ -49,22 +49,54 @@ const Inbox: React.FC = () => {
         date: new Date().toLocaleTimeString(),
       };
 
-      setMessages([...messages, userMessage, atsReply]);
+      setMessages([...messages, userMessage]);
       incrementUnreadCount();
+      handleResponse(inputText);
       setInputText('');
       Keyboard.dismiss();
     }
   };
 
-  // keyboard avoiding code
+  const handleResponse = (message: string) => {
+    const yesPattern = /\byes\b/i;
+    const noPattern = /\bno\b/i;
+
+    switch (true) {
+      case yesPattern.test(message):
+        // Handle "yes" response
+        const atsReplyYes = {
+          id: Date.now() + Math.random(),
+          text: 'Thank you! Medbuzz HR will be in contact with you shortly.',
+          sender: 'Radixsol HR',
+          date: new Date().toLocaleTimeString(),
+        };
+        setMessages((prevMessages) => [...prevMessages, atsReplyYes]);
+        incrementUnreadCount();
+        break;
+
+        case noPattern.test(message):
+          const atsReplyNo = {
+            id: messages.length + 1,
+            text: "We understand! If you change your mind, our team is always here to help. Don’t hesitate to reach out at any time.",
+            sender: 'Radixsol HR',
+            date: new Date().toLocaleTimeString(),
+          };
+          setMessages((prevMessages) => [...prevMessages, atsReplyNo]);
+          incrementUnreadCount();
+          break;
+
+      default:
+        // Handle any other response
+        console.log("No specific response detected; no action taken.");
+        break;
+    }
+  };
+
   return (
+
+
     <View style={styles.container}>
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.select({ios: 60, android: 80})}>
             {/* Header */}
-            {/* Reset the unread count when navigating back to MessagePage */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => {
           navigation.navigate('MessagePage')}}>
@@ -73,13 +105,14 @@ const Inbox: React.FC = () => {
         <Text style={styles.headerText}>{clientName}</Text>
         <View style={styles.placeholder} />
       </View>
-      {/* Spacer */}
-      <View style={styles.spacer}></View>
+      
+ 
       
 
       <ScrollView
         contentContainerStyle={styles.messagesContainer}
         keyboardShouldPersistTaps='handled'
+        style={{ flexGrow: 1 }}
       >
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} isUserMessage={message.sender === 'User'} />
@@ -98,8 +131,12 @@ const Inbox: React.FC = () => {
           <PaperAirplaneIcon width={24} height={Platform.OS === 'ios' ? height * 0.105 : 24} color="#000" />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
-    </View>
+      </View>
+      
+
+
+
+
 
   );
 };
@@ -164,13 +201,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 5,
-    paddingBottom: Platform.OS === 'ios' ? height * 0.045 : 5,
-    // paddingBottom: '10%',
+    paddingVertical: Platform.OS === 'ios' ? 8 : 5,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderColor: '#ddd',
-    position: 'relative',
   },
   textInput: {
     flex: 1,

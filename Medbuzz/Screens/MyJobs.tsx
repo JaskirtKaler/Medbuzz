@@ -2,20 +2,14 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Dimensions, FlatList, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { loadUsersJobs } from '../API Fetch/LoadUsersJobs';
 import { JobPosting } from '../API Fetch/UseJobPostings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
-// Function to truncate long descriptions
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + '...';
-  }
-  return text;
-};
+const { width, height } = Dimensions.get('window'); // screen max width and height
 
 // properties for Job component
 type JobProps = {
@@ -23,25 +17,52 @@ type JobProps = {
   handleMoreDetails: (job: any) => void;
 };
 
+function calculateWeeksFromIsoDate(startDate: string, endDate: string): string {
+  const millisecondsInOneWeek: number = 7 * 24 * 60 * 60 * 1000;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // For debugging
+  // console.log(`start: ${start.getTime()}`);
+  // console.log(`end: ${end.getTime()}`);
+
+  const millisecondsBetweenDates: number = end.getTime() - start.getTime();
+
+  // These console logs are for debugging. Uncomment them to use
+  // console.log(`Ms: ${millisecondsInOneWeek}`);
+  // console.log(`between: ${millisecondsBetweenDates}`);
+
+  const weeks: number = millisecondsBetweenDates / millisecondsInOneWeek;
+  // console.log(`Weeks: ${weeks}`); // For debugging
+
+  return weeks <= 0 ? "Flexible" : weeks.toString();
+}
+
 // Component to display each job
-const Job = ({job, handleMoreDetails}: JobProps) => {
+const Job = ({ job, handleMoreDetails }: JobProps) => {
+  // These console logs are for debugging
+  // console.log(`${job.job_start_date}`);
+  // console.log(`${job.job_end_date}`);
+
+  // var date = new Date(); // If having issues, use this for debugging
+
   return (
     <View style={styles.jobStyle}>
       <View>
-        <Text style={{color: 'black', fontSize: 20, marginLeft: 10}}>
+        <Text style={{ color: 'black', fontSize: 20, marginLeft: 10 }}>
           {job.position_title}
         </Text>
-        <Text style={{color: 'black', marginLeft: 15, fontSize: 16}}>
+        <Text style={{ color: 'black', marginLeft: 15, fontSize: 16 }}>
           {job.city}
           {', '}
           {job.state}
         </Text>
       </View>
-      <Text style={styles.jobTextStyle}>{job.job_status}</Text>
+      <Text style={styles.jobTextStyle}>{job.job_status} | {calculateWeeksFromIsoDate(job.job_start_date, job.job_end_date)}</Text>
       <TouchableOpacity
         style={styles.detailsButton}
         onPress={() => handleMoreDetails(job)}>
-        <Text style={{padding: 5, color: 'black'}}>Click for more details</Text>
+        <Text style={{ padding: 5, color: 'black' }}>Click for more details</Text>
       </TouchableOpacity>
     </View>
   );
@@ -54,49 +75,21 @@ const MyJobsPage: React.FC = () => {
   const [profile, setProfile] = useState<any>(null); // State for the user's profile
   const [currentPage, setCurrentPage] = useState<number>(1); // State for current page
   const jobsPerPage: number = 20; // Number of jobs to display per page
-  const scrollViewRef = useRef<ScrollView | null>(null); // Reference for ScrollView
-  const {jobPostings, isLoading, fetchData} = loadUsersJobs();
-  const [filteredJobs, setFilteredJobs] = useState<any[]>([]); // Initialize as an empty array
-
-  // Use mock job postings
-  // const jobsData: JobPosting[] = Array.isArray(jobPostings) ? jobPostings : Object.values(jobPostings || {});
-  const jobsData: JobPosting[] = jobPostings;
-  console.log(`length: ${jobsData.length}`);
+  const { jobPostings, isLoading, fetchData, page_count, total_jobs } = loadUsersJobs();
+  const [page, setPage] = useState(1); // Initialize page state
 
   // Calculate the total number of jobs and pages
   const totalJobs = jobPostings.length;
   const totalPages = Math.ceil(totalJobs / jobsPerPage);
 
-  // Get jobs for the current page
-  //const currentJobs: JobProps[] = jobsData.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
-
-  // Load profile from AsyncStorage when the component mounts
-  useEffect(() => {
-    const loadProfile = async () => {
-        try {
-            const storedProfile = await AsyncStorage.getItem('userProfile');
-            if (storedProfile !== null) {
-              console.log(JSON.parse(storedProfile))
-                setProfile(JSON.parse(storedProfile)); // Load the stored profile
-                console.log('Profile loaded from local storage');
-            } else {
-                console.log('No profile found in AsyncStorage.');
-            }
-        } catch (error) {
-            console.error('Error loading profile:', error);
-        }
-    };
-    loadProfile(); // Load the profile when the component mounts
-}, []);
-
-
   // Handle page change and scroll to top
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  const handlePageChange = (newPage: number) => {
+    // setCurrentPage(page);
+    // scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    if (newPage !== page) {
+      setPage(newPage);
+    }
   };
-
-
 
   // Handle when the user wants to view job details
   const handleJobDetails = (job: JobProps) => {
@@ -110,119 +103,194 @@ const MyJobsPage: React.FC = () => {
       job,
       profile,
     });
-  };
+  }; // End handleJobDetails
 
   // Function to handle navigation and passing job details to the next screen
   const handleMoreDetails = (job: any) => {
-    navigation.navigate('JobInfo', {job});
+    navigation.navigate('JobInfo', { job });
   };
 
   useEffect(() => {
-    if (Array.isArray(jobPostings)) {
-      // userJobs(jobPostings);
-    }
-  });
-  
-  return (
-    <View style={styles.container}>
-      {/* Job Listings */}
-      <ScrollView ref={scrollViewRef} style={styles.scrollView}>
-        {/* Render the jobs for the current page */}
-        {Array.isArray(jobsData) && jobsData.length > 0 ? (
-        jobsData.map((job, index) => (
-          <Job key={job.id} job={job} handleMoreDetails={handleMoreDetails}/>
-        )))
-        : (
-            <Text style={{textAlign: 'center', marginTop: 20, color: 'gray'}}>
-            No jobs available
-            </Text>
-          )
-        }
-      </ScrollView>
+    fetchData(page);
+  }, [page]);
 
-      {/* Pagination Navigation Bar */}
-    <View style={styles.pagination}>
-    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-    <TouchableOpacity 
-      key={page} 
-      onPress={() => handlePageChange(page)} 
-      style={styles.pageNumber}
-      accessible={true} // Mark as accessible
-      accessibilityRole="button" // Explicitly set the role to button
-    >
-      <Text style={{ color: currentPage === page ? 'blue' : 'black' }}>{page}</Text>
-    </TouchableOpacity>
-  ))}
-</View>
-    </View>
-  );
-};
+  // Function to render pagination buttons
+  const renderPagination = () => {
+    if (!isLoading) return null;
+    const buttons = [];
+    const totalPages = page_count;
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <TouchableOpacity
+          key={i}
+          onPress={() => handlePageChange(i)}
+          style={i === page ? styles.activePageButton : styles.pageButton}>
+          <Text style={i === page ? styles.activePageText : styles.pageText}>
+            {i}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    // console.log("renderPagination complete"); // Use this for debugging
+    return <View style={styles.paginationContainer}>{buttons}</View>;
+  };
+
+  return (
+    // use flatlist instead of scrollview as it has built in pagination and header and is more efficient than scroll view.
+    <FlatList
+      data={jobPostings}
+
+      renderItem={({ item }) => (
+        <Job key={item.id} job={item} handleMoreDetails={handleMoreDetails} />
+      )}
+
+      keyExtractor={item => item.id}
+
+      ListHeaderComponent={
+        <>
+          <Text style={styles.jobFeedStyle}>
+            Job Feed {`(${totalJobs})`}
+          </Text>
+        </>
+      }
+
+      ListEmptyComponent={
+        <View style={styles.noJobsContainer}>
+          <Text style={styles.noJobsText}>No jobs available</Text>
+        </View>
+      }
+
+      refreshControl={
+        <RefreshControl
+          refreshing={isLoading}
+          onRefresh={() => {
+            setPage(1); // Reset page to 1
+            fetchData(1); // Fetch data for page 1
+          }}
+        />
+      }
+
+      ListFooterComponent={renderPagination()} // Render pagination buttons
+    /> // End FlatList
+  ); // End return
+}; // End MyJobsPage
 
 
 // Styles for the component
 const styles = StyleSheet.create({
-  container: {
+  containerStyle: {
+    backgroundColor: 'white',
     flex: 1,
-    backgroundColor: '#FFF',
-    paddingTop: 15,
   },
-  scrollView: {
-    flex: 1,
-    marginBottom: 50, // Adjust for pagination bar at the bottom
+  jobFeedStyle: {
+    color: 'black',
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
   },
   jobStyle: {
     backgroundColor: 'white',
-    width: '90%', // Increase width slightly
-    alignSelf: 'center',
-    marginBottom: 15, // Reduce gap between jobs
-    padding: 12, // Adjust padding for better alignment
+    width: '85%',
+    height: 200,
+    justifyContent: 'space-around',
+    //borderWidth: 1,
+    borderColor: 'black',
     borderRadius: 10,
-    shadowColor: '#000',
+    alignSelf: 'center',
+    marginBottom: 30,
+    elevation: 10, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
-  },
-  jobHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5, // Reduced gap between title and company
-  },
-  locationDateContainer: {
-    flexDirection: 'column', // Stack location and date vertically
-    alignItems: 'flex-end',  // Align to the right
-  },
-  jobHeaderText: {
-    color: 'black',
-    fontSize: 16, // Slightly reduce font size for consistency
-    fontWeight: 'bold',
-  },
-  dateApplied: {
-    color: 'black',
-    fontSize: 12,
-    marginTop: 2, // Add slight margin between location and date
-  },
-  companyName: {
-    color: 'black',
-    marginVertical: 1, // Reduced margin for closer alignment with job title
-    fontSize: 14, // Slightly smaller font for company name
   },
   jobTextStyle: {
+    width: '90%',
+    height: '30%',
+    backgroundColor: '#D9D9D9',
     color: 'black',
-    backgroundColor: '#FFF', // Light grey background like the job description in the feed
-    padding: 15, // Reduce padding to match other card designs
     textAlign: 'center',
-    marginVertical: 5,
+    alignSelf: 'center',
+    padding: 20,
   },
   detailsButton: {
+    width: '90%',
+    height: '15%',
     backgroundColor: '#0EA68D',
-    borderRadius: 10,
-    paddingVertical: 6, // Slightly smaller padding for better fit
     alignItems: 'center',
-    marginTop: 8,
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginBottom: 5,
+  },
+  headerStyle: {
+    width: '100%',
+    height: height * (Platform.OS == 'ios' ? 0.125 : 0.1),
+    backgroundColor: '#FFF',
+    elevation: 5, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    flexDirection: 'row',
+    paddingTop: Platform.OS === 'ios' ? 60 : 0,
+  },
+  searchStyle: {
+    backgroundColor: 'white',
+    borderColor: 'black',
+    borderWidth: 0.5,
+    borderRadius: 12,
+    elevation: 8, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    width: '70%',
+    height: Platform.OS == 'ios' ? '80%' : '100%',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  pageButton: {
+    marginHorizontal: 5,
+    padding: 10,
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+  },
+  activePageButton: {
+    marginHorizontal: 5,
+    padding: 10,
+    backgroundColor: '#0EA68D',
+    borderRadius: 5,
+  },
+  pageText: {
+    color: 'black',
+  },
+  activePageText: {
+    color: 'white',
+  },
+  noJobsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  noJobsText: {
+    fontSize: 18,
+    color: 'grey',
   },
   pagination: {
     flexDirection: 'row',
@@ -239,6 +307,15 @@ const styles = StyleSheet.create({
   pageNumber: {
     marginHorizontal: 10,
   },
-});
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    paddingTop: 15,
+  },
+  scrollView: {
+    flex: 1,
+    marginBottom: 50, // Adjust for pagination bar at the bottom
+  }
+}); // End styles definition
 
 export default MyJobsPage;

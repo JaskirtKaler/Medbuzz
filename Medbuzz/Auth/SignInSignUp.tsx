@@ -1,4 +1,3 @@
-
 import {
   StyleSheet,
   View,
@@ -29,15 +28,21 @@ function SignInSignUp() {
 
   const handleGetStarted = async () => {
     try {
-      const authState = await Auth.signIn();
+      const {authState ,decodedIdToken} = await Auth.signIn();
 
-      // Redirect based on authentication status
       if (authState.idToken) {
-        // Redirect to the welcome page for new sign-up
-        navigation.navigate('Main');
-        console.log('we in');
-      } else {
-        // Redirect to the home page for existing user sign-in
+        // Check if "userProfile" exists in AsyncStorage
+        const userProfile = await AsyncStorage.getItem('userProfile');
+
+        if (userProfile) {
+          // If userProfile exists, redirect to 'Main'
+          navigation.navigate('Main');
+          console.log('Redirecting to Main page');
+        } else {
+          // If userProfile does not exist, that means new user and redirect to 'Discipline' with the necessary information
+          navigation.navigate('Discipline', {authState, decodedIdToken});
+          console.log('Redirecting to Discipline page for new user');
+        }
       }
     } catch (error) {
       console.error('Error during authentication:', error);

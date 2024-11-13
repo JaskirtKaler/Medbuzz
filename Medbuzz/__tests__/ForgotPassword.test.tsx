@@ -4,7 +4,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect'; // Jest matchers for better assertions
-import ForgotPassword from '../Auth/ForgotPassword';
+import ForgotPassword from '../Unused Pages/ForgotPassword';
 import { NavigationContainer } from '@react-navigation/native';
 import { jest } from '@jest/globals';
 

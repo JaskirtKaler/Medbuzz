@@ -27,6 +27,18 @@
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
+// - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options
+// { 
+//   return [self.authorizationFlowManagerDelegate resumeExternalUserAgentFlowWithURL:url];
+// }
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options {
+    if ([url.scheme isEqualToString:@"com.medbuzz"]) {
+        if (self.authorizationFlowManagerDelegate) {
+            return [self.authorizationFlowManagerDelegate resumeExternalUserAgentFlowWithURL:url];
+        }
+    }
+    return NO;
+}
 
 
 // Handle custom URL schemes for MS AD or other deep linking scenarios

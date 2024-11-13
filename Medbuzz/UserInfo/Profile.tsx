@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Backarrow from '../Components/Svg/Backarrow.tsx';
 import CancelX from '../Components/Svg/CancelX.tsx';
 import Editbutton from '../Components/Svg/Editbutton.tsx';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UploadDoc from '../Screens/UploadDoc.tsx';
 import CheckBox from '@react-native-community/checkbox';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -211,64 +211,45 @@ const Profile = () => {
 
   const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
 
-  const [profileData, setProfileData] = useState({
-    personalInfo: {
-      firstName: 'First',
-      lastName: 'Last',
-      specialty: 'Specialty',
-      contactInfo: {
-        phoneNumber: '(123) 456-7890',
-        email: 'example@example.com',
-      },
-    },
-    profileStrength: 33,
-    jobPreferences: {
-      staffRoles: {
-        activelyLooking: false,
-        details: {
-          startDate: '',
-          preferredLocation: '',
-          relocate: false,
-          desiredPay: '',
-          preferredHours: '',
-        },
-      },
-      travelContracts: {
-        activelyLooking: false,
-        details: {
-          startDate: '',
-          preferredLocation: '',
-          relocate: false,
-          desiredPay: '',
-          preferredHours: '',
-        },
-      },
-      localContracts: {
-        activelyLooking: false,
-        details: {
-          startDate: '',
-          preferredLocation: '',
-          relocate: false,
-          desiredPay: '',
-          preferredHours: '',
-        },
-      },
-    },
-    licenses: {
-      textInputs: {
-        licenseNumber: '',
-        state: '',
-        expirationDate: '',
-      },
-      documents: {
-        uploadedFiles: [],
-      },
-    },
-  });
+ 
+  
+  // Declare useState variables for profile data
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
 
-  // Destructure personal info
-  const {personalInfo, jobPreferences, licenses} = profileData;
-  const {firstName, lastName, specialty, contactInfo} = personalInfo;
+  // Load profile data from AsyncStorage
+  /**
+   * Focus Effect update the locate variabels right away after you nav from editbasic details
+   * can also load in other Job Preference Objects 
+   */
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadProfile = async () => {
+        try {
+          const storedProfile = await AsyncStorage.getItem('userProfile');
+          if (storedProfile !== null) {
+            const profileData = JSON.parse(storedProfile);
+  
+            // Update state variables with stored data
+            setFirstName(profileData.personalInfo.firstName || '');
+            setLastName(profileData.personalInfo.lastName || '');
+            setEmail(profileData.personalInfo.email || '');
+            setPhoneNumber(profileData.personalInfo.phoneNumber || '');
+          } else {
+            console.log('No Profile found in async storage');
+          }
+        } catch (error) {
+          console.log('Error loading profile data:', error);
+        }
+      };
+  
+      loadProfile();
+    }, [])
+  );
+
+
   const [staffRoles, setStaffRoles] = useState(false); // State for actively looking switch (Staff Roles)
   const [localContracts, setLocalContracts] = useState(false); // State for actively looking switch (Local Contracts)
   const [travelContracts, setTravelContracts] = useState(false); // State for actively looking switch (Travel Contracts)
@@ -276,8 +257,6 @@ const Profile = () => {
   const [showTravelDetails, setShowTravelDetails] = useState(false); // State for travel contracts details
   const [showLocalDetails, setShowLocalDetails] = useState(false); // State for local contracts details
   const navigation = useNavigation<any>(); // Stack Navigation
-  const {profileStrength} = profileData;
-  const {phoneNumber, email} = contactInfo;
 
   // Function to toggle visibility of staff roles details
   const toggleStaffDetails = () => {
@@ -340,88 +319,6 @@ const Profile = () => {
         break;
     }
     console.log(stringProp);
-  };
-
-  const updateUserObject = async () => {
-    const updatedProfile = {
-      personalInfo: {
-        firstName: 'First',
-        lastName: 'Last',
-        specialty: 'Specialty',
-        contactInfo: {
-          phoneNumber: '(123) 456-7890',
-          email: 'example@example.com',
-        },
-      },
-      profileStrength: 33,
-      jobPreferences: {
-        staffRoles: {
-          activelyLooking: false,
-          details: {
-            startDate: staffRolePrefs.startDate,
-            preferredLocation: staffRolePrefs.preferredLocation,
-            relocate: staffRolePrefs.relocate,
-            desiredPay: staffRolePrefs.desiredPay,
-            preferredHours: staffRolePrefs.preferredHours,
-          },
-        },
-        travelContracts: {
-          activelyLooking: false,
-          details: {
-            startDate: travelContractsPrefs.startDate,
-            preferredLocation: travelContractsPrefs.preferredLocation,
-            relocate: travelContractsPrefs.relocate,
-            desiredPay: travelContractsPrefs.desiredPay,
-            preferredHours: travelContractsPrefs.preferredHours,
-          },
-        },
-        localContracts: {
-          activelyLooking: false,
-          details: {
-            startDate: localContractsPrefs.startDate,
-            preferredLocation: localContractsPrefs.preferredLocation,
-            relocate: localContractsPrefs.relocate,
-            desiredPay: localContractsPrefs.desiredPay,
-            preferredHours: localContractsPrefs.preferredHours,
-          },
-        },
-      },
-      licenses: {
-        textInputs: {
-          licenseNumber: '',
-          state: '',
-          expirationDate: '',
-        },
-        documents: {
-          uploadedFiles: [],
-        },
-      },
-    };
-
-    // Update the profile data in state
-    await setProfileData(updatedProfile);
-
-    // Log the updated details from the updated profile object
-    console.log(
-      'Start Date:',
-      updatedProfile.jobPreferences.staffRoles.details.startDate,
-    );
-    console.log(
-      'Location:',
-      updatedProfile.jobPreferences.staffRoles.details.preferredLocation,
-    );
-    console.log(
-      'Relocation:',
-      updatedProfile.jobPreferences.staffRoles.details.relocate,
-    );
-    console.log(
-      'Pay:',
-      updatedProfile.jobPreferences.staffRoles.details.desiredPay,
-    );
-    console.log(
-      'Hours:',
-      updatedProfile.jobPreferences.staffRoles.details.preferredHours,
-    );
   };
 
   // When License btn is clicked
@@ -570,7 +467,7 @@ const Profile = () => {
                 style={styles.exitModalButton}
                 onPress={() => {
                   updateStaffRolePrefs();
-                  updateUserObject();
+                  // updateUserObject();
                   setStaffRoleModalVisible(!staffRoleModalVisible);
                 }}>
                 <Text style={styles.exitModalButtonText}>Confirm Choices</Text>
@@ -893,10 +790,10 @@ const Profile = () => {
         <View style={styles.profilePictureContainer}>
           {/* While user does not have a profile picture uploaded, their initials are their profile picture */}
           <Text style={styles.profilePictureFirstInitial}>
-            {profileData.personalInfo.firstName.charAt(0).toUpperCase()}
+            {firstName.charAt(0).toUpperCase()}
           </Text>
           <Text style={styles.profilePictureFirstInitial}>
-            {profileData.personalInfo.lastName.charAt(0).toUpperCase()}
+            {lastName.charAt(0).toUpperCase()}
           </Text>
         </View>
 
@@ -907,7 +804,7 @@ const Profile = () => {
         </View>
 
         {/* Specialty section */}
-        <Text style={styles.specialty}>{specialty}</Text>
+        <Text style={styles.specialty}>{}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -917,7 +814,7 @@ const Profile = () => {
             <View style={styles.profileStrengthTextContainer}>
               <Text style={styles.profileStrengthText}>Profile Strength</Text>
               <Text style={styles.profileStrengthPercentage}>
-                {profileStrength}%
+                {30}%
               </Text>
             </View>
 
@@ -927,7 +824,7 @@ const Profile = () => {
                 <View
                   style={[
                     styles.profileStrengthBar,
-                    {width: `${profileStrength}%`},
+                    {width: `${30}%`},
                   ]}
                 />
               </View>
