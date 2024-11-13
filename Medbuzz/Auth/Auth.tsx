@@ -1,58 +1,75 @@
 import {authorize, revoke, AuthConfiguration} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CLIENT_ID, TENENT_ID, AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT, ISSUER} from '@env';
-import { Platform } from 'react-native';
+import {
+  CLIENT_ID,
+  TENENT_ID,
+  AUTHORIZATION_ENDPOINT,
+  TOKEN_ENDPOINT,
+  ISSUER,
+} from '@env';
+import {Platform} from 'react-native';
+import {atob} from 'react-native-quick-base64';
+global.atob = atob;
+import {jwtDecode, JwtPayload} from 'jwt-decode';
 
-  const config: AuthConfiguration = {
-    issuer: ISSUER,
-    clientId: CLIENT_ID,
-    redirectUrl: 'com.medbuzz://auth/',
-    scopes: ['openid'],
-    additionalParameters: {prompt: 'select_account'},
-    serviceConfiguration: {
-      authorizationEndpoint:AUTHORIZATION_ENDPOINT,
-      tokenEndpoint: TOKEN_ENDPOINT,
+interface CustomJwtPayload extends JwtPayload {
+  given_name: string;
+  family_name: string;
+  emails: string;
+}
+
+const config: AuthConfiguration = {
+  issuer: ISSUER,
+  clientId: CLIENT_ID,
+  redirectUrl: 'com.medbuzz://auth/',
+  scopes: ['openid'],
+  additionalParameters: {prompt: 'select_account'},
+  serviceConfiguration: {
+    authorizationEndpoint: AUTHORIZATION_ENDPOINT,
+    tokenEndpoint: TOKEN_ENDPOINT,
   },
 };
-if(Platform.OS === 'ios'){
-    config.useNonce = true;
-    config.usePKCE = true;
-    config.additionalParameters = {prompt: 'select_account',p:'B2C_1_com.medbuzz'};
-}
-else{
-    config.scopes.push('email');
-
+if (Platform.OS === 'ios') {
+  config.useNonce = true;
+  config.usePKCE = true;
+  config.additionalParameters = {
+    prompt: 'select_account',
+    p: 'B2C_1_com.medbuzz',
+  };
+} else {
+  config.scopes.push('email');
 }
 class Auth {
-
   // Function to construct and log the authorization URL
-static logAuthUrl = (config: AuthConfiguration) => {
-  const baseUrl = config.serviceConfiguration?.authorizationEndpoint;
+  static logAuthUrl = (config: AuthConfiguration) => {
+    const baseUrl = config.serviceConfiguration?.authorizationEndpoint;
 
-  if (!baseUrl) {
-    console.error("Authorization endpoint is not defined in the configuration.");
-    return;
-  }
+    if (!baseUrl) {
+      console.error(
+        'Authorization endpoint is not defined in the configuration.',
+      );
+      return;
+    }
 
-  const params = new URLSearchParams({
-    client_id: config.clientId,
-    redirect_uri: config.redirectUrl,
-    response_type: 'code',
-    scope: config.scopes.join(' '),
-    ...config.additionalParameters,
-  });
+    const params = new URLSearchParams({
+      client_id: config.clientId,
+      redirect_uri: config.redirectUrl,
+      response_type: 'code',
+      scope: config.scopes.join(' '),
+      ...config.additionalParameters,
+    });
 
-  const authUrl = `${baseUrl}&${params.toString()}`;
-  console.log("Constructed Authorization URL:", authUrl); // Logs the URL
-};
+    const authUrl = `${baseUrl}&${params.toString()}`;
+    console.log('Constructed Authorization URL:', authUrl); // Logs the URL
+  };
 
   // Sign In or Sign Up function
   static async signIn() {
     try {
-      console.log("Config Start");
+      console.log('Config Start');
       Auth.logAuthUrl(config);
-      console.log("Config End");
-      console.log('Made it to SigIn()')
+      console.log('Config End');
+      console.log('Made it to SignIn()');
       //we get stuck here
       const authState = await authorize(config);
       console.log('Made it passed authState');
@@ -93,15 +110,15 @@ static logAuthUrl = (config: AuthConfiguration) => {
       // Clear all tokens from AsyncStorage
       await AsyncStorage.removeItem('idToken');
       await AsyncStorage.removeItem('initialObject');
-      
+
       try {
         // Get all keys from AsyncStorage
         const keys = await AsyncStorage.getAllKeys();
-  
+
         if (keys.length > 0) {
           // Fetch all key-value pairs
           const result = await AsyncStorage.multiGet(keys);
-  
+
           // Display key-value pairs
           result.forEach(([key, value]) => {
             console.log(`Key: ${key}, Value: ${value}`);
