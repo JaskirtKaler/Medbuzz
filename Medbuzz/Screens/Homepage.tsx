@@ -139,7 +139,7 @@ const Homepage = () => {
               <TextInput
                 placeholder="Search"
                 placeholderTextColor="gray"
-                style={styles.searchStyle}
+                style={Platform.OS === 'ios' ? styles.searchStyleIOS : styles.searchStyle}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -246,6 +246,22 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 60 : 0,
   },
 
+  searchStyleIOS: {
+    backgroundColor: 'white',
+    borderColor: 'black',
+    borderWidth: 0.5,
+    borderRadius: 12,
+    elevation: 8, // This will add a box shadow for Android
+    shadowColor: '#000', // this will add a box shadow for IOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    width: '70%',
+    height: '80%',
+  },
   searchStyle: {
     backgroundColor: 'white',
     borderColor: 'black',
@@ -260,7 +276,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     width: '70%',
-    height: Platform.OS == 'ios' ? '80%' : '100%',
   },
   paginationContainer: {
     flexDirection: 'row',

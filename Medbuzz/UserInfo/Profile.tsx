@@ -1528,7 +1528,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-    marginTop: '60%',
+    marginTop: Platform.OS === 'ios' ? '90%' : '60%',
   },
 
   timeOptionStyle: {
