@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Button, Dimensions, Modal, TouchableOpacity, ScrollView, TextInput, Platform, KeyboardAvoidingView, Alert  } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Platform, Alert, PermissionsAndroid, ScrollView, TextInput } from 'react-native';
+import RNFS from 'react-native-fs';
 const { width, height } = Dimensions.get('window'); // screen max width and height
 import Backarrow from '../Components/Svg/Backarrow.tsx'
 import { useNavigation } from '@react-navigation/native'
@@ -11,6 +12,8 @@ import Download from '../Components/Svg/Download.tsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { licenseType as licsenseOptions } from '../mapVariables/optionsData.tsx';
 import { usaStates } from '../mapVariables/optionsData.tsx';
+import Toast from 'react-native-toast-message'; 
+
 interface License{
   licenseType: string;
   licenseState: string;
@@ -146,11 +149,59 @@ function UpdateLicense() {
       await AsyncStorage.setItem('profile', JSON.stringify(profile));
       Alert.alert("Success", "License information saved successfully.");
     };
-    // if user decides to download document
-    const handleDownload = () =>{
-      console.log('Download document')
-    }
 
+    const getRealPathFromURI = async (uri: string): Promise<string> => {
+      if (uri.startsWith('content://')) {
+        const newFilePath = `${RNFS.DocumentDirectoryPath}/${uri.split('/').pop()}`;
+        await RNFS.copyFile(uri, newFilePath);
+        console.log('File copied to: ', newFilePath);
+        return newFilePath;
+      }
+      return uri;
+    };
+
+      // Request permissions for Android
+  const requestPermissions = async () => {
+    if (Platform.OS === 'android') {
+      const permissions = [
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ];
+      const granted = await PermissionsAndroid.requestMultiple(permissions);
+
+      if (
+        granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED ||
+        granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        Toast.show({ type: 'error', text1: 'Permission Denied', text2: 'You need to allow storage permissions.' });
+        return false;
+      }
+    }
+    return true;
+  };
+    
+  const handleDownload = async () => {
+    if (selectedDocument && selectedDocument.uri) {
+      try {
+        const filePath = await getRealPathFromURI(selectedDocument.uri);
+        const downloadDest = Platform.OS === 'android'
+          ? `${RNFS.DownloadDirectoryPath}/${selectedDocument.name}` // Downloads folder on Android
+          : `${RNFS.DocumentDirectoryPath}/${selectedDocument.name}`; // Internal storage for iOS
+
+        Toast.show({ type: 'info', text1: 'Download Started', text2: 'Your file is being downloaded...' });
+
+        await RNFS.copyFile(filePath, downloadDest);
+
+        Toast.show({ type: 'success', text1: 'Download Complete', text2: 'File saved to Downloads!' });
+        console.log('File downloaded to: ', downloadDest);
+      } catch (error) {
+        console.error('Error downloading file: ', error);
+        Toast.show({ type: 'error', text1: 'Download Failed', text2: 'Error occurred while downloading.' });
+      }
+    } else {
+      Alert.alert('Error', 'No document selected to download.');
+    }
+  };
 
 
   return (
@@ -158,6 +209,7 @@ function UpdateLicense() {
         {/* Header Section */}
             <View style={styles.header}>
                 <View style={{width : "100%", height : "100%", justifyContent : "center"}}>
+                <Toast />
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View>
                             <Backarrow width={40} height={40} color={"#000"}/>

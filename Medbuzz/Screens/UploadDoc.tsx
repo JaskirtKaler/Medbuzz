@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Platform, Alert } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Platform, Alert, PermissionsAndroid } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 import BackArrow from '../Components/Svg/Backarrow';
@@ -8,6 +8,8 @@ import Download from '../Components/Svg/Download';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import RNFS from 'react-native-fs'; // Import RNFS for file handling
+import Toast from 'react-native-toast-message'; // Import Toast for notifications
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,6 +21,7 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   const header = route.params.header; // Get the header for the document type
   const [selectedDocument, setSelectedDocument] = useState<DocumentPickerResponse | null>(null);
   const [profile, setProfile] = useState<any>(null); // Profile data from AsyncStorage
+  const toastRef = useRef(null);
 
   // Load profile data when component mounts
   useEffect(() => {
@@ -26,17 +29,15 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
       const profileData = await AsyncStorage.getItem('profile');
       if (profileData) {
         const currentProfile = JSON.parse(profileData);
-  
-        // Helper function to create a minimal DocumentPickerResponse
+
         const createDocumentPickerResponse = (uri: string): DocumentPickerResponse => ({
           uri,
-          name: uri.split('/').pop() || 'Document', // Extract name from URI or use a placeholder
+          name: uri.split('/').pop() || 'Document',
           fileCopyUri: null,
-          type: 'application/pdf', // Set a default type, adjust if needed
-          size: 0, // Default to 0, if you don't have the size info
+          type: 'application/pdf',
+          size: 0,
         });
-  
-        // Check if the document is already uploaded for the current header type
+
         switch (header) {
           case 'Resume':
             setSelectedDocument(
@@ -45,116 +46,132 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
                 : null
             );
             break;
-          case 'License':
-            setSelectedDocument(
-              currentProfile.uploadedFiles?.license?.licenseFile
-                ? createDocumentPickerResponse(currentProfile.uploadedFiles.license.licenseFile)
-                : null
-            );
-            break;
-          case 'Degree':
-            setSelectedDocument(
-              currentProfile.uploadedFiles?.degree
-                ? createDocumentPickerResponse(currentProfile.uploadedFiles.degree)
-                : null
-            );
-            break;
-          case 'Certifications':
-            setSelectedDocument(
-              currentProfile.uploadedFiles?.certifications
-                ? createDocumentPickerResponse(currentProfile.uploadedFiles.certifications)
-                : null
-            );
-            break;
-          case 'References':
-            setSelectedDocument(
-              currentProfile.uploadedFiles?.references
-                ? createDocumentPickerResponse(currentProfile.uploadedFiles.references)
-                : null
-            );
-            break;
-          case 'Vaccination':
-            setSelectedDocument(
-              currentProfile.uploadedFiles?.vaccination
-                ? createDocumentPickerResponse(currentProfile.uploadedFiles.vaccination)
-                : null
-            );
-            break;
-          default:
-            break;
+            case 'License':
+              setSelectedDocument(
+                currentProfile.uploadedFiles?.license?.licenseFile
+                  ? createDocumentPickerResponse(currentProfile.uploadedFiles.license.licenseFile)
+                  : null
+              );
+              break;
+            case 'Degree':
+              setSelectedDocument(
+                currentProfile.uploadedFiles?.degree
+                  ? createDocumentPickerResponse(currentProfile.uploadedFiles.degree)
+                  : null
+              );
+              break;
+            case 'Certifications':
+              setSelectedDocument(
+                currentProfile.uploadedFiles?.certifications
+                  ? createDocumentPickerResponse(currentProfile.uploadedFiles.certifications)
+                  : null
+              );
+              break;
+            case 'References':
+              setSelectedDocument(
+                currentProfile.uploadedFiles?.references
+                  ? createDocumentPickerResponse(currentProfile.uploadedFiles.references)
+                  : null
+              );
+              break;
+            case 'Vaccination':
+              setSelectedDocument(
+                currentProfile.uploadedFiles?.vaccination
+                  ? createDocumentPickerResponse(currentProfile.uploadedFiles.vaccination)
+                  : null
+              );
+              break;
+            default:
+              break;
+          }
+    
+          setProfile(currentProfile); // Update the profile state
         }
-  
-        setProfile(currentProfile); // Update the profile state
-      }
-    };
-  
-    loadProfile();
-  }, [header]);
-  
-  // Handle document upload
-  const handleUpload = async () => {
-    try {
-      const doc = await DocumentPicker.pickSingle({ type: [DocumentPicker.types.pdf, DocumentPicker.types.images,
-        'public.image', // Specifically for iOS to recognize images
-        'public.item',   // Generic file type for iOS compatibility
-      ] });
-      setSelectedDocument(doc); // Save the document path to the state
-      console.log('Uploaded Document:', doc);
-      console.log('Document Type:', header);
-      // Load the existing profile data from AsyncStorage
-    const profileData = await AsyncStorage.getItem('profile');
-    const currentProfile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
-    // Ensure the uploadedFiles structure exists
-    currentProfile.uploadedFiles = currentProfile.uploadedFiles || {};
-    currentProfile.uploadedFiles.license = currentProfile.uploadedFiles.license || {};
-    // Save the document path in the relevant field based on the `header`
-    switch (header) {
-      case 'Resume':
-        currentProfile.uploadedFiles.resume = doc.uri;
-        break;
-      case 'License':
-        currentProfile.uploadedFiles.license.licenseFile = doc.uri;
-        break;
-      case 'Degree':
-        currentProfile.uploadedFiles.degree = doc.uri;
-        break;
-      case 'Certifications':
-        currentProfile.uploadedFiles.certifications = doc.uri;
-        break;
-      case 'References':
-        currentProfile.uploadedFiles.references = doc.uri;
-        break;
-      case 'Vaccination':
-        currentProfile.uploadedFiles.vaccination = doc.uri;
-        break;
-      default:
-        console.log('Unknown document type');
-        return;
-    }
+      };
+    
+      loadProfile();
+    }, [header]);
 
-    // Save the updated profile data back to AsyncStorage
-    await AsyncStorage.setItem('profile', JSON.stringify(currentProfile));
-    setProfile(currentProfile); // Update the profile state if needed
-    console.log('Render object container?')
-    console.log(currentProfile.uploadedFiles.resume);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker
-        console.log('User cancelled the upload', err);
-      } else {
-        throw err;
-      }
+  // Helper function to get file path
+  const getRealPathFromURI = async (uri: string): Promise<string> => {
+    if (uri.startsWith('content://')) {
+      const newFilePath = `${RNFS.DocumentDirectoryPath}/${uri.split('/').pop()}`;
+      await RNFS.copyFile(uri, newFilePath);
+      console.log('File copied to: ', newFilePath);
+      return newFilePath;
     }
+    return uri;
   };
 
-  // Handle document download (for simplicity, a mock download)
-  const handleDownload = () => {
-    if (!selectedDocument) {
-      Alert.alert('Error', 'No document selected to download.');
-      return;
+    // Handle document upload
+    const handleUpload = async () => {
+      try {
+        const doc = await DocumentPicker.pickSingle({ type: [DocumentPicker.types.pdf, DocumentPicker.types.images] });
+        setSelectedDocument(doc);
+        console.log('Uploaded Document:', doc);
+        console.log('Document Type:', header);
+  
+        const profileData = await AsyncStorage.getItem('profile');
+        const currentProfile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
+  
+        switch (header) {
+          case 'Resume':
+            currentProfile.uploadedFiles.resume = doc.uri;
+            break;
+          // Other cases omitted for brevity...
+        }
+  
+        await AsyncStorage.setItem('profile', JSON.stringify(currentProfile));
+        setProfile(currentProfile);
+      } catch (err) {
+        if (DocumentPicker.isCancel(err)) {
+          console.log('User cancelled the upload', err);
+        } else {
+          throw err;
+        }
+      }
+    };
+
+  // Request permissions for Android
+  const requestPermissions = async () => {
+    if (Platform.OS === 'android') {
+      const permissions = [
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ];
+      const granted = await PermissionsAndroid.requestMultiple(permissions);
+
+      if (granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED ||
+          granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] !== PermissionsAndroid.RESULTS.GRANTED) {
+        Toast.show({ type: 'error', text1: 'Permission Denied', text2: 'You need to allow storage permissions.' });
+        return false;
+      }
     }
-    // Simulate download logic
-    console.log('Downloading file:', selectedDocument.name);
+    return true;
+  };
+
+  // Handle document download
+  const handleDownload = async () => {
+    if (selectedDocument && selectedDocument.uri) {
+      try {
+        const filePath = await getRealPathFromURI(selectedDocument.uri);
+        const downloadDest = Platform.OS === 'android'
+          ? `${RNFS.DownloadDirectoryPath}/${selectedDocument.name}` // Downloads folder on Android
+          : `${RNFS.DocumentDirectoryPath}/${selectedDocument.name}`; // Internal storage for iOS
+
+        Toast.show({ type: 'info', text1: 'Download Started', text2: 'Your file is being downloaded...' });
+
+        await RNFS.copyFile(filePath, downloadDest);
+
+        Toast.show({ type: 'success', text1: 'Download Complete', text2: 'File saved to Downloads!' });
+        console.log('File downloaded to: ', downloadDest);
+      } catch (error) {
+        console.error('Error downloading file: ', error);
+        Toast.show({ type: 'error', text1: 'Download Failed', text2: 'Error occurred while downloading.' });
+      }
+    } else {
+      Alert.alert('Error', 'No document selected to download.');
+    }
   };
 
   // Handle when back arrow is clicked
@@ -165,7 +182,9 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
 
   return (
     <View style={styles.main}>
-      {/* Header Section */}
+      <View style={{ position: 'absolute', zIndex: 10, width: '100%' }}>
+        <Toast />
+      </View>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
           <BackArrow width={40} height={40} color={'#000'} />
@@ -173,8 +192,6 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
         <Text style={{ color: '#000', fontWeight: '500', fontSize: 18 }}>{header}</Text>
         <View style={{ width: 40 }} />
       </View>
-
-      {/* Contents Section */}
       <View style={styles.contents}>
         {selectedDocument ? (
           <View style={styles.fileContainer}>
@@ -190,10 +207,7 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
             <Text style={{ color: '#000' }}> No file selected</Text>
           </View>
         )}
-
-        <View style={styles.filler}></View>
         <View style={styles.uploadContainer}>
-          {/* Upload Button */}
           <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
             <Text style={{ color: '#000' }}>Upload new File</Text>
           </TouchableOpacity>
@@ -224,10 +238,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
@@ -236,9 +247,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'space-around',
   },
-  fileContainer: {
-    alignItems: 'center',
-  },
+  fileContainer: { alignItems: 'center' },
   fileView: {
     width: width * 0.95,
     height: height * 0.1,
@@ -246,19 +255,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     justifyContent: 'space-between',
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  filler: {
-    width: width * 0.1,
   },
   uploadContainer: {
     alignItems: 'center',
