@@ -44,7 +44,9 @@ function calculateWeeksFromIsoDate(startDate: string, endDate: string): string {
   const weeks: number = millisecondsBetweenDates / millisecondsInOneWeek;
   // console.log(`Weeks: ${weeks}`); // For debugging
 
-  return weeks <= 0 ? "Time Frame: Flexible" : `Time Frame: ${Math.ceil(weeks)} weeks`;
+  return weeks <= 0
+    ? 'Time Frame: Flexible'
+    : `Time Frame: ${Math.ceil(weeks)} weeks`;
 }
 
 const Job = ({job, handleMoreDetails}: JobProps) => {
@@ -60,7 +62,9 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
           {job.state}
         </Text>
       </View>
-      <Text style={styles.jobTextStyle}>{calculateWeeksFromIsoDate(job.job_start_date, job.job_end_date)}</Text>
+      <Text style={styles.jobTextStyle}>
+        {calculateWeeksFromIsoDate(job.job_start_date, job.job_end_date)}
+      </Text>
       <TouchableOpacity
         style={styles.detailsButton}
         onPress={() => handleMoreDetails(job)}>
@@ -70,11 +74,11 @@ const Job = ({job, handleMoreDetails}: JobProps) => {
   );
 };
 
-
 const Homepage = () => {
   const navigation = useNavigation<any>();
 
-  const {jobPostings, isLoading, fetchData, page_count, totalJobs} = useJobPostings();
+  const {jobPostings, isLoading, fetchData, page_count, totalJobs} =
+    useJobPostings();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState<any[]>([]); // Initialize as an empty array
   const [page, setPage] = useState(1); // Initialize page state
@@ -82,20 +86,19 @@ const Homepage = () => {
   //This creates a new array which has the filtered jobs based on the search criteria
   useEffect(() => {
     //you need this check since without it, once the user refereshes while there is something present in the search bar, it would throw an error
-      if (searchQuery.trim() && Array.isArray(jobPostings)) {
-        setFilteredJobs(
-          jobPostings.filter(
-            job =>
-              job.position_title
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-              job.city.toLowerCase().includes(searchQuery.toLowerCase()),
-          ),
-        );
-      } else {
-        setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty
-      }
-    
+    if (searchQuery.trim() && Array.isArray(jobPostings)) {
+      setFilteredJobs(
+        jobPostings.filter(
+          job =>
+            job.position_title
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            job.city.toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
+      );
+    } else {
+      setFilteredJobs(jobPostings); // fallback to jobPostings if searchQuery is empty
+    }
   }, [searchQuery, jobPostings]);
 
   // Effect to fetch data only when the page changes
@@ -149,7 +152,11 @@ const Homepage = () => {
               <TextInput
                 placeholder="Search"
                 placeholderTextColor="gray"
-                style={Platform.OS === 'ios' ? styles.searchStyleIOS : styles.searchStyle}
+                style={
+                  Platform.OS === 'ios'
+                    ? styles.searchStyleIOS
+                    : styles.searchStyle
+                }
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -160,7 +167,8 @@ const Homepage = () => {
             </TouchableOpacity>
           </View>
           <Text style={styles.jobFeedStyle}>
-            Job Feed {'(' + totalJobs + ')'}
+            Job Feed{' '}
+            {'(' + (searchQuery.trim() ? filteredJobs.length : totalJobs) + ')'}
           </Text>
         </>
       }
@@ -170,12 +178,12 @@ const Homepage = () => {
         </View>
       }
       refreshControl={
-        <RefreshControl 
-          refreshing={isLoading} 
+        <RefreshControl
+          refreshing={isLoading}
           onRefresh={() => {
             setPage(1); // Reset page to 1
             fetchData(1); // Fetch data for page 1
-          }} 
+          }}
         />
       }
       ListFooterComponent={renderPagination()} // Render pagination buttons
