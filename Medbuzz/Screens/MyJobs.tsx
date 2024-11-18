@@ -74,7 +74,7 @@ const MyJobsPage: React.FC = () => {
 
   const [profile, setProfile] = useState<any>(null); // State for the user's profile
   const [currentPage, setCurrentPage] = useState<number>(1); // State for current page
-  const jobsPerPage: number = 20; // Number of jobs to display per page
+  const jobsPerPage: number = 10; // Number of jobs to display per page
   const { jobPostings, isLoading, fetchData, page_count, total_jobs } = loadUsersJobs();
   const [page, setPage] = useState(1); // Initialize page state
 
@@ -82,14 +82,16 @@ const MyJobsPage: React.FC = () => {
   const totalJobs = jobPostings.length;
   const totalPages = Math.ceil(totalJobs / jobsPerPage);
 
-  // Handle page change and scroll to top
-  const handlePageChange = (newPage: number) => {
-    // setCurrentPage(page);
-    // scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-    if (newPage !== page) {
-      setPage(newPage);
-    }
-  };
+  
+
+  // // Handle page change and scroll to top
+  // const handlePageChange = (newPage: number) => {
+  //   // setCurrentPage(page);
+  //   // scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  //   if (newPage !== page) {
+  //     setPage(newPage);
+  //   }
+  // };
 
   // Handle when the user wants to view job details
   const handleJobDetails = (job: JobProps) => {
@@ -110,30 +112,40 @@ const MyJobsPage: React.FC = () => {
     navigation.navigate('JobInfo', { job });
   };
 
+  // useEffect(() => {
+  //   fetchData(page);
+  // }, [page]);
+
   useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    fetchData(currentPage); // Fetch data whenever the page changes
+}, [currentPage]);
+
+const handlePageChange = (newPage: number) => {
+    if (newPage !== currentPage) {
+        setCurrentPage(newPage); // Trigger re-fetch for the new page
+    }
+};
+
 
   // Function to render pagination buttons
   const renderPagination = () => {
-    if (!isLoading) return null;
+    if (!page_count) return null; // Render only if there are pages
     const buttons = [];
-    const totalPages = page_count;
-    for (let i = 1; i <= totalPages; i++) {
-      buttons.push(
-        <TouchableOpacity
-          key={i}
-          onPress={() => handlePageChange(i)}
-          style={i === page ? styles.activePageButton : styles.pageButton}>
-          <Text style={i === page ? styles.activePageText : styles.pageText}>
-            {i}
-          </Text>
-        </TouchableOpacity>
-      );
+    for (let i = 1; i <= page_count; i++) {
+        buttons.push(
+            <TouchableOpacity
+                key={i}
+                onPress={() => handlePageChange(i)}
+                style={i === currentPage ? styles.activePageButton : styles.pageButton}>
+                <Text style={i === currentPage ? styles.activePageText : styles.pageText}>
+                    {i}
+                </Text>
+            </TouchableOpacity>
+        );
     }
-    // console.log("renderPagination complete"); // Use this for debugging
     return <View style={styles.paginationContainer}>{buttons}</View>;
-  };
+};
+
 
   return (
     // use flatlist instead of scrollview as it has built in pagination and header and is more efficient than scroll view.

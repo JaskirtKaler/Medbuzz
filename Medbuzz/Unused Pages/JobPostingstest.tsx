@@ -2,6 +2,9 @@
 //This passed the 4 test cases when there was no local storage involved, with local storage involved, jest config needs to be updated to account and recognize async storage as a module
 //React hook also needed to be deleted since it was causing errors for others on the team
 
+// For testing, type the following in the terminal: 
+// npm test -- __tests__/JobPostings.test.tsx
+
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useJobPostings } from '../API Fetch/UseJobPostings'; // Adjust the path to the JobPostings file
 

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-// File: ForgotPassword.test.tsx
+// For testing, type the following in the terminal: 
+// npm test -- __tests__/ForgotPassword.test.tsx
 
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';

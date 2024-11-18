@@ -1,6 +1,11 @@
 /* eslint-disable prettier/prettier */
 // File: ResetPassword.test.tsx
 
+
+// For testing, type the following in the terminal: 
+// npm test -- __tests__/ResetPassword.test.tsx
+
+
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect'; // Jest matchers for better assertions

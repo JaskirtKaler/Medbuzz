@@ -1,3 +1,7 @@
+// For testing, type the following in the terminal: 
+// npm test -- __tests__/Certificates.test.tsx
+
+
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Certificiates from '../SurveyPages/Certificates';

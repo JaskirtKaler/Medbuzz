@@ -1,89 +1,75 @@
+// For testing, type the following in the terminal: 
+// npm test -- __tests__/MessagePage.test.tsx
+
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import MessagePage from '../Screens/MessagePage'; // Adjust the import path as necessary
-import messaging from '@react-native-firebase/messaging';
-import notifee from '@notifee/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
+import MessagePage from '../Screens/MessagePage'; // Adjust the path if necessary
+import { useNavigation } from '@react-navigation/native';
+import { useUnreadMessages } from '../Components/Utility/UnreadMessagesContext';
 
-// Mock the necessary modules
-jest.mock('@react-native-firebase/messaging', () => ({
-  requestPermission: jest.fn(),
-  getToken: jest.fn(),
-  onMessage: jest.fn((callback) => {
-    // Simulate a new message
-    const mockMessage = {
-      notification: {
-        title: 'New message!',
-        body: 'You have a new message',
-      },
-      data: {
-        messageId: '123',
-        senderId: '1',
-      },
-    };
-    callback(mockMessage);
-  }),
+// Mock react-navigation
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
 }));
 
-jest.mock('@notifee/react-native', () => ({
-  createChannel: jest.fn(),
-  displayNotification: jest.fn(),
+// Mock UnreadMessagesContext
+jest.mock('../Components/Utility/UnreadMessagesContext', () => ({
+  useUnreadMessages: jest.fn(),
 }));
 
-describe('MessagePage', () => {
+// Mock react-native-gesture-handler to prevent native errors
+jest.mock('react-native-gesture-handler', () => ({
+  GestureHandlerRootView: jest.fn().mockImplementation(({ children }) => children),
+  Swipeable: jest.fn().mockImplementation(({ children }) => children),
+}));
+
+// Mock SVG components
+jest.mock('../Components/Svg/Backarrow', () => (props: any) => (
+  <div {...props} testID="mock-backarrow">MockBackarrow</div>
+));
+
+jest.mock('../Components/Svg/Trashcan', () => 'MockTrashcan');
+jest.mock('../Components/Svg/Profile', () => 'MockProfile');
+
+describe('MessagePage Component', () => {
+  const mockNavigation = {
+    navigate: jest.fn(),
+  };
+
+  const mockResetUnreadCount = jest.fn();
+
   beforeEach(() => {
+    (useNavigation as jest.Mock).mockReturnValue(mockNavigation);
+    (useUnreadMessages as jest.Mock).mockReturnValue({
+      unreadCount: 5,
+      resetUnreadCount: mockResetUnreadCount,
+    });
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
+  it('renders the Messages header correctly', () => {
     const { getByText } = render(<MessagePage />);
-    expect(getByText('Messages')).toBeTruthy(); // Check for the presence of the header
+    expect(getByText('Messages')).toBeTruthy();
   });
 
-  it('requests notification permission on mount', async () => {
-    render(<MessagePage />);
-    await waitFor(() => {
-      expect(messaging.requestPermission).toHaveBeenCalled();
-    });
-  });
-
-  it('receives and displays a new message', async () => {
+  it('calls resetUnreadCount when "Mark as Read" is pressed', () => {
     const { getByText } = render(<MessagePage />);
-    
-    await waitFor(() => {
-      expect(getByText('You have a new message')).toBeTruthy();
-    });
-
-    // Check if a notification was displayed
-    expect(notifee.displayNotification).toHaveBeenCalled();
+    fireEvent.press(getByText('Mark as Read'));
+    expect(mockResetUnreadCount).toHaveBeenCalledTimes(1);
   });
 
-  it('handles pressing the back button', () => {
-    const mockGoBack = jest.fn();
-    jest.mock('@react-navigation/native', () => ({
-      useNavigation: () => ({
-        goBack: mockGoBack,
-      }),
-    }));
+  it('navigates to Homepage when the back arrow is clicked', () => {
+    const { getByTestId } = render(<MessagePage />);
+    fireEvent.press(getByTestId('mock-backarrow')); // Use the testID from the mock component
+    expect(mockNavigation.navigate).toHaveBeenCalledWith('Homepage');
+  });
 
+  it('navigates to Inbox when "Radixsol HR" is pressed', () => {
     const { getByText } = render(<MessagePage />);
-    const backButton = getByText('Back'); // Adjust this to the actual text or find the button another way
-    fireEvent.press(backButton);
-
-    expect(mockGoBack).toHaveBeenCalled();
+    fireEvent.press(getByText('Radixsol HR'));
+    expect(mockNavigation.navigate).toHaveBeenCalledWith('Inbox');
   });
-
-  it('sends a notification when a message is added', async () => {
-    const { getByText } = render(<MessagePage />);
-    
-    // Trigger the function that adds a message
-    const testButton = getByText('Test Notification');
-    fireEvent.press(testButton);
-
-    expect(notifee.displayNotification).toHaveBeenCalledWith(expect.objectContaining({
-      title: expect.stringContaining('New message from Radixsol'),
-      body: expect.stringContaining('You have 1 unread messages from Radixsol'),
-    }));
-  });
-
-  // Additional tests can be added here for other functionalities
 });
