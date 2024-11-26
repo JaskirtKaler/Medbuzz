@@ -38,7 +38,7 @@ const JobPosting = () => {
   // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
   // These files exist on my emulator only and will need to be renamed on other systems.
   // This is for testing error checking only
-  let resumePath = '/storage/emulated/0/Pictures/IMG_20241014_183209.jpg';
+  let resumePath = '/storage/emulated/0/Download/Resume.jpg';
   let licensePath = '/storage/emulated/0/Pictures/IMG_20241014_183208.jpg';
   let degreePath = '/storage/emulated/0/Pictures/IMG_20241014_183206.jpg';
   let certificationPath = '/storage/emulated/0/Pictures/IMG_20241014_183205.jpg';
@@ -52,11 +52,9 @@ const JobPosting = () => {
   const [sendResumeSelected, setSendResumeSelection] = useState(false); // State for checkbox regarding resume for application
   const [sendLicensesSelected, setSendLicensesSelection] = useState(false); // State for checkbox regarding licenses for application
   const [sendDegreeSelected, setSendDegreeSelection] = useState(false); // State for checkbox regarding degree for application
-  const [sendCertificationsSelected, setSendCertificationsSelection] =
-    useState(false); // State for checkbox regarding certifications for application
+  const [sendCertificationsSelected, setSendCertificationsSelection] = useState(false); // State for checkbox regarding certifications for application
   const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
-  const [sendVaccinationSelected, setSendVaccinationSelection] =
-    useState(false); // State for checkbox regarding vaccination for application
+  const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
 
   /*
        webViewScaleFactor is the scale factor for the height of the webView (job description) container. It is multiplied by the height

@@ -78,7 +78,7 @@ useEffect(() => {
 
   // Sample state for senders
   const [senders, setSenders] = useState<Sender[]>([
-    { id: '1', name: 'Radixsol HR', companyName: 'Radixsol', profilePicture: '', unreadCount: 0, lastUnreadMessageTimestamp: null  },
+    { id: '1', name: 'Medbuzz HR', companyName: 'Medbuzz', profilePicture: '', unreadCount: 0, lastUnreadMessageTimestamp: null  },
     { id: '2', name: 'Person 1', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null },
     { id: '3', name: 'Person 2', companyName: 'Company Name', profilePicture: '', unreadCount: 0 , lastUnreadMessageTimestamp: null }
   ]);
@@ -159,7 +159,7 @@ useEffect(() => {
 
     return (
       <GestureHandlerRootView>
-        {item.name === 'Radixsol HR' ? (
+        {item.name === 'Medbuzz HR' ? (
           // Render without swipe for 'Radixsol HR'
           <TouchableOpacity onPress={() => handlePress(item.id)}>
             <View style={styles.encasing}>
