@@ -26,10 +26,11 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   // Load profile data when component mounts
   useEffect(() => {
     const loadProfile = async () => {
-      const profileData = await AsyncStorage.getItem('profile');
+      const profileData = await AsyncStorage.getItem('userProfile');
       if (profileData) {
         const currentProfile = JSON.parse(profileData);
-
+        // Log the current profile
+      console.log('UploadDoc - Profile:', profileData);
         const createDocumentPickerResponse = (uri: string): DocumentPickerResponse => ({
           uri,
           name: uri.split('/').pop() || 'Document',
@@ -111,7 +112,7 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
         console.log('Uploaded Document:', doc);
         console.log('Document Type:', header);
   
-        const profileData = await AsyncStorage.getItem('profile');
+        const profileData = await AsyncStorage.getItem('userProfile');
         const currentProfile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
   
         switch (header) {
@@ -138,7 +139,7 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
             return;
         }
   
-        await AsyncStorage.setItem('profile', JSON.stringify(currentProfile));
+        await AsyncStorage.setItem('userProfile', JSON.stringify(currentProfile));
         setProfile(currentProfile);
       } catch (err) {
         if (DocumentPicker.isCancel(err)) {

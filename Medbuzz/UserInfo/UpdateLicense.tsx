@@ -44,7 +44,7 @@ function UpdateLicense() {
 
     useEffect(() => {
       const loadLicenseData = async () => {
-        const profileData = await AsyncStorage.getItem('profile');
+        const profileData = await AsyncStorage.getItem('userProfile');
         if (profileData) {
           const profile = JSON.parse(profileData);
           const licenseData = profile.uploadedFiles?.license || {};
@@ -75,7 +75,7 @@ function UpdateLicense() {
     // testing if object is stored in async storage
     const printLicenseData = async () => {
       try {
-        const profileData = await AsyncStorage.getItem('profile');
+        const profileData = await AsyncStorage.getItem('userProfile');
         if (profileData) {
           const profile = JSON.parse(profileData);
           console.log("License Data:", profile.uploadedFiles.license);
@@ -129,25 +129,34 @@ function UpdateLicense() {
 
     
     const handleSave = async () => {
-      const licenseData: License = {
-        licenseType: selectedLicenseType,
-        licenseState: selectedState,
-        licenseNumber,
-        expirationDate,
-        firstName,
-        lastName, 
-        licenseFile: selectedDocument ? selectedDocument.uri : null,
-      };
-  
-      console.log(licenseData);
-      console.log(selectedDocument?.name || 'None');
-      const profileData = await AsyncStorage.getItem('profile');
-      const profile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
-      profile.uploadedFiles = profile.uploadedFiles || {};
-      profile.uploadedFiles.license = licenseData;
-
-      await AsyncStorage.setItem('profile', JSON.stringify(profile));
-      Alert.alert("Success", "License information saved successfully.");
+      try {
+        // Retrieve the current profile from AsyncStorage
+        const profileData = await AsyncStorage.getItem('userProfile');
+        const profile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
+    
+        // Ensure `uploadedFiles.license` exists in the profile
+        profile.uploadedFiles.license = profile.uploadedFiles.license || {};
+    
+        // Update the `license` object with new data
+        profile.uploadedFiles.license = {
+          licenseType: selectedLicenseType,
+          licenseState: selectedState,
+          licenseNumber,
+          expirationDate,
+          firstName,
+          lastName,
+          licenseFile: selectedDocument ? selectedDocument.uri : null,
+        };
+    
+        // Save the updated profile back to AsyncStorage
+        await AsyncStorage.setItem('userProfile', JSON.stringify(profile));
+    
+        console.log('Updated License Data:', profile);
+        Alert.alert('Success', 'License information saved successfully.');
+      } catch (error) {
+        console.error('Error saving license data:', error);
+        Alert.alert('Error', 'Failed to save license information.');
+      }
     };
 
     const getRealPathFromURI = async (uri: string): Promise<string> => {
@@ -542,5 +551,3 @@ const styles = StyleSheet.create({
         padding: 10,
       }, 
 });
-
-
