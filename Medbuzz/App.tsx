@@ -159,9 +159,7 @@ function Navigation() {
         component={MyJobsPage}
         options={({navigation}) => ({
           drawerIcon: () => (
-            <View style={{marginLeft: -9}}>
-              <SaveSVG width={40} height={40} color={'#000'} />
-            </View>
+            <SaveSVG width={30} height={30} color={'#000'} />
           ),
           headerShown: true,
           headerTitle: '',
