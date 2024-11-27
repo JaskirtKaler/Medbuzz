@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: 'black',
     borderWidth: 0.5,
+    padding: 10,
     borderRadius: 12,
     elevation: 8, // This will add a box shadow for Android
     shadowColor: '#000', // this will add a box shadow for IOS
