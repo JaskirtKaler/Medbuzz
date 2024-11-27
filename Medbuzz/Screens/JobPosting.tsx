@@ -9,6 +9,7 @@ import {
   View,
   Modal,
   Alert,
+  Platform,
 } from 'react-native';
 import {useState} from 'react';
 import Backarrow from '../Components/Svg/Backarrow';
@@ -329,7 +330,8 @@ const JobPosting = () => {
         visible={applyModalVisible}
         onRequestClose={() => {
           setApplyModalVisible;
-        }}>
+        }}
+        >
         <View style={{flex: 1}}>
           <View style={styles.applyModalStyle}>
             <View style={{flexDirection: 'row', margin: 10}}>
@@ -608,7 +610,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: height * 0.075,
     backgroundColor: '#FFF',
-    elevation: 5, // This will add a box shadow for Android
+    elevation: Platform.OS === 'android' ? 5 : 0, // Use elevation only on Android
     shadowColor: '#000', // this will add a box shadow for IOS
     shadowOffset: {
       width: 0,
@@ -753,7 +755,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 320,
     borderRadius: 6,
-    elevation: 5, // This will add a box shadow for Android
+    elevation: Platform.OS === 'android' ? 5 : 0,
     shadowColor: '#000', // this will add a box shadow for IOS
     shadowOffset: {
       width: 0,
@@ -777,12 +779,12 @@ const styles = StyleSheet.create({
   applyModalStyle: {
     flex: 1,
     backgroundColor: 'white',
-    marginHorizontal: 30,
-    marginVertical: 250,
+    marginHorizontal: Platform.OS === 'android' ? width * 0.3 : height * 0.3,
+    marginVertical: Platform.OS === 'android' ? height * 0.25 : height * 0.32,
     borderRadius: 15,
     borderColor: 'black',
     borderWidth: 1.5,
-    elevation: 5, // This will add a box shadow for Android
+    elevation: Platform.OS === 'android' ? 5 : 0,
     shadowColor: '#000', // this will add a box shadow for IOS
     shadowOffset: {
       width: 0,
