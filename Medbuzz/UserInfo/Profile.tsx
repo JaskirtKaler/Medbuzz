@@ -102,6 +102,9 @@ const Profile = () => {
   const [tmpDesiredPay, setTmpDesiredPay] = useState('');
   // value for preffered hours is determined by the time checkboxe(s) values
 
+  // Used for profile strength indication on the page
+  const [profileStrength, setProfileStrength] = useState(0);
+
   // resets the temporary useState variables
   const resetTmps = () => {
     setTmpStartDate('');
@@ -202,6 +205,131 @@ const Profile = () => {
     }
   };
 
+  // Precondition: a UserObject must have come from AsyncStorage.
+  // This function takes quite a naive approach. But it works.
+  const calculateProfileStrength = async (userObject:any) => {
+    // If userObject is null, then set profile strength to zero and return
+    if (userObject === null) {
+      setProfileStrength(0);
+      return;
+    }
+
+    var profileStrengthScore:number = 0 // Used in this function to accumulate the score of the profile strength
+    const numberOfProfileDataPoints:number = 20; // How many fileds that need to be filled for 100% profile strength
+    // console.log("In calculateProfileStrength"); // For debugging
+    // console.log(userObject); // For debugging
+    
+    if (userObject.profilePicture !== null) {
+      // console.log("Add picture to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.personalInfo.firstName !== '' && userObject.personalInfo.firstName !== null) {
+      // console.log("Add firstName to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.personalInfo.lastName !== '' && userObject.personalInfo.lastName !== null) {
+      // console.log("Add lastName to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.personalInfo.phoneNumber !== '' && userObject.personalInfo.phoneNumber !== null) {
+      // console.log("Add phoneNumber to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.personalInfo.email !== '' && userObject.personalInfo.email !== null) {
+      // console.log("Add email to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.education.schoolName !== '' && userObject.education.schoolName !== null) {
+      // console.log("Add schoolName to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    // if (userObject.education.schoolCountry !== '' && userObject.education.schoolCountry !== null) {
+    //   console.log("Add school country to score"); // For debugging
+    //   profileStrengthScore += 1;
+    // }
+    
+    if (userObject.homeAddress.street !== '' && userObject.homeAddress.street !== null) {
+      // console.log("Add homeAddress street to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.homeAddress.city !== '' && userObject.homeAddress.city !== null) {
+      // console.log("Add city to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.homeAddress.state !== '' && userObject.homeAddress.state !== null) {
+      // console.log("Add state to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.homeAddress.zipcode !== '' && userObject.homeAddress.zipcode !== null) {
+      // console.log("Add zipcode to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.expertise.discipline !== '' && userObject.expertise.discipline !== null) {
+      // console.log("Add disciplineto score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.expertise.certification !== '' && userObject.expertise.certification !== null) {
+      // console.log("Add certification to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.expertise.yearsOfExperience !== '' && userObject.expertise.yearsOfExperience !== null) {
+      // console.log("Add yearsOfExperience to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.identityVerification.DOB !== '' && userObject.identityVerification.DOB !== null) {
+      // console.log("Add DOB to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.identityVerification.last4ssn !== '' && userObject.identityVerification.last4ssn !== null) {
+      // console.log("Add last4ssn to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.identityVerification.legalFirstName !== '' && userObject.identityVerification.legalFirstName !== null) {
+      // console.log("Add legalFirstName to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.identityVerification.legalLastName == '' && userObject.identityVerification.legalLastName !== null) {
+      // console.log("Add legalLastName to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.uploadedFiles.resume !== '' && userObject.uploadedFiles.resume !== null) {
+      console.log("Add resume to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.degree !== '' && userObject.degree !== null) {
+      // console.log("Add degree to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+
+    if (userObject.certifications !== '' && userObject.certifications !== null) {
+      // console.log("Add certifications to score"); // For debugging
+      profileStrengthScore += 1;
+    }
+    
+    profileStrengthScore = Math.floor(100 * (profileStrengthScore / numberOfProfileDataPoints));
+    // console.log(`profile strength: ${profileStrengthScore}`);  // For debugging
+
+    setProfileStrength(profileStrengthScore);
+  };
+
   // Modals
   const [staffRoleModalVisible, setStaffRoleModalVisible] = useState(false); // State for edit Modal
   const [travelContractsModalVisible, setTravelContractsModalVisible] =
@@ -237,6 +365,7 @@ const Profile = () => {
             setLastName(profileData.personalInfo.lastName || '');
             setEmail(profileData.personalInfo.email || '');
             setPhoneNumber(profileData.personalInfo.phoneNumber || '');
+            calculateProfileStrength(profileData);
           } else {
             console.log('No Profile found in async storage');
           }
@@ -814,7 +943,7 @@ const Profile = () => {
             <View style={styles.profileStrengthTextContainer}>
               <Text style={styles.profileStrengthText}>Profile Strength</Text>
               <Text style={styles.profileStrengthPercentage}>
-                {30}%
+                {profileStrength}%
               </Text>
             </View>
 
@@ -824,7 +953,7 @@ const Profile = () => {
                 <View
                   style={[
                     styles.profileStrengthBar,
-                    {width: `${30}%`},
+                    {width: `${profileStrength}%`},
                   ]}
                 />
               </View>
