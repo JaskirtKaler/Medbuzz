@@ -215,7 +215,7 @@ const Profile = () => {
     }
 
     var profileStrengthScore:number = 0 // Used in this function to accumulate the score of the profile strength
-    const numberOfProfileDataPoints:number = 20; // How many fileds that need to be filled for 100% profile strength
+    const numberOfProfileDataPoints:number = 19; // How many fileds that need to be filled for 100% profile strength
     // console.log("In calculateProfileStrength"); // For debugging
     // console.log(userObject); // For debugging
     
@@ -309,10 +309,10 @@ const Profile = () => {
       profileStrengthScore += 1;
     }
 
-    if (userObject.uploadedFiles.resume !== '' && userObject.uploadedFiles.resume !== null) {
-      console.log("Add resume to score"); // For debugging
-      profileStrengthScore += 1;
-    }
+    // if (userObject.uploadedFiles.resume !== '' && userObject.uploadedFiles.resume !== null) {
+    //   console.log("Add resume to score"); // For debugging
+    //   profileStrengthScore += 1;
+    // }
 
     if (userObject.degree !== '' && userObject.degree !== null) {
       // console.log("Add degree to score"); // For debugging
