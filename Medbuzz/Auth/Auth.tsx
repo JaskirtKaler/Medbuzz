@@ -1,5 +1,7 @@
 import {authorize, revoke, AuthConfiguration} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import Keychain from 'react-native-keychain';
+
 import {
   CLIENT_ID,
   TENENT_ID,
@@ -80,6 +82,11 @@ class Auth {
       //console.log(decodedIdToken.family_name)
 
       // Store the decoded object in AsyncStorage so survey pages can add to it
+
+      // Encrypt this using keychain
+      // await Keychain.setGenericPassword('authToken', authState.idToken, {
+      //   accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED,
+      // });
       await AsyncStorage.setItem('Auth', JSON.stringify(decodedIdToken));
 
       //console.log(authState.idToken);
@@ -100,6 +107,7 @@ class Auth {
   // Sign Out function (Revoke tokens)
   static async signOut() {
     try {
+      // await Keychain.resetGenericPassword();
       const accessToken = await AsyncStorage.getItem('accessToken');
       if (accessToken) {
         await revoke(config, {
