@@ -11,7 +11,7 @@ const SvgComponent = ({ width = 40, height = 40, color = "#231f20", ...props }: 
     
     width={width}
     height={height}
-    viewBox="0 0 32 32"
+    viewBox="0 0 24 32"
     {...props}
   >
     <Path
