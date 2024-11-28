@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {authorize} from 'react-native-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Auth from './Auth.tsx';
 const {width, height} = Dimensions.get('window'); // get width of page

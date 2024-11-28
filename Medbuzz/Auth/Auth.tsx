@@ -11,6 +11,7 @@ import {Platform} from 'react-native';
 import {atob} from 'react-native-quick-base64';
 global.atob = atob;
 import {jwtDecode, JwtPayload} from 'jwt-decode';
+import SharedPreferences from 'react-native-shared-preferences';
 
 interface CustomJwtPayload extends JwtPayload {
   given_name: string;
