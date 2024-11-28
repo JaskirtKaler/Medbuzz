@@ -17,7 +17,6 @@ import NavigationBar from '../Components/Svg/NavigationBar.tsx';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window'); // screen max width and height
 import {useJobPostings} from '../API Fetch/UseJobPostings.tsx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // properties for Job component
 type JobProps = {

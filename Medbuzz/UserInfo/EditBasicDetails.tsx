@@ -20,8 +20,6 @@ import {Dropdown} from 'react-native-element-dropdown';
 import {Image} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Profile from '../Components/Svg/Profile.tsx';
 // import { useNavigation } from '@react-navigation/native';
 import {
   disciplineOptions,

@@ -7,37 +7,33 @@ import {
   Dimensions,
   TextInput,
   ScrollView,
-  KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
-  Alert,
 } from 'react-native';
 import {Bar} from 'react-native-progress';
 import {Dropdown} from 'react-native-element-dropdown';
 import Backarrow from '../Components/Svg/Backarrow';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {styles} from './ParentPage';
-import {loadUser, saveUser, User} from '../Components/Utility/userStorage.tsx';
-import { disciplineOptions } from '../mapVariables/optionsData.tsx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {saveUser, User} from '../Components/Utility/userStorage.tsx';
+import {disciplineOptions} from '../mapVariables/optionsData.tsx';
 const DisciplineScreen = () => {
   const progress = 20; // Example progress percentage
   const [discipline, setDiscipline] = useState('');
   const [experience, setExperience] = useState('');
   const navigation = useNavigation<any>();
   const [user, setUser] = useState<User | null>();
-  const route = useRoute<RouteProp<{params: {authState: any, decodedIdToken:any}}, 'params'>>();
+  const route =
+    useRoute<
+      RouteProp<{params: {authState: any; decodedIdToken: any}}, 'params'>
+    >();
   const {authState, decodedIdToken} = route.params;
-
 
   const handleBack = () => {
     navigation.goBack();
     console.log('Back button clicked');
   };
 
-
-  
-  const handleContinue = async()=> {
+  const handleContinue = async () => {
     try {
       const updatedUser: User = {
         ...user,
@@ -47,7 +43,7 @@ const DisciplineScreen = () => {
         discipline,
         experience,
       };
-      
+
       // Save the updated user data
       await saveUser(updatedUser);
 
@@ -59,23 +55,21 @@ const DisciplineScreen = () => {
     } catch (error) {
       console.error('Error saving user data:', error);
     }
-  }
+  };
 
   // Formats phone number to (***)***-**** format and ensures it only contains numbers
   const handlePhoneNumberInput = (text: string) => {
-
     // Remove non-numeric characters
     const numericValue = text.replace(/\D/g, '');
 
     // A two digit number
     let formattedNumber = numericValue;
 
-    return formattedNumber
+    return formattedNumber;
   };
 
- 
-return (
-  <ScrollView
+  return (
+    <ScrollView
       contentContainerStyle={{
         flexGrow: 1,
         alignItems: 'center',
@@ -83,7 +77,12 @@ return (
         backgroundColor: '#0EA68D',
       }}>
       {/* Back Button */}
-      <View style={{position: 'absolute', top: Platform.OS === 'ios' ? 60 : 10, left: 0}}>
+      <View
+        style={{
+          position: 'absolute',
+          top: Platform.OS === 'ios' ? 60 : 10,
+          left: 0,
+        }}>
         <TouchableOpacity onPress={handleBack}>
           <Backarrow width={40} height={40} color={'#FFF'} />
         </TouchableOpacity>
@@ -128,22 +127,25 @@ return (
       />
       {/*Render Text Box */}
 
-        <TextInput
-          style={stylesLocal.input}
-          placeholder="Enter years of experience"
-          placeholderTextColor="#888"
-          value={experience}
-          onChangeText={(text) =>{setExperience(handlePhoneNumberInput(text))}}
-          keyboardType="numeric"
-          maxLength={2}
-        />
-
+      <TextInput
+        style={stylesLocal.input}
+        placeholder="Enter years of experience"
+        placeholderTextColor="#888"
+        value={experience}
+        onChangeText={text => {
+          setExperience(handlePhoneNumberInput(text));
+        }}
+        keyboardType="numeric"
+        maxLength={2}
+      />
 
       {/* Continue Button */}
-      <TouchableOpacity onPress={handleContinue} style={stylesLocal.continueTouch}>
+      <TouchableOpacity
+        onPress={handleContinue}
+        style={stylesLocal.continueTouch}>
         <Text style={styles.continueText}>Continue</Text>
       </TouchableOpacity>
-      </ScrollView>
+    </ScrollView>
   );
 };
 
@@ -164,16 +166,16 @@ const stylesLocal = StyleSheet.create({
     paddingHorizontal: '25%',
     paddingVertical: '2%',
     elevation: 5,
-    marginTop:'40%',
+    marginTop: '40%',
     borderRadius: 6,
   },
-  
+
   input: {
     width: '80%',
     borderRadius: 25,
     backgroundColor: 'white',
     paddingHorizontal: 20,
-    marginBottom:'5%',
+    marginBottom: '5%',
     height: '6%',
   },
   inputError: {
