@@ -103,7 +103,7 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
     return true;
   };
 
-  const handleChange = (text) => {
+  const handleChange = (text: string) => {
     // Allow only numeric input
     const numericValue = text.replace(/[^0-9]/g, '');
     setPhoneNumber(numericValue);
