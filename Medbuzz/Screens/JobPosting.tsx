@@ -36,16 +36,6 @@ const JobPosting = () => {
   //console.log('Job data passed to JobPosting page:', job.job_start_date, job.pay_rates.pay_rate, job.state);
   //console.log('job id: ' + job.id);
 
-  // Hardcoded pathnames to existing images meant to stand in for resume, degree, etc. images
-  // These files exist on my emulator only and will need to be renamed on other systems.
-  // This is for testing error checking only
-  let resumePath = '/storage/emulated/0/Pictures/IMG_20241014_183209.jpg';
-  let licensePath = '/storage/emulated/0/Pictures/IMG_20241014_183208.jpg';
-  let degreePath = '/storage/emulated/0/Pictures/IMG_20241014_183206.jpg';
-  let certificationPath = '/storage/emulated/0/Pictures/IMG_20241014_183205.jpg';
-  let referencePath = '/storage/emulated/0/Pictures/IMG_20241014_182941.jpg';
-  let vaccinationPath = '/storage/emulated/0/Pictures/IMG_20241014_175006.jpg';
-
   const navigation = useNavigation<NavigationProp<any>>();
 
   const [applyModalVisible, setApplyModalVisible] = useState(false); // State for edit Modal
@@ -53,11 +43,9 @@ const JobPosting = () => {
   const [sendResumeSelected, setSendResumeSelection] = useState(false); // State for checkbox regarding resume for application
   const [sendLicensesSelected, setSendLicensesSelection] = useState(false); // State for checkbox regarding licenses for application
   const [sendDegreeSelected, setSendDegreeSelection] = useState(false); // State for checkbox regarding degree for application
-  const [sendCertificationsSelected, setSendCertificationsSelection] =
-    useState(false); // State for checkbox regarding certifications for application
+  const [sendCertificationsSelected, setSendCertificationsSelection] = useState(false); // State for checkbox regarding certifications for application
   const [sendReferencesSelected, setSendReferencesSelection] = useState(false); // State for checkbox regarding references for application
-  const [sendVaccinationSelected, setSendVaccinationSelection] =
-    useState(false); // State for checkbox regarding vaccination for application
+  const [sendVaccinationSelected, setSendVaccinationSelection] = useState(false); // State for checkbox regarding vaccination for application
 
   /*
        webViewScaleFactor is the scale factor for the height of the webView (job description) container. It is multiplied by the height
@@ -120,136 +108,100 @@ const JobPosting = () => {
     let alertIssueTitle = 'Something Went Wrong.';
     let alertIssueMessage = 'One or more of your files does not exist.';
 
+    let alertNoFileMessage = 'No files selected. Please select one or more files to apply.';
+
     let problems = false;
 
-    // Check if resume image file exists and reset the checkbox use state to false
-    if (sendResumeSelected) {
-      await RNFetchBlob.fs
-        .exists(resumePath)
-        .then(resumeExists => {
-          if (resumeExists) console.log('File exists. Resume sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+    let filesSelected = sendResumeSelected || sendLicensesSelected || sendDegreeSelected ||
+          sendCertificationsSelected || sendReferencesSelected || sendVaccinationSelected;
+
+    // attempt to retrieve the User Object from AsyncStorage, push an applyJob object, and save 
+    try {
+      const savedUserObject = await AsyncStorage.getItem('userProfile');
+
+      // if there is data in saveLocationInfo parse it and set useState variables accordingly
+      if (savedUserObject !== null) {
+
+        console.log("User data successfully loaded!");
+
+        // set parsedUserObject equal to the parsed savedUserObject from AsyncStorage 
+        const parsedUserObject = JSON.parse(savedUserObject);
+
+        // If one or more files was selected check to ensure they have been uploaded
+        if(filesSelected) {
+
+          // Check resume
+          if(sendResumeSelected) {
+            if(parsedUserObject.uploadedFiles.resume)
+                console.log("File exists. Resume sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            } 
+            setSendResumeSelection(false)
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      setSendResumeSelection(false);
-    }
-
-    // Check if license image file exists and reset the checkbox use state to false
-    if (sendLicensesSelected) {
-      await RNFetchBlob.fs
-        .exists(licensePath)
-        .then(licenseExists => {
-          if (licenseExists) console.log('File exists. License sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+  
+          // Check Licenses
+          if (sendLicensesSelected) {
+            if(parsedUserObject.uploadedFiles.license.licenseFile)
+              console.log("File exists. License sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            }  
+            setSendLicensesSelection(false);
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      setSendLicensesSelection(false);
-    }
-
-    // Check if degree image file exists and reset the checkbox use state to false
-    if (sendDegreeSelected) {
-      await RNFetchBlob.fs
-        .exists(degreePath)
-        .then(degreeExists => {
-          if (degreeExists) console.log('File exists. Degree sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+  
+          // Check Degree
+          if(sendDegreeSelected) {
+            if(parsedUserObject.uploadedFiles.degree)
+              console.log("File exists. Degree sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            } 
+            setSendDegreeSelection(false)
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      setSendDegreeSelection(false);
-    }
-
-    // Check if certification image file exists and reset the checkbox use state to false
-    if (sendCertificationsSelected) {
-      await RNFetchBlob.fs
-        .exists(certificationPath)
-        .then(certificationExists => {
-          if (certificationExists)
-            console.log('File exists. Certification sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+  
+          // Check Certifications
+          if(sendCertificationsSelected) {
+            if(parsedUserObject.uploadedFiles.certifications)
+              console.log("File exists. Certifications sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            } 
+            setSendCertificationsSelection(false)
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      setSendCertificationsSelection(false);
-    }
-
-    // Check if reference image file exists and reset the checkbox use state to false
-    if (sendReferencesSelected) {
-      await RNFetchBlob.fs
-        .exists(referencePath)
-        .then(referenceExists => {
-          if (referenceExists) console.log('File exists. Reference sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+  
+          // Check References
+          if(sendReferencesSelected) {
+            if(parsedUserObject.uploadedFiles.references)
+              console.log("File exists. References sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            } 
+            setSendReferencesSelection(false)
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      setSendReferencesSelection(false);
-    }
-
-    // Check if vaccination image file exists and reset the checkbox use state to false
-    if (sendVaccinationSelected) {
-      await RNFetchBlob.fs
-        .exists(vaccinationPath)
-        .then(vaccinationExists => {
-          if (vaccinationExists) console.log('File exists. Vaccination sent.');
-          else {
-            console.log('File does not exist.');
-            problems = true;
+  
+          // Check Vaccinations
+          if(sendVaccinationSelected) {
+            if(parsedUserObject.uploadedFiles.vaccination)
+              console.log("File exists. Vaccinations sent.");
+            else {
+              console.log("File does not exist.");
+              problems = true;
+            } 
+  
+            setSendVaccinationSelection(false)
           }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+        } else {
+          problems = true;
+        }
 
-      setSendVaccinationSelection(false);
-    }
-
-    // if there was a problem, change the default alert title and message to the "Issue" variants
-    if (problems) {
-      alertTitle = alertIssueTitle;
-      alertMessage = alertIssueMessage;
-
-    } else {
-
-      // otherwise attempt to retrieve the User Object from AsyncStorage, push an applyJob object, and save 
-      try {
-        const savedUserObject = await AsyncStorage.getItem('userProfile');
-
-        // if there is data in saveLocationInfo parse it and set useState variables accordingly
-        if (savedUserObject !== null) {
-
-          console.log("User data successfully loaded!");
-
-          // set parsedUserObject equal to the parsed savedUserObject from AsyncStorage 
-          const parsedUserObject = JSON.parse(savedUserObject);
-
+        // If there were no problems checking the files and they exist...
+        if(!problems) {
           // check to ensure that parsedUserObject.myJobs and parsedUserObject.myJobs.appliedJobs have been defined
           // If they haven't, define them
           if (!parsedUserObject.myJobs) {
@@ -299,14 +251,26 @@ const JobPosting = () => {
             'userProfile',
             JSON.stringify(parsedUserObject),
           );
-
-        } else {
-          console.log("No user profile info found. Please create a profile.");
         }
-      } catch (error) {
-        console.error('Error loading user data:', error);
+
+      } else {
+        console.log("No user profile info found. Please create a profile.");
       }
+    } catch (error) {
+      console.error('Error loading user data:', error);
     };
+    
+    // If there were problems (No files selected, files don't exist) set the alert title and message accordingly
+    if(problems) {
+      if(!filesSelected) {
+        alertTitle = alertIssueTitle;
+        alertMessage = alertNoFileMessage;
+      } else {
+        alertTitle = alertIssueTitle;
+        alertMessage = alertIssueMessage;
+      }
+    }
+
     
 
     // display the alert

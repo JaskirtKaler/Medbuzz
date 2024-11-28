@@ -28,7 +28,7 @@ const Inbox: React.FC = () => {
   ]);
 
   const [inputText, setInputText] = useState('');
-  const [clientName] = useState('Radixsol HR');
+  const [clientName] = useState('Medbuzz HR');
 
   const { incrementUnreadCount, resetUnreadCount } = useUnreadMessages();
 
@@ -67,7 +67,7 @@ const Inbox: React.FC = () => {
         const atsReplyYes = {
           id: Date.now() + Math.random(),
           text: 'Thank you! Medbuzz HR will be in contact with you shortly.',
-          sender: 'Radixsol HR',
+          sender: 'Medbuzz HR',
           date: new Date().toLocaleTimeString(),
         };
         setMessages((prevMessages) => [...prevMessages, atsReplyYes]);
@@ -78,7 +78,7 @@ const Inbox: React.FC = () => {
           const atsReplyNo = {
             id: messages.length + 1,
             text: "We understand! If you change your mind, our team is always here to help. Don’t hesitate to reach out at any time.",
-            sender: 'Radixsol HR',
+            sender: 'Medbuzz HR',
             date: new Date().toLocaleTimeString(),
           };
           setMessages((prevMessages) => [...prevMessages, atsReplyNo]);

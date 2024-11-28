@@ -114,6 +114,9 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
   
         const profileData = await AsyncStorage.getItem('userProfile');
         const currentProfile = profileData ? JSON.parse(profileData) : { uploadedFiles: {} };
+
+        // TEST: log recently retreived profile
+        console.log("Current Profile: ", currentProfile);
   
         switch (header) {
           case 'Resume':
@@ -139,7 +142,14 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
             return;
         }
   
+        // TEST: Log recently updated profile
+        console.log("Updated Profile: ", currentProfile)
         await AsyncStorage.setItem('userProfile', JSON.stringify(currentProfile));
+
+        // TEST: Log recently saved profile
+        const verifiedSavedProfile = await AsyncStorage.getItem('userProfile');
+        console.log("Verified Saved Profile: ", verifiedSavedProfile);
+        
         setProfile(currentProfile);
       } catch (err) {
         if (DocumentPicker.isCancel(err)) {

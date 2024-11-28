@@ -89,18 +89,15 @@ const Profile = () => {
       preferredHours: '',
     });
 
+  const [prefHours, setPrefHours] = useState(''); // state for the preferred hours selection in the preference Modals
   const [isRelocateSelected, setRelocateSelection] = useState(false); // State for checkbox in Job Preferences
-  const [isMorningSelected, setMorningSelection] = useState(false); // State for Morning Checkbox in Job Preferences
-  const [isAfternoonSelected, setAfternoonSelection] = useState(false); // State for Afternoon Checkbox in Job Preferences
-  const [isEveningSelected, setEveningSelection] = useState(false); // State for Evening Checkbox in Job Preferences
-  const [isFlexibleSelected, setFlexibleSelection] = useState(false); // State for Flexible Checkbox in Job Preferences
 
   // Temporary useSates to handle changes to the user's Staff Role Preferences. Updates staffRolePrefs after confirmation
   const [tmpStartDate, setTmpStartDate] = useState('');
   const [tmpPreferredLocation, setTmpPreferredLocation] = useState('');
-  // checkbox isSelcted value functions as the value for the relocate attribute of the staffRolePrefs
   const [tmpDesiredPay, setTmpDesiredPay] = useState('');
-  // value for preffered hours is determined by the time checkboxe(s) values
+  // checkbox isRelocateSelcted value functions as the value for the relocate attribute of the staffRolePrefs
+  // value for preffered hours is determined by the time checkboxe(s) which passes a string to the preferred hours use state
 
   // Used for profile strength indication on the page
   const [profileStrength, setProfileStrength] = useState(0);
@@ -111,10 +108,7 @@ const Profile = () => {
     setTmpPreferredLocation('');
     setTmpDesiredPay('');
     setRelocateSelection(false);
-    setMorningSelection(false);
-    setAfternoonSelection(false);
-    setEveningSelection(false);
-    setFlexibleSelection(false);
+    setPrefHours('');
   };
 
   // funtion to update StaffRollPrefs based on tmp variable use states
@@ -124,12 +118,7 @@ const Profile = () => {
       preferredLocation: tmpPreferredLocation,
       relocate: isRelocateSelected,
       desiredPay: tmpDesiredPay,
-      preferredHours: determinePrefHours(
-        isMorningSelected,
-        isAfternoonSelected,
-        isEveningSelected,
-        isFlexibleSelected,
-      ),
+      preferredHours: determinePrefHours(prefHours)
     });
 
     resetTmps();
@@ -142,12 +131,7 @@ const Profile = () => {
       preferredLocation: tmpPreferredLocation,
       relocate: isRelocateSelected,
       desiredPay: tmpDesiredPay,
-      preferredHours: determinePrefHours(
-        isMorningSelected,
-        isAfternoonSelected,
-        isEveningSelected,
-        isFlexibleSelected,
-      ),
+      preferredHours: determinePrefHours(prefHours)
     });
 
     resetTmps();
@@ -160,49 +144,15 @@ const Profile = () => {
       preferredLocation: tmpPreferredLocation,
       relocate: isRelocateSelected,
       desiredPay: tmpDesiredPay,
-      preferredHours: determinePrefHours(
-        isMorningSelected,
-        isAfternoonSelected,
-        isEveningSelected,
-        isFlexibleSelected,
-      ),
+      preferredHours: determinePrefHours(prefHours)
     });
 
     resetTmps();
   };
 
-  // function to determine preferred hours
-  const determinePrefHours = (
-    morning: boolean,
-    afternoon: boolean,
-    evening: boolean,
-    flexible: boolean,
-  ) => {
-    if (morning) return 'Morning';
-    else if (afternoon) return 'Afternoon';
-    else if (evening) return 'Evening';
-    else if (flexible) return 'Flexible';
-    else return 'ERROR: cannot determine preferred hours';
-  };
-
-  const adjustPrefTimes = (time: string) => {
-    if (time === 'morning') {
-      setAfternoonSelection(false);
-      setEveningSelection(false);
-      setFlexibleSelection(false);
-    } else if (time === 'afternoon') {
-      setMorningSelection(false);
-      setEveningSelection(false);
-      setFlexibleSelection(false);
-    } else if (time === 'evening') {
-      setMorningSelection(false);
-      setAfternoonSelection(false);
-      setFlexibleSelection(false);
-    } else if (time === 'flexible') {
-      setMorningSelection(false);
-      setAfternoonSelection(false);
-      setEveningSelection(false);
-    }
+  // function to return the preferred hours or return an error if there is a problem
+  const determinePrefHours = (chosenHours: string) => {
+    return chosenHours || 'ERROR: cannot determine preferred hours';
   };
 
   // Precondition: a UserObject must have come from AsyncStorage.
@@ -332,14 +282,8 @@ const Profile = () => {
 
   // Modals
   const [staffRoleModalVisible, setStaffRoleModalVisible] = useState(false); // State for edit Modal
-  const [travelContractsModalVisible, setTravelContractsModalVisible] =
-    useState(false); // State for edit Modal
-  const [localContractsModalVisible, setLocalContractsModalVisible] =
-    useState(false); // State for edit Modal
-
-  const screenHeight = Dimensions.get('window').height; // get the height of the screen for modal translation
-
- 
+  const [travelContractsModalVisible, setTravelContractsModalVisible] = useState(false); // State for edit Modal
+  const [localContractsModalVisible, setLocalContractsModalVisible] = useState(false); // State for edit Modal
   
   // Declare useState variables for profile data
   const [firstName, setFirstName] = useState<string>('');
@@ -568,23 +512,23 @@ const Profile = () => {
               </Text>
               <View style={styles.timeSelectionStyle}>
                 <CheckBox
-                  value={isMorningSelected}
-                  onValueChange={setMorningSelection}
+                  value={prefHours === 'Morning'}
+                  onValueChange={() => setPrefHours('Morning')}
                 />
                 <Text style={styles.timeOptionStyle}>Morning</Text>
                 <CheckBox
-                  value={isAfternoonSelected}
-                  onValueChange={setAfternoonSelection}
+                  value={prefHours === 'Afternoon'}
+                  onValueChange={() => setPrefHours('Afternoon')}
                 />
                 <Text style={styles.timeOptionStyle}>Afternoon</Text>
                 <CheckBox
-                  value={isEveningSelected}
-                  onValueChange={setEveningSelection}
+                  value={prefHours === 'Evening'}
+                  onValueChange={() => setPrefHours('Evening')}
                 />
                 <Text style={styles.timeOptionStyle}>Evening</Text>
                 <CheckBox
-                  value={isFlexibleSelected}
-                  onValueChange={setFlexibleSelection}
+                  value={prefHours === 'Flexible'}
+                  onValueChange={() => setPrefHours('Flexible')}
                 />
                 <Text style={styles.timeOptionStyle}>Flexible</Text>
               </View>
@@ -716,23 +660,23 @@ const Profile = () => {
               </Text>
               <View style={styles.timeSelectionStyle}>
                 <CheckBox
-                  value={isMorningSelected}
-                  onValueChange={setMorningSelection}
+                  value={prefHours === 'Morning'}
+                  onValueChange={() => setPrefHours('Morning')}
                 />
                 <Text style={styles.timeOptionStyle}>Morning</Text>
                 <CheckBox
-                  value={isAfternoonSelected}
-                  onValueChange={setAfternoonSelection}
+                  value={prefHours === 'Afternoon'}
+                  onValueChange={() => setPrefHours('Afternoon')}
                 />
                 <Text style={styles.timeOptionStyle}>Afternoon</Text>
                 <CheckBox
-                  value={isEveningSelected}
-                  onValueChange={setEveningSelection}
+                  value={prefHours === 'Evening'}
+                  onValueChange={() => setPrefHours('Evening')}
                 />
                 <Text style={styles.timeOptionStyle}>Evening</Text>
                 <CheckBox
-                  value={isFlexibleSelected}
-                  onValueChange={setFlexibleSelection}
+                  value={prefHours === 'Flexible'}
+                  onValueChange={() => setPrefHours('Flexible')}
                 />
                 <Text style={styles.timeOptionStyle}>Flexible</Text>
               </View>
@@ -863,23 +807,23 @@ const Profile = () => {
               </Text>
               <View style={styles.timeSelectionStyle}>
                 <CheckBox
-                  value={isMorningSelected}
-                  onValueChange={setMorningSelection}
+                  value={prefHours === 'Morning'}
+                  onValueChange={() => setPrefHours('Morning')}
                 />
                 <Text style={styles.timeOptionStyle}>Morning</Text>
                 <CheckBox
-                  value={isAfternoonSelected}
-                  onValueChange={setAfternoonSelection}
+                  value={prefHours === 'Afternoon'}
+                  onValueChange={() => setPrefHours('Afternoon')}
                 />
                 <Text style={styles.timeOptionStyle}>Afternoon</Text>
                 <CheckBox
-                  value={isEveningSelected}
-                  onValueChange={setEveningSelection}
+                  value={prefHours === 'Evening'}
+                  onValueChange={() => setPrefHours('Evening')}
                 />
                 <Text style={styles.timeOptionStyle}>Evening</Text>
                 <CheckBox
-                  value={isFlexibleSelected}
-                  onValueChange={setFlexibleSelection}
+                  value={prefHours === 'Flexible'}
+                  onValueChange={() => setPrefHours('Flexible')}
                 />
                 <Text style={styles.timeOptionStyle}>Flexible</Text>
               </View>

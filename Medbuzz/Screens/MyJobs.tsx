@@ -35,7 +35,7 @@ function calculateWeeksFromIsoDate(startDate: string, endDate: string): string {
   const weeks: number = millisecondsBetweenDates / millisecondsInOneWeek;
   // console.log(`Weeks: ${weeks}`); // For debugging
 
-  return weeks <= 0 ? "Flexible" : weeks.toString();
+  return weeks <= 0 ? "Flexible" : Math.round(weeks).toString() + " weeks";
 }
 
 // Component to display each job
