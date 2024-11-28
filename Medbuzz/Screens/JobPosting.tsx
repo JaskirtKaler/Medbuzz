@@ -743,8 +743,8 @@ const styles = StyleSheet.create({
   applyModalStyle: {
     flex: 1,
     backgroundColor: 'white',
-    marginHorizontal: Platform.OS === 'android' ? width * 0.3 : height * 0.3,
-    marginVertical: Platform.OS === 'android' ? height * 0.25 : height * 0.32,
+    marginHorizontal: Platform.OS === 'android' ? width * 0.075 : height * 0.3,
+    marginVertical: Platform.OS === 'android' ? height * 0.28 : height * 0.32,
     borderRadius: 15,
     borderColor: 'black',
     borderWidth: 1.5,
