@@ -105,6 +105,16 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
     return true;
   };
 
+  const handleChange = (text) => {
+    // Allow only numeric input
+    const numericValue = text.replace(/[^0-9]/g, '');
+    setPhoneNumber(numericValue);
+    setZipCode(numericValue);
+    setSSN(numericValue);
+
+
+  };
+
   // Fetch existing data from local storage at the start of page, to populate the fields
   useEffect(() => {
     const fetchData = async () => {
@@ -409,7 +419,8 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
       <TextInput
         testID="phoneNumberInput"
         value={phoneNumber}
-        onChangeText={setPhoneNumber}
+        onChangeText={handleChange}
+        
         style={styles.textBoxStyle}></TextInput>
 
       {/* Email field and TextBox */}
@@ -616,7 +627,7 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
       <TextInput
         testID="zipCodeInput"
         value={zipCode}
-        onChangeText={validateZipCode}
+        onChangeText={handleChange}
         style={styles.textBoxStyle}></TextInput>
 
       {/* Your Expertise header */}
@@ -703,7 +714,7 @@ const EditBasicDetails: React.FC<EditBasicDetailsProps> = ({navigation}) => {
       <TextInput
         testID="ssnLastFourInput"
         value={ssn}
-        onChangeText={setSSN}
+        onChangeText={handleChange}
         style={styles.textBoxStyle}></TextInput>
 
       {/* Input field for legal first name */}

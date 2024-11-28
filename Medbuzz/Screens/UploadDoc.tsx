@@ -149,7 +149,7 @@ const UploadDoc: React.FC<UploadDocProps> = ({ route }) => {
         // TEST: Log recently saved profile
         const verifiedSavedProfile = await AsyncStorage.getItem('userProfile');
         console.log("Verified Saved Profile: ", verifiedSavedProfile);
-
+        
         setProfile(currentProfile);
       } catch (err) {
         if (DocumentPicker.isCancel(err)) {
