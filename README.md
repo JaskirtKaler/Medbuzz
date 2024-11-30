@@ -1,37 +1,72 @@
 # Medbuzz
 
-## Contributors
-
-- Jaskirt Kaler (jaskirtkaler@csus.edu)
-- Ashar Javid (ajavid@csus.edu)
-- Alex Muir (alexmuir@csus.edu)
-- Maddie Ananda (manandasubramanian@csus.edu)
-- Fadi Zubeideh (fzubeideh@csus.edu)
-- Richard E. Varela (rvarela@csus.edu)
-- Adiba Akter (adibaakter@csus.edu)
-- Avneet Brar (avneetbrar@csus.edu)
-
-## Table of Contents
+# Table of Contents
 
 - [Synopsis](#synopsis)
-- [Software Images](#software-images)
-    - [Entity Relationship Diagram](#entity-relationship-diagram)
-    - [Product Mockup Images](#product-mockup-images)
-- [Timeline](#timeline)
-    - [Sprint 5](#sprint-5-82624---9924)
-    - [Sprint 6](#sprint-6-9924---92324)
-    - [Sprint 7](#sprint-7-92324---10724)
-    - [Sprint 8](#sprint-8-10724---102124)
-- [Testing](#testing)
-- [Dependencies](#dependencies)
+- [Features](#features)
 - [Developer Instructions](#developer-instructions)
-- [Deployment](#deployment)
+    - [Dependencies](#dependencies)
+    - [Download](#download)
+    - [Setup](Setup)
+    - [Deployment](#deployment)
+        - [Deployment Keys](#deployment-keys)
+- [Testing](#testing)
+- [Contributors](#contributors)
+- [Special Thanks](#special-thanks)
 
 ## Synopsis
 
 MedBuzz is an innovative mobile application developed by the Sprint Scripters, aimed at bridging the gap between healthcare workers and recruiters across the United States. This project, guided by the vision of Kamaldeep Singh, Founder and CEO of Radixsol, promises to automate and streamline the healthcare recruitment process, enhancing the efficiency of job searches, application tracking, and communication between candidates and recruiters.
 
 The Radixsol Medical Staffing App envisions a platform where healthcare professionals can effortlessly connect with recruiters, showcasing their qualifications and exploring job opportunities with ease. By integrating advanced features such as online profile creation, a comprehensive job search and filtering system, and real-time notifications, MedBuzz aims to simplify the recruitment process, making it more direct, efficient, and engaging for all stakeholders involved.
+
+## Features
+
+Describe features of the app.
+Include any subsections as needed.
+
+## Developer Instructions
+
+> Instructions to include how download, setup to run/deploy.
+
+### Download
+
+
+
+### Setup
+
+
+
+### Deployment
+
+#### Deployment Keys
+
+Talk about the `.env` file.
+
+## Testing
+
+> Testing Section with links or descriptions of how to test.
+
+Include any subsections as needed.
+
+## Contributors
+
+<!-- Include the email you want to be contacted by and your GitHub profile link.-->
+
+- Jaskirt Kaler (jaskirtkaler@csus.edu)
+- Ashar Javid (ajavid@csus.edu)
+- Alex Muir (alexmuir@csus.edu)
+- Maddie Ananda (manandasubramanian@csus.edu)
+- Fadi Zubeideh (fzubeideh@csus.edu)
+- [Richard E. Varela]() (rvarela@csus.edu)
+- Adiba Akter (adibaakter@csus.edu)
+- Avneet Brar (avneetbrar@csus.edu)
+
+## Special Thanks
+
+- - -
+
+***Everything below here will be removed.***
 
 ## Software Images
 
@@ -94,19 +129,3 @@ The Radixsol Medical Staffing App envisions a platform where healthcare professi
 - Run Azure Function for users on a 24-hour basis. 
 
 - Sort out Beta Testing Bugs. 
-
-## Testing
-
-<!-- Place holder until 191 -->
-
-## Dependencies
-
-<!-- Place holder until 191 -->
-
-## Developer Instructions
-
-<!-- Place holder until 191 -->
-
-## Deployment
-
-<!-- Place holder until 191 -->
