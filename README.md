@@ -1,5 +1,7 @@
 # Medbuzz
 
+![](./imgs/Medbuzz.png)
+
 # Table of Contents
 
 - [Synopsis](#synopsis)
@@ -27,21 +29,69 @@ Include any subsections as needed.
 
 ## Developer Instructions
 
-> Instructions to include how download, setup to run/deploy.
+**Requirements:**
+
+- Any text editor/IDE,
+- Node.js,
+- Git Bash,
+- and Android Studio and/or XCode.
 
 ### Download
 
+1. Navigate to where you want to save the project, open your terminal there and enter the following:
 
+```Bash
+Git clone https://github.com/JaskirtKaler/Medbuzz.git
+```
 
 ### Setup
 
+2. Navigate into the `Medbuzz` folder and run the following:
 
+```Bash
+cd Mebuzz
+npm i
+```
+
+3. To run the app:
+
+```Bash
+npx react-native start --reset-cahce
+```
+
+*Note:* `--reset-cache` does not always need to be used, but is best to run if you change the `.env` file.
+
+4. In a new terminal, run one of the following depending on which system you will use:
+
+**For Android:**
+
+```Bash
+npm react-native android
+```
+
+**For iOS:**
+
+```Bash
+npx react-native run-ios-simulator="iPhone 16 Pro Max"
+```
+
+*Note:* You do not have to use the phone listed above. Pick whatever device you need to run/test on.
+
+For iOS, you must run the following in the path `Medbuzz/ios/`:
+
+```Bash
+pod install
+```
+
+Best practice is to also do `rm -rf build/`, then `xcodebuild clean` as this will reset the build cache for XCode.
 
 ### Deployment
 
+
+
 #### Deployment Keys
 
-Talk about the `.env` file.
+Your deployment keys go into the `.env` file. Besure to run `npx react-native start --reset-cache` when ever you change the keys.
 
 ## Testing
 
@@ -58,74 +108,15 @@ Include any subsections as needed.
 - Alex Muir (alexmuir@csus.edu)
 - Maddie Ananda (manandasubramanian@csus.edu)
 - Fadi Zubeideh (fzubeideh@csus.edu)
-- [Richard E. Varela]() (rvarela@csus.edu)
+- Richard E. Varela (rvarela@csus.edu) [GitHub Profile](https://github.com/rvare/)
 - Adiba Akter (adibaakter@csus.edu)
 - Avneet Brar (avneetbrar@csus.edu)
 
 ## Special Thanks
 
-- - -
 
-***Everything below here will be removed.***
 
 ## Software Images
 
-![](./imgs/Medbuzz.png)
 
-### Entity Relationship Diagram
 
-![](./imgs/CSC190ERDiagram.jpg)
-
-### Product Mockup Images
-
-<div>
-    <img src=./imgs/Login.png width="200" style="margin-right:10"/>
-    <img src=./imgs/Homepage.png width="200" style="margin-right:10"/>
-    <img src=./imgs/Profile.png width="200"/>
-</div>
-
-## Timeline
-
-### Sprint 5 (8/26/24 - 9/9/24)
-
-- Integrate new UI Pages: My Jobs, Job Posting, Inbox. 
-
-- Finish integration/functionalities of existing UI Pages 
-
-- Integrate Azure Entra for Login, sign up, and Reset password. 
-
-- Make sure Navigation follows the flow as designed. 
-
-- Define SQL tables and create all tables approved in the ER diagram. 
-
-- Alpha Testing. 
-
-### Sprint 6 (9/9/24 - 9/23/24)
-
-- Fix Alpha Testing Bugs. 
-
-- Set up Azure API Gateway for runtime and application proxying. 
-
-- Connect string and Int data to SQL DB. 
-
-- Integrate the Applicant Tracking System (ATS) into the app to render new job postings. 
-
-### Sprint 7 (9/23/24 - 10/7/24)
-
-- Configure Azure Blob storage for users. 
-
-- Test user data storage and retrieval. 
-
-- Integrate SQL metadata for Azure Blob data. 
-
-- Integrate Guest users and local storage data for search parameters 
-
-- Beta Testing. 
-
-### Sprint 8 (10/7/24 - 10/21/24)
-
-- Integrate Azure Function for messaging system 
-
-- Run Azure Function for users on a 24-hour basis. 
-
-- Sort out Beta Testing Bugs. 
