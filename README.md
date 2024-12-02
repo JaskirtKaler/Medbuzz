@@ -178,14 +178,42 @@ npm test -- --testPathPattern ResetPassword.test.tsx
 - Alex Muir (alexmuir@csus.edu)
 - Maddie Ananda (manandasubramanian@csus.edu)
 - Fadi Zubeideh (fzubeideh@csus.edu)
-- Richard E. Varela (rvarela@csus.edu) [GitHub Profile](https://github.com/rvare/)
+- Richard E. Varela (rvarela@csus.edu)
 - Adiba Akter (adibaakter@csus.edu)
 - Avneet Brar (avneetbrar@csus.edu)
 
 ## Special Thanks
 
-
+The team would like to thank our client Kamaldeep Singh, the founder of Radixsol and Kenneth Elliot for providing us the opportunity to create this application.
 
 ## Software Images
 
+Medbuzz has an easy to use survey when the user signs up for the first time to help guide them through the necessary paper that Radixsol needs to help the user find work.
 
+![](./imgs/Test1_Survey_Disc1.png)
+
+![](./imgs/Test2_Survey_Seq.png)
+
+![](./imgs/Test3_Survey_Seq.png)
+
+![](./imgs/Test4_Survey_LicenseSeq.png)
+
+![](./imgs/Test5_Survey_ZipSeq.png)
+
+- - -
+
+The homepage is where the user can see all jobs that meet their preferences.
+
+![](./imgs/HomepageFinal.png)
+
+- - -
+
+The profile page where the user can edit their details, see their profile strength, and upload any necessary files.
+
+![](./imgs/ProfileFinal.png)
+
+- - -
+
+On this page, the user can edit a variety of different kinds of information, such as their name, locations, their profile picture, update their contact information, etcetera.
+
+![](./imgs/EditiDetailsFinal.png)
