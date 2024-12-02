@@ -130,34 +130,44 @@ To run all test cases across all components, use the following command:
 
 ```bash
 npm test
+```
 
-### Run Tests for Specific Components
+## Run Tests for Specific Components
 
 Each test file is dedicated to a specific component. You can run individual test cases using the --testPathPattern flag with the file name. Below are the commands to test individual components:
 
 EditBasicDetails:
+```bash
 npm test -- --testPathPattern EditBasicDetails.test.tsx
-
+```
 ForgotPassword:
+```bash
 npm test -- --testPathPattern ForgotPassword.test.tsx
-
+```
 UserLocation:
+```bash
 npm test -- --testPathPattern UserLocation.test.tsx
-
+```
 Certificates:
+```bash
 npm test -- --testPathPattern Certificates.test.tsx
-
+```
  Discipline:
+ ```bash
 npm test -- --testPathPattern Discipline.test.tsx
-
+```
 MessagePage:
+```bash
 npm test -- --testPathPattern MessagePage.test.tsx
-
+```
 MyJobsPage:
+```bash
 npm test -- --testPathPattern MyJobsPage.test.tsx
-
+```
 ResetPassword:
+```bash
 npm test -- --testPathPattern ResetPassword.test.tsx
+```
 
 ## Contributors
 
@@ -177,6 +187,5 @@ npm test -- --testPathPattern ResetPassword.test.tsx
 
 
 ## Software Images
-
 
 
