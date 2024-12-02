@@ -18,13 +18,13 @@
 
 ## Synopsis
 
-MedBuzz is an innovative mobile application developed by the Sprint Scripters, aimed at bridging the gap between healthcare workers and recruiters across the United States. This project, guided by the vision of Kamaldeep Singh, Founder and CEO of Radixsol, promises to automate and streamline the healthcare recruitment process, enhancing the efficiency of job searches, application tracking, and communication between candidates and recruiters.
+MedBuzz is an innovative mobile application developed by Sprint Scripters, aimed at bridging the gap between healthcare workers and recruiters across the United States. This project, guided by the vision of Kamaldeep Singh, Founder, and CEO of Radixsol, promises to automate and streamline the healthcare recruitment process, enhancing the efficiency of job searches, application tracking, and communication between candidates and recruiters.
 
-The Radixsol Medical Staffing App envisions a platform where healthcare professionals can effortlessly connect with recruiters, showcasing their qualifications and exploring job opportunities with ease. By integrating advanced features such as online profile creation, a comprehensive job search and filtering system, and real-time notifications, MedBuzz aims to simplify the recruitment process, making it more direct, efficient, and engaging for all stakeholders involved.
+The Radixsol Medical Staffing App envisions a platform where healthcare professionals can effortlessly connect with recruiters, showcasing their qualifications and easily exploring job opportunities. By integrating advanced features such as online profile creation, a comprehensive job search and filtering system, and real-time notifications, MedBuzz aims to simplify the recruitment process, making it more direct, efficient, and engaging for all stakeholders involved.
 
 ## Features
 
-Describe features of the app.
+Describe the features of the app.
 Include any subsections as needed.
 
 ## Developer Instructions
@@ -38,7 +38,7 @@ Include any subsections as needed.
 
 ### Download
 
-1. Navigate to where you want to save the project, open your terminal there and enter the following:
+1. Navigate to where you want to save the project, open your terminal there, and enter the following:
 
 ```Bash
 Git clone https://github.com/JaskirtKaler/Medbuzz.git
@@ -59,7 +59,7 @@ npm i
 npx react-native start --reset-cache
 ```
 
-*Note:* `--reset-cache` does not always need to be used, but is best to run if you change the `.env` file.
+*Note:* `--reset-cache` does not always need to be used, but it is best to run if you change the `.env` file.
 
 4. In a new terminal, run one of the following depending on which system you will use:
 
@@ -83,7 +83,7 @@ For iOS, you must run the following in the path `Medbuzz/ios/`:
 pod install
 ```
 
-Best practice is to also do `rm -rf build/`, then `xcodebuild clean` as this will reset the build cache for XCode.
+Best practice is to also do `rm—rf build/` and then `xcodebuild clean`, as this will reset the XCode build cache.
 
 ### Deployment
 
@@ -91,7 +91,7 @@ Best practice is to also do `rm -rf build/`, then `xcodebuild clean` as this wil
 
 #### Deployment Keys
 
-Your deployment keys go into the `.env` file. Besure to run `npx react-native start --reset-cache` when ever you change the keys.
+Your deployment keys go into the `.env` file. Be sure to run `npx react-native start --reset-cache` whenever you change the keys.
 
 ## Testing
 
