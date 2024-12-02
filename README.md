@@ -95,9 +95,69 @@ Your deployment keys go into the `.env` file. Besure to run `npx react-native st
 
 ## Testing
 
-> Testing Section with links or descriptions of how to test.
+<!-- > Testing Section with links or descriptions of how to test. -->
 
-Include any subsections as needed.
+The MedBuzz app used Jest and Manual Testing to ensure the functionality of the app. Below are the details:
+
+### Types of Testing
+
+1. **Unit Testing**:
+   - Used Jest to validate the functionality of isolated components.
+   - Components tested include:
+     - `EditBasicDetails`
+     - `ForgotPassword`
+     - `UserLocation`
+     - `Certificates`
+     - `Discipline`
+     - `MessagePage`
+     - `MyJobsPage`
+     - `ResetPassword`
+
+2. **Integration Testing**:
+   - Focused on interactions between multiple components, such as ensuring proper functionality of `MyJobsPage` job feed and navigation.
+
+3. **Manual Testing**:
+   - Verified UI responsiveness and navigation using the Android Emulator.
+   - Validated key workflows like form submissions and password recovery.
+
+---
+
+### Running Tests
+
+#### Run All Tests
+
+To run all test cases across all components, use the following command:
+
+```bash
+npm test
+
+### Run Tests for Specific Components
+
+Each test file is dedicated to a specific component. You can run individual test cases using the --testPathPattern flag with the file name. Below are the commands to test individual components:
+
+EditBasicDetails:
+npm test -- --testPathPattern EditBasicDetails.test.tsx
+
+ForgotPassword:
+npm test -- --testPathPattern ForgotPassword.test.tsx
+
+UserLocation:
+npm test -- --testPathPattern UserLocation.test.tsx
+
+Certificates:
+npm test -- --testPathPattern Certificates.test.tsx
+
+ Discipline:
+npm test -- --testPathPattern Discipline.test.tsx
+
+MessagePage:
+npm test -- --testPathPattern MessagePage.test.tsx
+
+MyJobsPage:
+npm test -- --testPathPattern MyJobsPage.test.tsx
+
+ResetPassword:
+npm test -- --testPathPattern ResetPassword.test.tsx
 
 ## Contributors
 
