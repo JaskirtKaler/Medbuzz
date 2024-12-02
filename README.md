@@ -56,7 +56,7 @@ npm i
 3. To run the app:
 
 ```Bash
-npx react-native start --reset-cahce
+npx react-native start --reset-cache
 ```
 
 *Note:* `--reset-cache` does not always need to be used, but is best to run if you change the `.env` file.
